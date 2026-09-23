@@ -1,0 +1,76 @@
+/* ==========================================================================
+   Design tokens — the single source of truth for the visual system.
+   Change values here; never hard-code colours, sizes or fonts elsewhere.
+   ========================================================================== */
+
+:root {
+  /* ---- Colour ---------------------------------------------------------- */
+  --paper:        #F3F1EB;   /* off-white background */
+  --paper-deep:   #E9E6DD;   /* recessed surfaces, image placeholders */
+  --ink:          #0F0F0E;   /* primary text */
+  --ink-soft:     #55534D;   /* secondary text (AA on --paper) */
+  --rule:         #D6D2C7;   /* hairlines */
+
+  /* Accent: Rubine — a deep pink-red. Rare next to off-white, never reads
+     as the default "AI purple". Used sparingly: links, markers, one moment
+     per section. Contrast on --paper ≈ 5:1 (AA for text). */
+  --accent:       #CE0058;
+  --accent-ink:   #FFFFFF;   /* text placed on top of --accent */
+
+  /* ---- Typography ------------------------------------------------------ */
+  --font-sans:  "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader", ui-serif, Georgia, serif;
+  --font-mono:  ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Fluid type scale (min @ 360px → max @ 1440px) */
+  --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);  /* 13 → 14 */
+  --step-0:  clamp(1rem, 0.96rem + 0.19vw, 1.125rem);       /* 16 → 18 */
+  --step-1:  clamp(1.25rem, 1.18rem + 0.37vw, 1.5rem);      /* 20 → 24 */
+  --step-2:  clamp(1.625rem, 1.47rem + 0.74vw, 2.125rem);   /* 26 → 34 */
+  --step-3:  clamp(2.25rem, 1.88rem + 1.67vw, 3.375rem);    /* 36 → 54 */
+  --step-4:  clamp(2.75rem, 2rem + 3.33vw, 5rem);           /* 44 → 80 */
+  --step-5:  clamp(3.25rem, 2.1rem + 5.1vw, 6.75rem);       /* 52 → 108 */
+
+  --leading-tight: 1.02;
+  --leading-snug:  1.2;
+  --leading-body:  1.55;
+  --tracking-tight: -0.035em;
+  --tracking-label: 0.08em;
+
+  /* ---- Space (8pt-ish, fluid at the large end) ------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: clamp(2.5rem, 2rem + 2vw, 4rem);
+  --space-8: clamp(4rem, 3rem + 4vw, 7rem);
+  --space-9: clamp(5rem, 3.5rem + 7vw, 10rem);
+  --space-section: clamp(4.5rem, 3rem + 5vw, 8rem);  /* vertical padding of a page section */
+
+  /* ---- Layout ---------------------------------------------------------- */
+  --page-max: 1440px;
+  --gutter:   clamp(1rem, 0.5rem + 2.5vw, 3rem);  /* 16px on phones */
+  --columns:  12;
+  --col-gap:  clamp(1rem, 0.6rem + 1.5vw, 1.5rem);
+
+  /* ---- Shape & motion -------------------------------------------------- */
+  --radius: 2px;             /* nearly square on purpose */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --dur-fast: 180ms;
+  --dur-slow: 700ms;
+}
+
+/* The generic "AI site" look, used ONLY inside the crossed-out specimen in
+   #problem. Never use these anywhere else. */
+:root {
+  --cliche-from: #7C5CFF;
+  --cliche-to:   #3BA7FF;
+}
+
+/* Accent candidates for comparison — try them with ?accent=cobalt etc.
+   Delete this block once the accent is final. */
+:root[data-accent="cobalt"]    { --accent: #1B3BD1; }
+:root[data-accent="verdigris"] { --accent: #0B6B5E; }
+:root[data-accent="oxide"]     { --accent: #B4380F; }

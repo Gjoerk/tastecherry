@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Blender scratch output (raw PNG frames, logs); final WebPs live in assets/img
+render/out/

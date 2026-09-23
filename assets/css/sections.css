@@ -1,0 +1,406 @@
+/* ==========================================================================
+   Sections — one block per page section, in page order.
+   ========================================================================== */
+
+/* ---- Header ---------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: saturate(1.2) blur(8px);
+  -webkit-backdrop-filter: saturate(1.2) blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.site-header.is-scrolled { border-bottom-color: var(--rule); }
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  height: 4.25rem;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.wordmark__mark {
+  width: 1.1em;
+  height: 1.1em;
+  color: var(--accent);
+  flex: none;
+}
+
+.site-nav ul { display: flex; gap: clamp(1rem, 3.5vw, 2.25rem); }
+.site-nav a {
+  font-size: var(--step--1);
+  font-weight: 500;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav .site-nav__cta { color: var(--accent); }
+
+/* ---- Hero: title + cherries, always exactly one screen tall ---------- */
+/* Title size follows width AND height, so title + cherries + note always fit
+   above the fold; the cherry stage takes whatever height is left. */
+.hero {
+  --title-size: clamp(3rem, min(1.5rem + 9vw, 13svh), 10rem);
+  --pad-top: clamp(0.75rem, 4svh, 3rem);
+  --pad-bottom: clamp(1rem, 4svh, 2.5rem);
+  --overlap: calc(var(--title-size) * 1.02);     /* how far the drawing reaches up behind the title */
+  --note-block: calc(var(--space-3) + 3 * var(--step--1));
+  height: calc(100svh - 4.25rem);
+  min-height: 460px;
+  display: grid;
+  align-content: center;                          /* title + cherries + note centred as one group */
+  justify-items: center;
+  padding: var(--pad-top) var(--gutter) var(--pad-bottom);
+}
+.hero__title {
+  position: relative;
+  z-index: 1;                                    /* sits over the cherries */
+  font-size: var(--title-size);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  text-align: center;
+  color: var(--ink);
+}
+.hero__title em { letter-spacing: -0.03em; color: var(--accent); }
+
+/* Six-petal asterisk: bigger, hung off the top of "Taste", turning slowly */
+.hero__mark {
+  display: inline-block;
+  width: 0.42em;
+  height: 0.42em;
+  margin-left: 0.05em;
+  vertical-align: top;
+  position: relative;
+  top: 0.02em;
+  color: var(--accent);
+}
+.hero__mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: asterisk-turn 24s linear infinite;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.hero__mark:hover svg { animation-play-state: paused; transform: scale(1.15); }
+@keyframes asterisk-turn { to { rotate: 360deg; } }
+
+.turntable.hero__stage {                          /* beats the generic 1:1 turntable box */
+  position: relative;
+  z-index: 0;
+  width: min(100%, 960px);
+  aspect-ratio: var(--model-aspect, 0.9);         /* set by fruit.js from the model's bounds */
+  /* never taller than what's left of the screen once title and note are placed */
+  max-height: calc(100svh - 4.25rem - var(--pad-top) - var(--pad-bottom)
+                   - 1.9 * var(--title-size) + var(--overlap) - var(--note-block));
+  margin-top: calc(-1 * var(--overlap));
+}
+
+.hero__note {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--space-3);
+  max-width: 36ch;
+  text-align: center;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+/* Phones: two lines, broken before the punchline. Wider screens: one line. */
+@media (min-width: 800px) {
+  .hero__note { max-width: none; white-space: nowrap; }
+  .hero__note-break { display: none; }
+}
+.hero__note-mark {
+  display: inline-block;
+  width: 0.95em;
+  height: 0.95em;
+  margin-right: 0.3em;
+  vertical-align: -0.12em;
+  color: var(--accent);
+}
+
+/* ---- Turntable (drag to rotate) ------------------------------------ */
+.turntable {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  cursor: grab;
+  touch-action: pan-y;          /* vertical scroll still works on phones */
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 50%;
+}
+.turntable.is-dragging { cursor: grabbing; }
+.turntable:focus-visible { outline: 1px solid var(--rule); outline-offset: 4px; }
+.turntable canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out);
+}
+.turntable.is-ready canvas { opacity: 1; }
+
+/* ---- Refine: rough → cut diamond ----------------------------------- */
+.refine__title {
+  margin-bottom: var(--space-7);
+  text-align: center;
+  font-size: var(--step-3);
+  line-height: 1.06;
+  letter-spacing: var(--tracking-tight);
+}
+/* the sign-off: quiet, like a shrug */
+.refine__coda {
+  margin-top: var(--space-7);
+  text-align: center;
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+}
+.refine__stones {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(64px, 12vw, 180px) minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--col-gap);
+  --caption: calc(var(--space-4) + 1.15 * var(--step-2)); /* caption block height */
+}
+
+.stone { margin: 0; }
+.stone .turntable { width: 100%; max-width: 420px; margin-inline: auto; }
+.stone figcaption { margin-top: var(--space-4); text-align: center; }
+.stone__title {
+  font-size: var(--step-2);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.refine__arrow {
+  align-self: center;
+  margin-bottom: var(--caption); /* level with the stones, not their captions */
+}
+.refine__arrow svg {
+  width: 100%;
+  height: 24px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.refine__arrow svg * { vector-effect: non-scaling-stroke; }
+
+@media (max-width: 800px) {
+  .refine__stones { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-4); }
+  .stone .turntable { max-width: 340px; }
+  /* Phones: heading sits above its stone */
+  .stone { display: flex; flex-direction: column; }
+  .stone figcaption { order: -1; margin: 0 0 var(--space-2); }
+  .refine__arrow {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto;
+  }
+  .refine__arrow svg { width: 72px; transform: rotate(90deg); }
+}
+
+/* ---- Problem: the generic look, crossed out ------------------------- */
+.samey {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  margin-top: var(--space-4);
+}
+.samey__item {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-4);
+  min-height: clamp(8.5rem, 6rem + 6vw, 11.5rem);
+  padding: var(--space-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+/* one hairline stroke in the accent, corner to corner */
+.samey__item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top right,
+    transparent calc(50% - 0.75px), var(--accent) 50%, transparent calc(50% + 0.75px));
+  pointer-events: none;
+}
+.samey__font {
+  align-self: center;
+  font-family: system-ui, sans-serif;           /* the default everyone ships */
+  font-size: var(--step-4);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+.samey__gradient {
+  align-self: center;
+  height: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cliche-from), var(--cliche-to));
+  opacity: 0.55;
+}
+.samey__headline {
+  align-self: center;
+  font-family: system-ui, sans-serif;
+  font-size: var(--step-1);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 640px) {
+  .samey { grid-template-columns: minmax(0, 1fr); }
+  .samey__item { min-height: 0; grid-template-columns: 1fr auto; grid-template-rows: auto; align-items: center; }
+  .samey__font { font-size: var(--step-2); }
+  .samey__gradient { height: 1.75rem; }
+}
+
+/* ---- Why me: 2×2 on desktop, stacked on phones, hairlines not boxes -- */
+.why {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+.why__item {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  column-gap: var(--space-4);
+  padding-block: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--rule);
+}
+.why__num {
+  grid-row: span 2;
+  padding-top: 0.45em;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--accent);
+}
+.why__title {
+  font-size: var(--step-2);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: var(--space-2);
+}
+.why__item p { font-size: var(--step-1); line-height: 1.45; }
+
+@media (max-width: 800px) {
+  .why { grid-template-columns: minmax(0, 1fr); }
+  .why__item { grid-template-columns: 2.5rem minmax(0, 1fr); }
+}
+
+/* ---- Pricing: three flat panels divided by hairlines ------------------ */
+.plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+.plan {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5) var(--space-5) var(--space-6) 0;
+}
+.plan + .plan {
+  padding-left: var(--space-5);
+  border-left: 1px solid var(--rule);
+}
+.plan__name {
+  font-size: var(--step-2);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.plan__price {
+  margin-top: var(--space-2);
+  font-size: var(--step-3);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.05;
+  white-space: nowrap;
+}
+.plan__from {
+  font-size: var(--step-0);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+}
+.plan__features {
+  margin-top: var(--space-5);
+  flex: 1;                                    /* keeps "For" lines aligned across panels */
+}
+.plan__features li {
+  padding-block: var(--space-2);
+  border-top: 1px solid var(--rule);
+}
+.plan__features li:last-child { border-bottom: 1px solid var(--rule); }
+.plan__for {
+  margin-top: var(--space-5);
+  line-height: 1.45;
+}
+.plan__for .label { display: block; margin-bottom: var(--space-1); }
+
+.plans__note { margin-top: var(--space-5); font-size: var(--step-1); }
+
+@media (max-width: 800px) {
+  .plans { grid-template-columns: minmax(0, 1fr); }
+  .plan { padding-right: 0; }
+  .plan + .plan {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+}
+
+/* ---- Contact: pitch left, form right --------------------------------- */
+.contact__intro { margin-top: var(--space-2); max-width: 30rem; }
+.contact__alt { margin-top: var(--space-4); font-size: var(--step-1); }
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) var(--col-gap);
+}
+.field--full,
+.form__actions { grid-column: 1 / -1; }
+
+@media (max-width: 560px) {
+  .form { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---- Footer ---------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-6);
+}
+.site-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+.site-footer a:hover { color: var(--ink); }

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tastecherry — Websites with taste</title>
+  <meta name="description" content="AI builds it. I make it good. Websites with taste, at fixed prices.">
+  <meta name="theme-color" content="#F3F1EB">
+
+  <meta property="og:title" content="tastecherry — Websites with taste">
+  <meta property="og:description" content="AI builds it. I make it good. (There's a difference.)">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
+  <!-- Accent preview (?accent=cobalt etc.) + JS flag, before paint -->
+  <script>
+    (function () {
+      var a = new URLSearchParams(location.search).get("accent");
+      if (a) document.documentElement.setAttribute("data-accent", a);
+      document.documentElement.classList.add("js");
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap">
+
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/sections.css">
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Shared symbol: six-petal asterisk (logo mark, title mark, footnote) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="asterisk" viewBox="-50 -50 100 100">
+      <g fill="currentColor">
+        <path id="petal" d="M0 -6 C 10 -18 11 -38 0 -48 C -11 -38 -10 -18 0 -6 Z"/>
+        <use href="#petal" transform="rotate(60)"/>
+        <use href="#petal" transform="rotate(120)"/>
+        <use href="#petal" transform="rotate(180)"/>
+        <use href="#petal" transform="rotate(240)"/>
+        <use href="#petal" transform="rotate(300)"/>
+        <circle r="7"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <!-- ============================================================ HEADER -->
+  <header class="site-header" data-header>
+    <div class="container site-header__inner">
+      <a class="wordmark" href="#hero" aria-label="tastecherry, home">
+        <svg class="wordmark__mark" aria-hidden="true"><use href="#asterisk"/></svg>tastecherry
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="#why">Why me</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a class="site-nav__cta" href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================================================ HERO -->
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+      <h1 class="hero__title" id="hero-title">
+        Websites<br>with <em>Taste</em><a class="hero__mark" href="#taste-note" aria-describedby="taste-note"><svg aria-hidden="true"><use href="#asterisk"/></svg><span class="visually-hidden">(see footnote)</span></a>
+      </h1>
+
+      <div class="hero__stage turntable" data-scene="fruit"
+           role="img" aria-label="A line drawing of two cherries on a stem."></div>
+
+      <p class="hero__note" id="taste-note">
+        <svg class="hero__note-mark" aria-hidden="true"><use href="#asterisk"/></svg>Taste is subjective.<br class="hero__note-break"> Mine just happens to be right.
+      </p>
+    </section>
+
+    <!-- ========================================================= PROBLEM -->
+    <section class="section" id="problem" aria-labelledby="problem-title">
+      <div class="container split">
+        <header class="section-head" data-reveal>
+          <p class="label"><span class="index">01</span> The problem</p>
+          <h2 class="section-head__title" id="problem-title">AI can build you a website in 30&nbsp;seconds.</h2>
+        </header>
+        <div class="split__body prose" data-reveal>
+          <p class="lead">And it’ll look fine. <span class="aside">(Just like the other 10,000.)</span></p>
+          <p>Same fonts. Same gradients. Same “Unlock your potential.” Everything looks good, and everything looks the same. No character, no love. <span class="aside">(Honestly? It looks like shit once you’ve seen a few.)</span></p>
+        </div>
+
+        <!-- The generic look, crossed out -->
+        <ul class="samey split__full" aria-label="The same three things on every AI website" data-reveal>
+          <li class="samey__item">
+            <span class="samey__font" aria-hidden="true">Aa</span>
+            <span class="label">Same font</span>
+          </li>
+          <li class="samey__item">
+            <span class="samey__gradient" aria-hidden="true"></span>
+            <span class="label">Same gradient</span>
+          </li>
+          <li class="samey__item">
+            <span class="samey__headline" aria-hidden="true">Unlock your potential.</span>
+            <span class="label">Same headline</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =================================================== CHERRY ON TOP -->
+    <section class="section" id="cherry" aria-labelledby="cherry-title">
+      <div class="container split">
+        <header class="section-head" data-reveal>
+          <p class="label"><span class="index">02</span> Cherry on top</p>
+          <h2 class="section-head__title" id="cherry-title">That’s where I&nbsp;come in.</h2>
+        </header>
+        <div class="split__body prose" data-reveal>
+          <p class="lead">AI does the heavy lifting. I&nbsp;do the part it can’t: taste.</p>
+          <p>I&nbsp;steer the AI, rework the design and make the calls that give your site a personality. I&nbsp;know what your customers want to see, and what makes them close the tab.</p>
+          <p>Every detail matters. Fonts, spacing, colours, that one button that’s two pixels off. <span class="aside">(It bugs me more than it bugs you.)</span> Nothing ships untouched.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================== REFINE -->
+    <section class="section refine" id="approach" aria-labelledby="approach-title">
+      <div class="container">
+        <h2 class="refine__title" id="approach-title" data-reveal>It’s Simple</h2>
+        <div class="refine__stones">
+          <figure class="stone" data-reveal>
+            <div class="turntable" data-scene="rough"
+                 role="img" aria-label="A rough, milky uncut diamond."></div>
+            <figcaption><h3 class="stone__title">AI's Finished Product</h3></figcaption>
+          </figure>
+
+          <div class="refine__arrow" aria-hidden="true" data-reveal>
+            <svg viewBox="0 0 160 24" preserveAspectRatio="none">
+              <line x1="0" y1="12" x2="156" y2="12" />
+              <polyline points="144,2 156,12 144,22" />
+            </svg>
+          </div>
+
+          <figure class="stone" data-reveal>
+            <div class="turntable" data-scene="cut"
+                 role="img" aria-label="A polished round brilliant diamond."></div>
+            <figcaption><h3 class="stone__title">My Finished Product</h3></figcaption>
+          </figure>
+        </div>
+        <p class="refine__coda" data-reveal>capisce?</p>
+      </div>
+    </section>
+
+    <!-- ========================================================== WHY ME -->
+    <section class="section" id="why" aria-labelledby="why-title">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="label"><span class="index">03</span> Why me</p>
+          <h2 class="section-head__title" id="why-title">Why me and not an agency?</h2>
+        </header>
+        <ol class="why" data-reveal>
+          <li class="why__item">
+            <span class="why__num" aria-hidden="true">01</span>
+            <h3 class="why__title">Way cheaper.</h3>
+            <p>Agency quality without the agency invoice. <span class="aside">(No office dog to&nbsp;feed.)</span></p>
+          </li>
+          <li class="why__item">
+            <span class="why__num" aria-hidden="true">02</span>
+            <h3 class="why__title">Actually finished.</h3>
+            <p>You get a working website, not a Figma file and a “phase&nbsp;2” meeting.</p>
+          </li>
+          <li class="why__item">
+            <span class="why__num" aria-hidden="true">03</span>
+            <h3 class="why__title">Be brutally honest.</h3>
+            <p>Hate something? Say it. I’ll fix it. <span class="aside">(I&nbsp;won’t cry. Much.)</span></p>
+          </li>
+          <li class="why__item">
+            <span class="why__num" aria-hidden="true">04</span>
+            <h3 class="why__title">Looks premium, looks like you.</h3>
+            <p>Not a template with your logo slapped on.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========================================================= PRICING -->
+    <section class="section" id="pricing" aria-labelledby="pricing-title">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="label"><span class="index">04</span> Pricing</p>
+          <h2 class="section-head__title" id="pricing-title">Pricing</h2>
+          <p class="section-head__sub">Fixed prices. <span class="aside">(No hourly rates, no surprise invoices.)</span></p>
+        </header>
+
+        <!-- TODO: fill in prices -->
+        <ul class="plans" data-reveal>
+          <li class="plan">
+            <h3 class="plan__name">One Page</h3>
+            <p class="plan__price"><span class="plan__from">from</span> €&nbsp;TODO</p>
+            <ul class="plan__features">
+              <li>One page</li>
+              <li>Mobile-ready</li>
+              <li>Contact form</li>
+              <li>Domain setup</li>
+            </ul>
+            <p class="plan__for"><span class="label">For</span> Getting online fast <span class="aside">(and looking good doing&nbsp;it)</span></p>
+          </li>
+          <li class="plan">
+            <h3 class="plan__name">Business</h3>
+            <p class="plan__price"><span class="plan__from">from</span> €&nbsp;TODO</p>
+            <ul class="plan__features">
+              <li>Up to 5 pages</li>
+              <li>Content you can edit yourself</li>
+              <li>Basic SEO</li>
+            </ul>
+            <p class="plan__for"><span class="label">For</span> When one page isn’t enough</p>
+          </li>
+          <li class="plan">
+            <h3 class="plan__name">Care</h3>
+            <p class="plan__price">€&nbsp;TODO <span class="plan__from">/ month</span></p>
+            <ul class="plan__features">
+              <li>Hosting</li>
+              <li>Updates</li>
+              <li>Small changes</li>
+            </ul>
+            <p class="plan__for"><span class="label">For</span> So you never have to think about&nbsp;it</p>
+          </li>
+        </ul>
+
+        <p class="plans__note" data-reveal>Not sure which one? <a class="link-cta" href="#contact">Just ask.</a> <span class="aside">(I don’t bite.)</span></p>
+      </div>
+    </section>
+
+    <!-- ========================================================= CONTACT -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="container split">
+        <header class="section-head" data-reveal>
+          <p class="label"><span class="index">05</span> Contact</p>
+          <h2 class="section-head__title" id="contact-title">Let’s make something good.</h2>
+          <p class="section-head__sub contact__intro">Tell me what you do and what you need. I&nbsp;reply within 24&nbsp;hours. <span class="aside">(Usually faster.)</span></p>
+          <p class="contact__alt">Or just write: <a class="link-cta" href="mailto:hello@tastecherry.com">hello@tastecherry.com</a></p>
+        </header>
+
+        <!-- TODO: connect a form handler (action/method) -->
+        <form class="form split__body" action="#" method="post" data-reveal>
+          <div class="field">
+            <label class="label" for="contact-name">Name</label>
+            <input id="contact-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label class="label" for="contact-email">Email</label>
+            <input id="contact-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field field--full">
+            <label class="label" for="contact-message">Message</label>
+            <textarea id="contact-message" name="message" rows="5" required></textarea>
+          </div>
+          <div class="form__actions">
+            <button class="button button--accent" type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p>Built with taste. <span class="aside">(Obviously.)</span></p>
+      <ul class="site-footer__links">
+        <li><a href="#">Impressum</a></li><!-- TODO: Impressum page -->
+        <li><a href="#">Datenschutz</a></li><!-- TODO: Datenschutz page -->
+        <li>© 2026 tastecherry</li>
+      </ul>
+      <a class="link-arrow link-arrow--up" href="#hero">Back to top</a>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

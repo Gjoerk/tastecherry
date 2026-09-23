@@ -1,0 +1,114 @@
+# tastecherry — Portfolio
+
+One-page site for **tastecherry**, a web design business. Positioning: **AI-built websites, finished with taste.**
+The site itself is the proof, so it must never look "vibe coded".
+
+## Stack
+
+Plain HTML/CSS/JS, no build step for the site. Preview: `python3 -m http.server 4321` (or the `site` config in `.claude/launch.json`).
+
+3D currently runs **real-time in Three.js** (CDN import map). The hero cherries and both diamonds rotate by drag.
+The hero title is plain black HTML text. A ceramic Blender render of it (`assets/img/hero/title*.webp`) is kept but unused.
+
+A full **Blender Cycles pipeline** in `render/` can replace the real-time models with photoreal 360° turntables
+(60 WebP frames each, shown by `assets/js/turntable.js`). It's parked for now: rendering takes about 2.5 h on the
+laptop M1, so it will be run on the desktop. To switch an object over, render it, then change its markup from
+`data-scene="cut"` to `data-turntable="assets/img/turntable/cut" data-frames="60"`.
+
+```
+index.html                  all content, sections in page order
+assets/css/tokens.css       colours, type scale, spacing, motion — the ONLY place raw values live
+assets/css/base.css         reset + element defaults
+assets/css/layout.css       container, 12-col grid, labels, buttons, links, media, reveal
+assets/css/sections.css     one block per section, in page order (+ turntable styles)
+assets/js/main.js           entry: boots data-scene (Three.js) / data-turntable (frames), header, reveal
+assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio lighting, dragRotate()
+assets/js/three/fruit.js    hero scene (cherries);  cherry.js = wireframe cherries;  strawberry.js = unused alt (solid + wireframe)
+assets/js/three/diamonds.js rough milky stone + cut brilliant scenes;  gem.js = ray-traced gem shader
+assets/js/turntable.js      viewer for pre-rendered frames (used once Blender renders exist)
+assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
+assets/img/turntable/<name>/000–059.webp   (not rendered yet)
+
+render/                     Blender pipeline (not needed at runtime; exclude from deploys)
+  build.sh                  render + convert: `render/build.sh [title cut strawberry rough]`
+  common.py                 Cycles/Metal setup, colour management, studio lights, cards, turntable loop
+  title.py                  voxel-fused, smoothed ceramic letters; exposure calibrated to --paper
+  strawberry.py             procedural fruit: Poisson-disk seeds, dimples, calyx, baked boolean bite, flesh shader
+  stones.py                 kind=rough (frosted skin + milky volume) | kind=cut (57-facet brilliant, dispersion)
+  finalize.py               softens shadow-catcher shadows, writes WebP into assets/img
+  inspect_render.py         composites a render over --paper and reports the dominant face colour
+  fonts/                    TTFs for the title (Blender can't read WOFF)
+  out/                      raw PNG frames + build.log (scratch)
+```
+Requires Blender 5.2+ at /Applications/Blender.app (`brew install --cask blender`).
+One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- kind=cut res=560 samples=96`.
+
+## Current page (built step by step)
+
+Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
+
+1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe cherries rising behind the
+   title (drag to rotate), footnote "*Taste is subjective. Mine just happens to be right." Nothing else in the hero.
+   **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
+   (100svh minus header), content centred as one group; the title size is capped by viewport height; the cherry canvas
+   takes the drawing's proportions (fruit.js sets --model-aspect), is capped to the height left after title and
+   `--note-block` (footnote), and reaches up behind the title by --overlap so the leaf overlaps "with".
+   Checked at 375×667, 1024×720, 1440×900.
+2. `#problem` — 01 The problem: split (headline left, copy right) + crossed-out specimen row (same font / gradient / headline;
+   the only place `--cliche-*` colours may appear).
+3. `#cherry` — 02 Cherry on top: split layout.
+4. `#approach` — centred h2 "It’s Simple", then rough milky stone → arrow → cut brilliant ("AI's Finished Product" /
+   "My Finished Product" as h3s), then a quiet ink-soft "capisce?" underneath. No other copy.
+5. `#why` — 03 Why me: four numbered items (mono accent 01–04), 2×2 on desktop, stacked on phones, hairlines, no icons.
+6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
+7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
+Footer: Built with taste. (Obviously.) · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
+
+Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft).
+Section system: `.section` (padding `--space-section`, hairline on top) → `.section-head` (numbered `.label` above an
+`h2.section-head__title`, optional `__sub`). Text sections use `.container.split`: head in columns 1–6, `.split__body`
+in 8–12, `.split__full` spans all; stacks below 960px. Other primitives: `.prose`/`.lead`, `.aside`,
+`.button--accent`, `.field`.
+Line breaks: no width caps on headlines; headings balance, paragraphs `pretty`; a sentence-level "I" is glued to the
+next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
+
+## 3D notes
+
+- Title flat faces must equal `--paper`: Standard view transform, exposure -2.33, calibrated with
+  `inspect_render.py`. If lights/material change: render at a known exposure, measure, solve the offset in stops.
+- Everything renders on transparent film with a shadow catcher; `finalize.py` softens those shadows.
+- The M1 GPU times out on ray-marched (textured) volumes: keep the rough diamond's milk at constant density.
+- Strawberry frame 0 shows the bite at the upper left. Leaves are trimmed (not booleaned) — thin shells break EXACT booleans.
+- Turntables only animate on screen; `prefers-reduced-motion` disables idle spin (drag still works).
+
+## Palette
+
+- `--paper` #F3F1EB off-white background
+- `--ink` #0F0F0E text
+- `--accent` #CE0058 Rubine. Compare others with `?accent=cobalt|verdigris|oxide`.
+
+## Design rules (anti-vibe-coded checklist)
+
+Do:
+- Use tokens for every colour, size, space and duration.
+- Lay things out on the 12-column grid; use asymmetry and whitespace, not boxes.
+- Separate content with hairline rules, not cards and shadows.
+- Keep the accent rare: at most one or two accent moments per section.
+- Use the serif italic (`<em>`) only for emphasis inside headlines.
+- Keep motion subtle (fade and 16px rise) and respect `prefers-reduced-motion`.
+- Write specific, plain copy.
+
+Don't:
+- Purple, indigo or blue-to-purple gradients; gradient text; glow; glassmorphism cards
+- Emoji or generic icon-library icons as decoration
+- Rounded-2xl cards with drop shadows in a three-up grid
+- Everything centered
+- Inter or Geist as the default font; Tailwind default colours
+- Filler copy like "Unlock", "Elevate", "Seamless", "Supercharge"
+
+## Placeholders to replace (TODO)
+
+- Prices: One Page, Business, Care (`€ TODO` in `#pricing`).
+- Contact form handler: the form posts to `#` (no backend yet).
+- Impressum and Datenschutz links (`href="#"` in the footer).
+- Confirm hello@tastecherry.com is a live mailbox.
