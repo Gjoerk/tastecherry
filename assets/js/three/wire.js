@@ -116,6 +116,20 @@ export class Wire {
     this.occlude(new THREE.CylinderGeometry(outer, outer, thickness, 64), m);
   }
 
+  // A solid part drawn by its crisp edges only (faces meeting at more than
+  // `angle` degrees), like a technical drawing; the solid hides what's behind.
+  edges(geometry, { matrix, angle = 28, solid = true } = {}) {
+    if (matrix) geometry.applyMatrix4(matrix);
+    const pos = new THREE.EdgesGeometry(geometry, angle).attributes.position;
+    const a = new THREE.Vector3(), b = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i += 2) {
+      a.fromBufferAttribute(pos, i);
+      b.fromBufferAttribute(pos, i + 1);
+      this.line([a.clone(), b.clone()]);
+    }
+    if (solid) this.occlude(geometry);
+  }
+
   build({ color, width = 1.1, ghost = 0.12 }) {
     const group = new THREE.Group();
     const geo = new LineSegmentsGeometry().setPositions(this.segs);

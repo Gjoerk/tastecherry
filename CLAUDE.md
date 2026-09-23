@@ -11,9 +11,10 @@ Plain HTML/CSS/JS, no build step for the site. Preview: `python3 -m http.server 
 diamonds in `#approach` are **Cycles turntables** (pre-rendered frames, `turntable.js`), also draggable.
 The hero title is plain black HTML text. A ceramic Blender render of it (`assets/img/hero/title*.webp`) is kept but unused.
 
-The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (60 WebP frames each). Rough and cut
-are rendered (on the desktop GPU) and live in `assets/img/turntable/`. To switch another object over, render it,
-then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="60"`.
+The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (120 WebP frames each by default, 3° apart;
+fewer looks choppy). Rough and cut are rendered (on the desktop GPU) and live in `assets/img/turntable/`. To switch another object over, render it,
+then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="120"`
+(`data-frames` must match the number of frames on disk).
 
 ```
 index.html                  all content, sections in page order
