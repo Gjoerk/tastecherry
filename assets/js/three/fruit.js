@@ -1,5 +1,5 @@
 // Hero catch: fine-line wireframes in the accent colour that swap with the
-// title's word: cherries (Taste), dripping ketchup bottle (Sauce), chili
+// title's word: cherries (Taste), ketchup bottle (Sauce), chili
 // (Spice). Drag to rotate; slow idle spin otherwise.
 
 import * as THREE from "three";
