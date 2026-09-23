@@ -25,19 +25,20 @@
   const R = (sel) => document.querySelector(sel).getBoundingClientRect();
 
   const NOTES = mobile ? [
-    { marks: [["circle", ".logo"]], at: () => [22, R("nav").bottom + 52], rot: -4, text: "emoji + gradient\nlogo. bold. (not)" },
+    { marks: [["circle", ".logo"]], at: () => [22, R("nav").bottom + 52], rot: -4, text: "emoji + gradient\nlogo. bold choice." },
     { marks: [["circle", "nav .btn"]], at: () => [252, R("nav").bottom + 56], rot: 4, text: "shitty\nbutton #1" },
     { marks: [["circle", ".pill"]], at: () => [118, R(".pill").bottom + 50], rot: -3, text: "✨ = AI was here" },
-    { marks: [["wave", "h1 span"]], at: () => [226, R("h1").bottom + 38], rot: 4, text: "gradient text.\nInter. again.", arrow: false },
+    { marks: [["wave", ["h1 span", "Perfect"]], ["wave", ["h1 span", "Cup"]]], at: () => [226, R("h1").bottom + 38], rot: 4, text: "gradient text.\nInter. again.", arrow: false },
     { marks: [["under", ["header p", "Elevate"]], ["under", ["header p", "seamless"]], ["under", ["header p", "Supercharge"]]],
       at: () => [96, R("header p").bottom + 48], rot: -2, text: "buzzword bingo! 3/3", arrow: false },
     { marks: [["box", ".ctas .btn"]], at: () => [80, R(".ctas").bottom + 50], rot: 3, text: "shitty buttons (rocket incl.)", arrow: false },
     { marks: [["circle", ".card:first-child .icon"]], at: () => [34, R(".card").top - 22], rot: -2, text: "emoji in a rounded box. every. time.", arrow: false },
   ] : [
-    { marks: [["circle", ".logo"]], at: [52, 150], rot: -4, text: "emoji + gradient logo.\nbold choice. (it isn't)" },
+    { marks: [["circle", ".logo"]], at: [52, 150], rot: -4, text: "emoji + gradient logo.\nbold choice." },
     { marks: [["circle", "nav .btn"]], at: [1040, 158], rot: 4, text: "shitty button #1" },
     { marks: [["circle", ".pill"]], at: [860, 214], rot: 3, text: "✨ sparkles = AI was here" },
-    { marks: [["wave", "h1 span"]], at: [860, 332], rot: 4, text: "gradient text.\nin Inter. again." },
+    { marks: [["wave", "h1 span"]], at: [936, 336], rot: 4, text: "gradient text.\nin Inter. again.",
+      tip: () => { const r = R("h1 span"); return [r.right - 70, r.bottom + 10]; } },
     { marks: [["under", ["header p", "Elevate"]], ["under", ["header p", "seamless"]], ["under", ["header p", "Supercharge"]]],
       at: [70, 420], rot: -3, text: "buzzword bingo!\n3/3", arrow: "Elevate" },
     { marks: [["box", ".ctas .btn"]], at: [880, 505], rot: 3, text: "shitty buttons\n(rocket included, free)" },
@@ -123,13 +124,14 @@
   };
 
   // Curved arrow from the note's nearest edge to the edge of the mark
-  const arrow = (b, m) => {
+  const arrow = (b, m, tip) => {
+    if (tip) m = { x: tip[0], y: tip[1], w: 0, h: 0 };   // end exactly at a point
     const nx = b.x + b.width / 2, ny = b.y + b.height / 2;
     const dx = m.x - nx, dy = m.y - ny, len = Math.hypot(dx, dy);
     const ux = dx / len, uy = dy / len;
     // start just outside the note box, end just outside the mark's ellipse
     const tNote = Math.min(Math.abs((b.width / 2 + 8) / (ux || 1e-6)), Math.abs((b.height / 2 + 8) / (uy || 1e-6)));
-    const tMark = 1 / Math.hypot(ux / (m.w / 2 + 8), uy / (m.h / 2 + 8));
+    const tMark = tip ? 0 : 1 / Math.hypot(ux / (m.w / 2 + 8), uy / (m.h / 2 + 8));
     const sx = nx + ux * tNote, sy = ny + uy * tNote;
     const ex = m.x - ux * tMark, ey = m.y - uy * tMark;
     if (Math.hypot(ex - sx, ey - sy) < 12) return;
@@ -147,7 +149,7 @@
     const b = note(n);
     if (n.arrow === false || !done.length) continue;
     const pick = typeof n.arrow === "string" ? done.find((d) => Array.isArray(d.target) && d.target[1] === n.arrow) : done[0];
-    arrow(b, pick.m);
+    arrow(b, pick.m, n.tip && n.tip());
   }
   svg.id = "pen";
   window.__shotHeight = Math.ceil(document.querySelector(".card h3").getBoundingClientRect().bottom + 24);
