@@ -41,9 +41,10 @@ export function createKetchup(style) {
 // A chili pepper: curved tapering pod, a low calyx and a crooked stem
 export function createChili(style) {
   const w = new Wire();
+  const lean = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(0.15, 0, 0.95));   // lies on a diagonal
   const pod = new THREE.CatmullRomCurve3([
     V3(0.05, 0.72, 0), V3(0.13, 0.32, 0.05), V3(0.06, -0.16, 0.02), V3(-0.14, -0.6, -0.03), V3(-0.44, -0.9, 0), V3(-0.64, -0.97, 0.02),
-  ]);
+  ].map((p) => p.applyMatrix4(lean)));
   const smooth = (x) => x * x * (3 - 2 * x);
   w.tube(pod, (t) => 0.25 * Math.pow(1 - t, 0.8) * (0.72 + 0.28 * smooth(Math.min(t / 0.14, 1))), { rings: 18, lines: 10 });
 
@@ -53,7 +54,8 @@ export function createChili(style) {
   w.lathe([V2(0, -0.05), V2(0.17, -0.05), V2(0.19, -0.01), V2(0.12, 0.04), V2(0.05, 0.07), V2(0, 0.075)], { ringsAt: [0.35], meridians: 10, matrix: crown });
 
   const stem = new THREE.CatmullRomCurve3([
-    top.clone().addScaledVector(out, 0.08), top.clone().addScaledVector(out, 0.22).add(V3(0.03, 0, 0)), V3(0.2, 1.1, 0.02), V3(0.3, 1.16, 0.03),
+    top.clone().addScaledVector(out, 0.08), top.clone().addScaledVector(out, 0.22).add(V3(0.03, 0, 0)),
+    V3(0.2, 1.1, 0.02).applyMatrix4(lean), V3(0.3, 1.16, 0.03).applyMatrix4(lean),
   ]);
   w.tube(stem, () => 0.035, { rings: 2, lines: 5 });
   return w.build(style);
