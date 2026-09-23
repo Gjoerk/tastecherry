@@ -12,7 +12,7 @@ const FADE = 0.8;    // seconds out, then the same in
 const ease = (x) => x * x * (3 - 2 * x);   // smoothstep: soft start and finish
 
 export function initFruit(container) {
-  const stage = createStage(container, { fov: 24 });
+  const stage = createStage(container, { fov: 24, transparent: true });   // the page shows through: themes switch as one
   const { scene, camera } = stage;
   const style = { color: cssColor("--line"), width: 1.1, ghost: 0.12 };
 

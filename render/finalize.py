@@ -52,10 +52,12 @@ def seq(name, shadow=0.6):
 
 
 def compare():
-    """#problem: the clean AI screenshot (opaque) + the red-pen layer (alpha)."""
+    """#problem: the clean AI screenshots, light and dark (opaque) + the red-pen layer (alpha)."""
     src = os.path.join(RAW, "compare")
-    for size, width in (("desktop", 2000), ("mobile", 780)):
+    for size, width in (("desktop", 2000), ("mobile", 780), ("desktop-dark", 2000), ("mobile-dark", 780)):
         for layer, mode in (("clean", "RGB"), ("pen", "RGBA")):
+            if layer == "pen" and size.endswith("-dark"):
+                continue                      # same layout: the light pen layer serves both
             im = Image.open(os.path.join(src, f"ai-{layer}-{size}.png")).convert(mode)
             if im.width > width:
                 im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)

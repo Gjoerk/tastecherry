@@ -483,6 +483,10 @@ html:not(.js) .refine__brush path {
 }
 .js .exhibit__frame { cursor: pointer; }
 .exhibit__img { display: block; width: 100%; height: auto; }
+/* the AI site in the page's theme (same layout, so one pen layer fits both);
+   the hidden one is display:none, so its lazy image isn't even loaded */
+:root:not([data-theme="dark"]) .exhibit__clean--dark,
+:root[data-theme="dark"] .exhibit__clean--light { display: none; }
 .exhibit__pen {
   position: absolute;
   inset: 0;

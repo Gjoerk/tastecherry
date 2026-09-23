@@ -82,6 +82,8 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    Sources in `render/compare/`: `ai.html` (the only place the generic AI look is allowed) + `annotate.js` (rough.js
    marks + Caveat notes; the phone layout opens up gaps to write in). Rebuild: `node render/compare/shoot.js`
    (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-{clean,pen}-*.webp`.
+   `ai.html` also has a dark variant (`<html class="dark">`, the usual dark AI theme); dark mode shows
+   `ai-clean-*-dark.webp` under the same pen layer (identical layout).
    If the phone image's size changes, update its width/height in index.html.
 3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows and a wireframe layer cake with a cherry on top
    (`cake.js`, canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
@@ -125,7 +127,9 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 Dark mode: `:root[data-theme="dark"]` in tokens.css — warm charcoal with a cherry undertone `--paper` #1C1718, the
 light paper #F3F1EB as `--ink`, same accent and model colour
 (`--line`, recoloured live via `trackLines()` in stage.js if it's ever themed). Set before first paint by the inline script in index.html (saved choice, else the device
-setting); the switch saves it, updates meta theme-color and fires `themechange`, on which opaque 3D stages repaint.
+setting); the switch saves it, updates meta theme-color and fires `themechange`. The switch is one motion for the
+whole page: a circle of the new theme grows from the button (View Transitions; instant without them or with reduced
+motion). 3D stages are transparent, so they always change with the page.
 
 ## Type
 
