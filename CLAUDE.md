@@ -73,12 +73,13 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, s
 3. `#cherry` — 02 Cherry on top: split layout.
 4. `#approach` — centred h2 "It’s Simple", then rough milky stone → arrow → cut brilliant ("AI's Finished Product" /
    "My Finished Product" as h3s), then a quiet ink-soft "capisce?" underneath. No other copy.
-5. `#why` — 03 Why me: four numbered items (mono accent 01–04), 2×2 on desktop, stacked on phones, hairlines, no icons.
+5. `#why` — 03 Why me: four numbered items (accent 01–04, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
 7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
 Footer: Built with taste. (Obviously.) · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
-Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft).
+Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own
+line under the sentence it comments on and is never broken inside (inline only in the footer and captions).
 Section system: `.section` (padding `--space-section`, hairline on top) → `.section-head` (numbered `.label` above an
 `h2.section-head__title`, optional `__sub`). Text sections use `.container.split`: head in columns 1–6, `.split__body`
 in 8–12, `.split__full` spans all; stacks below 960px. Other primitives: `.prose`/`.lead`, `.aside`,

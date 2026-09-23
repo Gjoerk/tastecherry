@@ -20,7 +20,6 @@
   /* ---- Typography ------------------------------------------------------ */
   --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Newsreader", ui-serif, Georgia, serif;
-  --font-mono:  ui-monospace, "SF Mono", Menlo, monospace;
   --font-hand:  "Caveat", "Bradley Hand", cursive;  /* red-pen notes; subset to the Exhibit A switch */
 
   /* Fluid type scale (min @ 360px → max @ 1440px) */
