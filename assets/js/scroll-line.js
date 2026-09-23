@@ -3,9 +3,9 @@
 // height on screen, and when a section lands at the top (where the nav links
 // go) the end has just reached that section's title.
 //
-// Geometry: from each title it drops straight down the left margin, snakes
-// across the page in the gap between sections, and comes down onto the next
-// title from above-left of its label, so it stays out of the copy.
+// Geometry: one smooth, organic curve behind the content. Between titles it
+// swings across the page a few times (alternating sides, slightly irregular),
+// then comes in from the upper left and touches the next title.
 //
 // Drawing: one <path> per hop, so a scroll frame only repaints the hop that is
 // growing. How much is drawn is found from the scroll position by height (the
@@ -57,35 +57,43 @@ export function scrollLine(main, { start, titles }) {
 
     const s = start.getBoundingClientRect();
     const pts = [{ x: s.left + scrollX + s.width / 2 - origin.x, y: s.bottom + scrollY - origin.y + 10 }, ...titles.map((t) => touchPoint(t, origin))];
-    const margin = Math.min(...pts.slice(1).map((p) => p.x));
+    // Route: through a few swing points per hop, alternating sides of the page
+    // with a little irregularity, then in from the upper left onto the title.
+    const swings = [[0.8, 0.3, 0.66], [0.22, 0.72, 0.38], [0.74, 0.18, 0.58], [0.3, 0.84, 0.46]];
+    const wobble = (i, k) => Math.sin(i * 2.3 + k * 1.7) * 0.04;          // deterministic, organic
+    const route = [pts[0]];
+    const hopEnds = [];                                                    // index of each title in `route`
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i], dy = b.y - a.y;
+      swings[(i - 1) % swings.length].forEach((fx, k) => {
+        const fy = [0.26, 0.52, 0.76][k] + wobble(i, k) * 0.5;
+        route.push({ x: W * (fx + wobble(i, k)), y: a.y + dy * fy });
+      });
+      route.push({ x: b.x - 70, y: b.y - Math.min(150, dy * 0.12) });     // coming in from the upper left
+      route.push(b);
+      hopEnds.push(route.length - 1);
+    }
+
+    // Smooth curve through every point: cubic pieces whose handles follow the
+    // neighbours and scale with the gaps, so it bends softly without loops.
+    const P = (k) => route[Math.max(0, Math.min(route.length - 1, k))];
+    const ghost = (k) => (k < 0 ? { x: route[0].x, y: route[0].y - 60 } : k >= route.length ? { x: P(k).x + 60, y: P(k).y + 40 } : route[k]);
+    const piece = (k) => {
+      const p0 = ghost(k - 1), p1 = route[k], p2 = route[k + 1], p3 = ghost(k + 2);
+      const d1 = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+      const t1 = d1 / (Math.hypot(p2.x - p0.x, p2.y - p0.y) || 1) / 1.6;
+      const t2 = d1 / (Math.hypot(p3.x - p1.x, p3.y - p1.y) || 1) / 1.6;
+      const c1 = { x: p1.x + (p2.x - p0.x) * t1, y: p1.y + (p2.y - p0.y) * t1 };
+      const c2 = { x: p2.x - (p3.x - p1.x) * t2, y: p2.y - (p3.y - p1.y) * t2 };
+      return ` C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${p2.x} ${p2.y}`;
+    };
 
     hops = [];
-    for (let i = 1; i < pts.length; i++) {
-      const a = pts[i - 1], b = pts[i];
-      const section = titles[i - 1].closest("section") ?? titles[i - 1];
-      const secTop = pageOf(section).y - origin.y;                              // B's section starts here
-      const gapAbove = parseFloat(getComputedStyle(section).paddingTop) || 100;
-      const prev = section.previousElementSibling;
-      const gapBelow = prev ? parseFloat(getComputedStyle(prev).paddingBottom) || 100 : 100;
-      const label = titles[i - 1].previousElementSibling;
-      const labelTop = label ? pageOf(label).y - origin.y : b.y - 40;
-
-      let d = `M ${a.x} ${a.y}`, x = a.x, y = a.y;
-      // 1. to the margin (if A is centred) and down A's side
-      if (i > 1 && a.x > margin + 12) {
-        d += ` C ${a.x} ${a.y + 60}, ${margin} ${a.y + 20}, ${margin} ${a.y + 90}`;
-        x = margin; y = a.y + 90;
-      }
-      const turn = Math.max(y, secTop - gapBelow * 0.8);
-      if (turn > y) d += ` L ${x} ${turn}`;
-      // 2. across the gap between the sections
-      const m = { x: W * (i % 2 ? 0.72 : 0.6), y: Math.max(turn + 40, secTop + gapAbove * 0.1) };
-      const v = (m.y - turn) * 0.6;
-      d += ` C ${x} ${turn + v}, ${m.x} ${m.y - v}, ${m.x} ${m.y}`;
-      // 3. back left above the label, then a short drop onto the title
-      const e = { x: b.x - 14, y: Math.max(m.y + 30, labelTop - 16) };
-      d += ` C ${m.x} ${m.y + (e.y - m.y) * 0.6}, ${e.x} ${e.y - (e.y - m.y) * 0.6}, ${e.x} ${e.y}`;
-      d += ` C ${e.x} ${e.y + (b.y - e.y) * 0.5}, ${b.x - 6} ${b.y - 6}, ${b.x} ${b.y}`;
+    let from = 0;
+    for (const to of hopEnds) {
+      let d = `M ${route[from].x} ${route[from].y}`;
+      for (let k = from; k < to; k++) d += piece(k);
+      from = to;
 
       const el = document.createElementNS(SVG, "path");
       el.setAttribute("d", d);

@@ -27,7 +27,7 @@ assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio l
 assets/js/hero.js           hero word cycle (Taste/Sauce/Spice), drives the model swap
 assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
 assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
-assets/js/three/glasses.js  round glasses wireframe under the #cherry heading (transparent stage)
+assets/js/three/cupcake.js  cupcake + cherry wireframe under the #cherry heading (transparent stage)
                             strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (the diamonds)
@@ -64,40 +64,40 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    together (800 ms, eased in and out) and the next fade in; the word slot eases to each word's width so the line recentres smoothly.
    Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle, leaning (ridged collar,
    cone nozzle, stopper on a tether), chili turned 20° clockwise (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
-   starts on a given word (for reviewing a model). Screen readers get "Taste" only.
+   starts on a given word (for reviewing a model). Screen readers get "Taste" only. Hovering the word draws a thick,
+   wobbly marker underline under it (two passes, `pathLength` dash trick; hidden at rest).
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
    (100svh minus header), content centred as one group; the title size is capped by viewport height; the model canvas
    takes the cherries' proportions (fruit.js sets --model-aspect), is capped to the height left after title and
    `--note-block` (footnote), and reaches up behind the title by --overlap so the top overlaps "with".
    Checked at 375×667, 1024×720, 1440×900.
 2. `#problem` — 01 The problem: split (headline left, copy right) + "Exhibit A": a typical AI site (demo coffee roaster).
-   Centred switch "AI slop / What’s wrong" (sliding block; "What’s wrong" in the Caveat hand, subset via `&text=`,
-   plus a scribbled "(go on, click it)" on wide screens) → picture → caption. Switch, picture and caption always fit on
-   one screen: the picture's width comes from the viewport height (`--ratio`, `--chrome`). It shows clean first, then a
+   Centred switch "AI slop / What’s wrong?" ("AI slop" end is a pill, the sliding block morphs pill ↔ sharp) (sliding block; "What’s wrong" in the Caveat hand, subset via `&text=`,
+   plus a scribbled "(go on, click it)" on wide screens) → picture (full width of the text, phones too) → caption. It shows clean first, then a
    red pen sweeps over it (left-to-right clip, `--dur-draw`) 1.2 s after it is well in view; the switch or a click on
    the picture flips it (`exhibit.js`). Without JS the pen is just on. The pen is a transparent layer over the clean
    shot; desktop (1280×800) and phone (390 wide, cropped after the buttons) versions.
    Sources in `render/compare/`: `ai.html` (the only place the generic AI look is allowed) + `annotate.js` (rough.js
    marks + Caveat notes; the phone layout opens up gaps to write in). Rebuild: `node render/compare/shoot.js`
    (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-{clean,pen}-*.webp`.
-   If the phone image's size changes, update its width/height in index.html and `--ratio` in sections.css.
-3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows so a wireframe of round glasses (`glasses.js`)
-   fills the free space under the heading (hidden when stacked, ≤960px).
+   If the phone image's size changes, update its width/height in index.html.
+3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows so a wireframe cupcake with a cherry on top
+   (`cupcake.js`) fills the free space under the heading (hidden when stacked, ≤960px).
 4. `#approach` — centred h2 "It’s Simple", then rough stone → arrow → cut brilliant ("AI's Finished Product" /
    "My Finished Product" as h3s). No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
-5. `#why` — 03 Why me: four numbered items (accent 01–04, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
+5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
 7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
 Background: a thin accent line (`scroll-line.js`) starts under the hero footnote and grows with scroll; when a section
 lands at the top (scroll-padding, where the nav links go) its end touches that section's h2 (4px left of the first
-letter). It drops down the left margin, snakes across only in the gaps between sections and comes down onto each
-title from above-left of its label, so it never crosses copy (checked at 375, 1024, 1440). Behind everything
-(`main` isolates, z-index -1); reduced motion shows it fully drawn.
+letter). One smooth, organic curve behind all content: between titles it swings across the page a few times (slightly
+irregular), then comes in from the upper left onto the title. Its end rides at a steady height on screen (drawn amount
+found by height, one path per hop). Behind everything (`main` isolates, z-index -1); reduced motion shows it fully drawn.
 Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
 Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own
 line under the sentence it comments on and is never broken inside (inline only in the footer and captions).
-Section system: `.section` (padding `--space-section`, hairline on top) → `.section-head` (numbered `.label` above an
+Section system: `.section` (padding `--space-section`, hairline on top) → `.section-head` (`.label` with a big accent `.index` number, above an
 `h2.section-head__title`, optional `__sub`). Text sections use `.container.split`: head in columns 1–6, `.split__body`
 in 8–12, `.split__full` spans all; stacks below 960px. Other primitives: `.prose`/`.lead`, `.aside`,
 `.button--accent`, `.field`.

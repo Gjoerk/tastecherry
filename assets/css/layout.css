@@ -88,6 +88,9 @@
 }
 
 .index {
+  font-size: 1.75em;                        /* a big number next to the small caps label */
+  line-height: 1;
+  vertical-align: -0.12em;
   font-variant-numeric: tabular-nums;       /* plain zero, not the mono slashed one */
   font-weight: 600;
   letter-spacing: 0.02em;

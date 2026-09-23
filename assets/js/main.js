@@ -2,7 +2,7 @@
 // WebGL or JavaScript.
 //
 // Two ways to show a rotatable object:
-//   data-scene="fruit|glasses|rough|cut" real-time Three.js model
+//   data-scene="fruit|cupcake"             real-time Three.js model
 //   data-turntable="assets/img/…"        pre-rendered Blender frames (the diamonds)
 
 import { turntable } from "./turntable.js";
@@ -29,10 +29,10 @@ if (webgl) {
       .then(({ initFruit }) => initFruit(scene("fruit")))
       .catch((err) => { console.error("Fruit scene failed", err); return null; });
   }
-  if (scene("glasses") && getComputedStyle(scene("glasses")).display !== "none") {
-    import("./three/glasses.js")
-      .then(({ initGlasses }) => initGlasses(scene("glasses")))
-      .catch((err) => console.error("Glasses scene failed", err));
+  if (scene("cupcake") && getComputedStyle(scene("cupcake")).display !== "none") {
+    import("./three/cupcake.js")
+      .then(({ initCupcake }) => initCupcake(scene("cupcake")))
+      .catch((err) => console.error("Cupcake scene failed", err));
   }
   if (scene("rough") && scene("cut")) {
     import("./three/diamonds.js")
