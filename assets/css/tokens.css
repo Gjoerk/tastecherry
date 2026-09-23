@@ -66,14 +66,16 @@
   --dur-draw: 1400ms;       /* the red pen sweeping over Exhibit A */
 }
 
-/* Dark mode: black with white text; same accent, same models.
+/* Dark mode: the warm paper's night side — a charcoal with a faint cherry
+   undertone (reads as black, feels warm, lets the rubine glow), and the light
+   theme's paper as the text colour. Same accent, same models.
    Set on <html data-theme="dark"> by the header switch (theme.js). */
 :root[data-theme="dark"] {
-  --paper:      #000000;
-  --paper-deep: #111111;
-  --ink:        #F7F6F2;
-  --ink-soft:   #A9A9A6;
-  --rule:       #2E2E2D;
+  --paper:      #1C1718;
+  --paper-deep: #151112;
+  --ink:        #F3F1EB;
+  --ink-soft:   #ABA3A1;
+  --rule:       #3A3133;
   color-scheme: dark;
 }
 
