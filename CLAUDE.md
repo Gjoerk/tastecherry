@@ -50,7 +50,7 @@ One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- ki
 
 ## Current page (built step by step)
 
-Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel" (Caveat, ink-soft) (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
+Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel" signed under the end of the wordmark (Caveat, accent) (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
 
 1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe cherries rising behind the
    title (drag to rotate), footnote "*Taste is subjective. Mine just happens to be right." Nothing else in the hero.
