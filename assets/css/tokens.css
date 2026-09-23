@@ -21,6 +21,7 @@
   --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Newsreader", ui-serif, Georgia, serif;
   --font-mono:  ui-monospace, "SF Mono", Menlo, monospace;
+  --font-hand:  "Caveat", "Bradley Hand", cursive;  /* red-pen notes; subset to the Exhibit A switch */
 
   /* Fluid type scale (min @ 360px → max @ 1440px) */
   --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);  /* 13 → 14 */
@@ -56,6 +57,7 @@
   --col-gap:  clamp(1rem, 0.6rem + 1.5vw, 1.5rem);
 
   /* ---- Shape & motion -------------------------------------------------- */
+  --header-h: 4.25rem;
   --radius: 2px;             /* nearly square on purpose */
   --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
   --dur-fast: 180ms;

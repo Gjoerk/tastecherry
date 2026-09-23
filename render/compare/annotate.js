@@ -15,24 +15,23 @@
   if (mobile) {
     const style = document.createElement("style");
     style.textContent = `
-      header { padding-top: 118px; }
-      .pill { margin-bottom: 74px; }
-      h1 { margin-bottom: 76px; }
-      header p { margin-bottom: 78px; }
-      .cards { padding-top: 64px; }`;
+      header { padding-top: 124px; }
+      .pill { margin-bottom: 66px; }
+      h1 { margin-bottom: 78px; }
+      header p { margin-bottom: 70px; }
+      .cards { margin-top: 40px; }`;
     document.head.append(style);
   }
   const R = (sel) => document.querySelector(sel).getBoundingClientRect();
 
   const NOTES = mobile ? [
-    { marks: [["circle", ".logo"]], at: () => [22, R("nav").bottom + 52], rot: -4, text: "emoji + gradient\nlogo. bold choice." },
-    { marks: [["circle", "nav .btn"]], at: () => [252, R("nav").bottom + 56], rot: 4, text: "shitty\nbutton #1" },
+    { marks: [["circle", ".logo"]], at: () => [16, R("nav").bottom + 54], rot: -4, text: "emoji + gradient\nlogo. bold choice." },
+    { marks: [["circle", "nav .btn"]], at: () => [262, R("nav").bottom + 58], rot: 4, text: "shitty\nbutton #1" },
     { marks: [["circle", ".pill"]], at: () => [118, R(".pill").bottom + 50], rot: -3, text: "✨ = AI was here" },
-    { marks: [["wave", ["h1 span", "Perfect"]], ["wave", ["h1 span", "Cup"]]], at: () => [226, R("h1").bottom + 38], rot: 4, text: "gradient text.\nInter. again.", arrow: false },
+    { marks: [["wave", ["h1 span", "Perfect"]], ["wave", ["h1 span", "Cup"]]], at: () => [214, R("h1").bottom + 40], rot: 4, text: "gradient text.\nInter. again.", arrow: false },
     { marks: [["under", ["header p", "Elevate"]], ["under", ["header p", "seamless"]], ["under", ["header p", "Supercharge"]]],
-      at: () => [96, R("header p").bottom + 48], rot: -2, text: "buzzword bingo! 3/3", arrow: false },
-    { marks: [["box", ".ctas .btn"]], at: () => [80, R(".ctas").bottom + 50], rot: 3, text: "shitty buttons (rocket incl.)", arrow: false },
-    { marks: [["circle", ".card:first-child .icon"]], at: () => [34, R(".card").top - 22], rot: -2, text: "emoji in a rounded box. every. time.", arrow: false },
+      at: () => [80, R("header p").bottom + 44], rot: -2, text: "buzzword bingo! 3/3", arrow: false },
+    { marks: [["box", ".ctas .btn"]], at: () => [50, R(".ctas").bottom + 48], rot: 3, text: "shitty buttons (rocket incl.)", arrow: false },
   ] : [
     { marks: [["circle", ".logo"]], at: [52, 150], rot: -4, text: "emoji + gradient logo.\nbold choice." },
     { marks: [["circle", "nav .btn"]], at: [1040, 158], rot: 4, text: "shitty button #1" },
@@ -103,7 +102,7 @@
     }
   };
 
-  const size = mobile ? 21 : 29;
+  const size = mobile ? 24 : 29;       // phone shot is shown small, so bigger handwriting
   const note = ({ at, rot, text }) => {
     const [x, y] = typeof at === "function" ? at() : at;
     const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -152,5 +151,6 @@
     arrow(b, pick.m, n.tip && n.tip());
   }
   svg.id = "pen";
-  window.__shotHeight = Math.ceil(document.querySelector(".card h3").getBoundingClientRect().bottom + 24);
+  // phones: crop just below the last note (the buttons)
+  window.__shotHeight = Math.ceil(R(".ctas").bottom + 76);
 })();

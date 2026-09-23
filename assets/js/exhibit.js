@@ -12,11 +12,12 @@ export function exhibit(root) {
     for (const b of buttons) b.setAttribute("aria-pressed", String((b.dataset.show === "pen") === marked));
   };
   show(false);
+  const touch = () => { touched = true; root.classList.add("was-toggled"); };
 
   for (const b of buttons) {
-    b.addEventListener("click", () => { touched = true; show(b.dataset.show === "pen"); });
+    b.addEventListener("click", () => { touch(); show(b.dataset.show === "pen"); });
   }
-  frame.addEventListener("click", () => { touched = true; show(!root.classList.contains("is-marked")); });
+  frame.addEventListener("click", () => { touch(); show(!root.classList.contains("is-marked")); });
 
   // Give people a second to look at the clean version first
   const io = new IntersectionObserver(([entry]) => {

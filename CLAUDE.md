@@ -60,12 +60,16 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, s
    `--note-block` (footnote), and reaches up behind the title by --overlap so the leaf overlaps "with".
    Checked at 375×667, 1024×720, 1440×900.
 2. `#problem` — 01 The problem: split (headline left, copy right) + "Exhibit A": a typical AI site (demo coffee roaster).
-   It shows clean first ("Looks fine"), then a red pen sweeps over it (left-to-right clip, `--dur-draw`) 1.2 s after it
-   is well in view; a toggle (Looks fine / Red pen) or a click on the picture flips it (`exhibit.js`). Without JS the
-   pen is just on. The pen is a transparent layer over the clean shot; desktop and phone versions.
+   Centred switch "AI slop / What’s wrong" (sliding block; "What’s wrong" in the Caveat hand, subset via `&text=`,
+   plus a scribbled "(go on, click it)" on wide screens) → picture → caption. Switch, picture and caption always fit on
+   one screen: the picture's width comes from the viewport height (`--ratio`, `--chrome`). It shows clean first, then a
+   red pen sweeps over it (left-to-right clip, `--dur-draw`) 1.2 s after it is well in view; the switch or a click on
+   the picture flips it (`exhibit.js`). Without JS the pen is just on. The pen is a transparent layer over the clean
+   shot; desktop (1280×800) and phone (390 wide, cropped after the buttons) versions.
    Sources in `render/compare/`: `ai.html` (the only place the generic AI look is allowed) + `annotate.js` (rough.js
    marks + Caveat notes; the phone layout opens up gaps to write in). Rebuild: `node render/compare/shoot.js`
    (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-{clean,pen}-*.webp`.
+   If the phone image's size changes, update its width/height in index.html and `--ratio` in sections.css.
 3. `#cherry` — 02 Cherry on top: split layout.
 4. `#approach` — centred h2 "It’s Simple", then rough milky stone → arrow → cut brilliant ("AI's Finished Product" /
    "My Finished Product" as h3s), then a quiet ink-soft "capisce?" underneath. No other copy.
@@ -101,6 +105,7 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 
 - Familjen Grotesk (`--font-sans`) for everything: a grotesk with character (single-storey a), not the default everyone ships.
 - Newsreader italic (`<em>`) only for emphasis inside headlines. Both from Google Fonts.
+- Caveat (`--font-hand`) only for the red-pen bits of Exhibit A, loaded as a subset of just those letters.
 
 ## Design rules (anti-vibe-coded checklist)
 

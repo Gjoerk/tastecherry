@@ -219,45 +219,90 @@
 }
 
 /* ---- Problem: Exhibit A — clean AI site, then the red pen ----------- */
-/* The pen marks are a transparent layer over the clean screenshot; the
+/* Switch on top, picture, caption: all three fit on one screen. The picture
+   is sized from the viewport height (--ratio = its width / height).
+   The pen marks are a transparent layer over the clean screenshot; the
    sweep is a left-to-right clip, like a pen moving across the page. */
-.exhibit { margin: var(--space-4) 0 0; }
-.exhibit__bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3) var(--space-5);
-  margin-bottom: var(--space-3);
+.exhibit {
+  --ratio: 1.6;
+  --chrome: 9rem;                               /* switch + caption + gaps */
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  margin: var(--space-5) 0 0;
 }
-.exhibit__caption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-1) var(--space-3);
-  font-size: var(--step--1);
-}
+@media (max-width: 640px) { .exhibit { --ratio: 0.4918; } }   /* 780 × 1586 */
 
+/* Switch: two options, a solid block slides under the chosen one */
 .exhibit__toggle {
+  position: relative;
   display: none;                                /* needs JS; without it the pen is simply on */
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
   border: 1px solid var(--ink);
   border-radius: var(--radius);
+  background: var(--paper);
 }
-.js .exhibit__toggle { display: inline-flex; }
+.js .exhibit__toggle { display: grid; }
+.exhibit__toggle::before {                      /* the sliding block */
+  content: "";
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  width: calc(50% - 4px);
+  border-radius: var(--radius);
+  background: var(--ink);
+  transition: translate var(--dur-slow) var(--ease-out), background var(--dur-slow) var(--ease-out);
+}
+.exhibit.is-marked .exhibit__toggle::before { translate: 100% 0; background: var(--accent); }
 .exhibit__toggle button {
-  padding: 0.55em 1.1em;
-  font-size: var(--step--1);
-  font-weight: 500;
+  position: relative;                           /* above the block */
+  display: grid;
+  place-items: center;
+  min-width: 9.5rem;
+  min-height: 3.25rem;
+  padding: 0 var(--space-5);
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.01em;
   line-height: 1;
-  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  white-space: nowrap;
+  color: var(--ink);
+  transition: color var(--dur-slow) var(--ease-out);
 }
-.exhibit__toggle button + button { border-left: 1px solid var(--ink); }
-.exhibit__toggle [aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-.exhibit__toggle [data-show="pen"][aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
-.exhibit__toggle button:not([aria-pressed="true"]):hover { background: var(--paper-deep); }
+.exhibit__toggle [aria-pressed="true"] { color: var(--paper); }
+.exhibit__toggle button:not([aria-pressed="true"]):hover { color: var(--accent); }
+.exhibit__pen-label {
+  font-family: var(--font-hand);
+  font-size: 1.3em;                             /* the hand runs small */
+  font-weight: 600;
+  letter-spacing: 0;
+  rotate: -3deg;
+}
+/* a scribbled aside hanging off the switch; wide screens only */
+.exhibit__nudge {
+  position: absolute;
+  left: calc(100% + var(--space-4));
+  top: 50%;
+  translate: 0 -50%;
+  rotate: -6deg;
+  font-family: var(--font-hand);
+  font-size: var(--step-1);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--accent);
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+.exhibit.was-toggled .exhibit__nudge { opacity: 0; }     /* they got it */
+@media (max-width: 800px) { .exhibit__nudge { display: none; } }
+@media (max-width: 640px) {
+  .exhibit { --chrome: 10rem; }
+  .exhibit__toggle button { min-width: 7.5rem; min-height: 2.75rem; padding: 0 var(--space-4); font-size: var(--step-0); }
+}
 
 .exhibit__frame {
   position: relative;
+  width: clamp(14rem, calc((100svh - var(--header-h) - var(--chrome)) * var(--ratio)), 100%);
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   overflow: hidden;
@@ -272,6 +317,16 @@
 }
 .js .exhibit:not(.is-marked) .exhibit__pen { clip-path: inset(0 100% 0 0); }
 .js .exhibit.is-marked .exhibit__pen { clip-path: inset(0 0 0 0); }
+
+.exhibit__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--step--1);
+  text-align: center;
+}
 
 /* ---- Why me: 2×2 on desktop, stacked on phones, hairlines not boxes -- */
 .why {

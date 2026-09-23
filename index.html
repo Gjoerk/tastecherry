@@ -26,6 +26,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap">
 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&text=What%E2%80%99s%20wrong(go%20on%2C%20click%20it)&display=swap">
+
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
@@ -105,25 +107,24 @@
         <!-- A typical AI site: clean first, then the red pen sweeps over it (exhibit.js).
              Sources: render/compare/ai.html + annotate.js → shoot.js → finalize.py compare -->
         <figure class="exhibit split__full" data-exhibit data-reveal>
-          <figcaption class="exhibit__bar">
-            <p class="exhibit__caption"><span class="label">Exhibit A</span> A&nbsp;typical AI first draft. <span class="aside">(Names changed to protect the guilty.)</span></p>
-            <div class="exhibit__toggle" role="group" aria-label="Show Exhibit A">
-              <button type="button" data-show="clean" aria-pressed="false">Looks fine</button>
-              <button type="button" data-show="pen" aria-pressed="true">Red pen</button>
-            </div>
-          </figcaption>
+          <div class="exhibit__toggle" role="group" aria-label="Show Exhibit A as">
+            <button type="button" data-show="clean" aria-pressed="false">AI slop</button>
+            <button type="button" data-show="pen" aria-pressed="true"><span class="exhibit__pen-label">What’s wrong</span></button>
+            <span class="exhibit__nudge" aria-hidden="true">(go on, click&nbsp;it)</span>
+          </div>
           <div class="exhibit__frame">
             <picture>
-              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-clean-mobile.webp" width="780" height="1982">
+              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-clean-mobile.webp" width="780" height="1586">
               <img class="exhibit__img" src="assets/img/compare/ai-clean-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
                    alt="A coffee roaster’s website straight from AI: purple-to-blue gradient logo, centred headline “Unlock the Perfect Cup of Coffee”, gradient buttons, three rounded cards with emoji icons.">
             </picture>
             <picture class="exhibit__pen">
-              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-pen-mobile.webp" width="780" height="1982">
+              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-pen-mobile.webp" width="780" height="1586">
               <img class="exhibit__img" src="assets/img/compare/ai-pen-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
-                   alt="Red-pen notes on it: “emoji + gradient logo. bold choice. (it isn’t)”, “shitty button #1”, “sparkles = AI was here”, “gradient text. in Inter. again.”, “buzzword bingo! 3/3”, “shitty buttons (rocket included, free)”, “3 rounded cards, drop shadows, emoji in a box. every. time.”">
+                   alt="Red-pen notes on it: “emoji + gradient logo. bold choice.”, “shitty button #1”, “sparkles = AI was here”, “gradient text. in Inter. again.”, “buzzword bingo! 3/3”, “shitty buttons (rocket included, free)”, “3 rounded cards, drop shadows, emoji in a box. every. time.”">
             </picture>
           </div>
+          <figcaption class="exhibit__caption"><span class="label">Exhibit A</span> A&nbsp;typical AI first draft. <span class="aside">(Names changed to protect the guilty.)</span></figcaption>
         </figure>
       </div>
     </section>
