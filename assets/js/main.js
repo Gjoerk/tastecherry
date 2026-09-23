@@ -2,13 +2,13 @@
 // WebGL or JavaScript.
 //
 // Two ways to show a rotatable object:
-//   data-scene="fruit|cupcake"             real-time Three.js model
+//   data-scene="fruit|cake"                real-time Three.js model
 //   data-turntable="assets/img/…"        pre-rendered Blender frames (the diamonds)
 
 import { turntable } from "./turntable.js";
 import { exhibit } from "./exhibit.js";
 import { heroWords } from "./hero.js";
-import { scrollLine } from "./scroll-line.js";
+import { sectionMark } from "./section-mark.js";
 
 document.querySelectorAll("[data-turntable]").forEach(turntable);
 document.querySelectorAll("[data-exhibit]").forEach(exhibit);
@@ -29,10 +29,10 @@ if (webgl) {
       .then(({ initFruit }) => initFruit(scene("fruit")))
       .catch((err) => { console.error("Fruit scene failed", err); return null; });
   }
-  if (scene("cupcake") && getComputedStyle(scene("cupcake")).display !== "none") {
-    import("./three/cupcake.js")
-      .then(({ initCupcake }) => initCupcake(scene("cupcake")))
-      .catch((err) => console.error("Cupcake scene failed", err));
+  if (scene("cake") && getComputedStyle(scene("cake")).display !== "none") {
+    import("./three/cake.js")
+      .then(({ initCake }) => initCake(scene("cake")))
+      .catch((err) => console.error("Cake scene failed", err));
   }
   if (scene("rough") && scene("cut")) {
     import("./three/diamonds.js")
@@ -45,11 +45,8 @@ if (webgl) {
 const hero = document.querySelector(".hero");
 if (hero) heroWords(hero, heroModels);
 
-// Background line that draws itself from title to title as you scroll
-scrollLine(document.querySelector("main"), {
-  start: document.querySelector(".hero__note"),
-  titles: [...document.querySelectorAll("main > .section h2")],
-});
+// Asterisk that marks the current section, next to its title
+sectionMark(document.querySelector("main"), [...document.querySelectorAll("main > .section h2")]);
 
 // Header hairline once the page is scrolled
 const header = document.querySelector("[data-header]");

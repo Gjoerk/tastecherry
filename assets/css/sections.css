@@ -64,21 +64,16 @@
 .site-nav a:hover { color: var(--ink); }
 .site-nav .site-nav__cta { color: var(--accent); }
 
-/* ---- Scroll line: behind everything in main (scroll-line.js) ---------- */
-main { position: relative; isolation: isolate; }
-.scroll-line {
+/* ---- Section mark: the asterisk beside the current section's title ------ */
+main { position: relative; }
+.section-mark {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 2;
+  color: var(--accent);
   pointer-events: none;
-  overflow: visible;
-}
-.scroll-line path {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  stroke-linecap: round;
+  transition: transform 1000ms var(--ease-in-out), opacity 400ms var(--ease-out);
 }
 
 /* ---- Hero: title + cherries, always exactly one screen tall ---------- */
@@ -130,7 +125,7 @@ main { position: relative; isolation: isolate; }
 .hero__underline {
   position: absolute;
   left: -3%;
-  bottom: -0.02em;
+  bottom: 0.07em;                               /* tucked up close under the word */
   width: 106%;
   height: 0.2em;
   overflow: visible;
@@ -138,7 +133,7 @@ main { position: relative; isolation: isolate; }
 }
 .hero__underline path {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--marker);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 4;                              /* in the svg's units: scales with the word */
@@ -236,31 +231,63 @@ main { position: relative; isolation: isolate; }
 }
 .turntable.is-ready canvas { opacity: 1; }
 
-/* ---- Cherry on top: a cupcake under the heading ----------------------- */
-/* The copy spans both rows on the right; the cupcake fills the free space
-   under the heading on the left. Phones (stacked) have no such space. */
+/* ---- Cherry on top: a cake under the heading ---------------------------- */
+/* The copy spans both rows on the right; the cake fills the free space under
+   the heading on the left, its plate level with the last line of copy.
+   Phones (stacked) have no such space. */
+#cherry .section-head { grid-row: 1; }
 #cherry .split__body { grid-row: 1 / span 2; }
 .turntable.cherry__model {
   grid-column: 1 / span 6;
-  grid-row: 2;
-  width: min(100%, 30rem);
-  aspect-ratio: 5 / 4;
+  grid-row: 1 / span 2;                         /* same rows as the copy… */
+  align-self: end;                              /* …so its bottom is the copy's bottom */
+  width: min(100%, 24rem);
+  aspect-ratio: 16 / 10;                        /* cake.js sets the exact drawing proportions */
   border-radius: 0;
-  margin-top: var(--space-5);
 }
 @media (max-width: 960px) {
-  #cherry .split__body { grid-row: auto; }
+  #cherry .section-head, #cherry .split__body { grid-row: auto; }
   .turntable.cherry__model { display: none; }
 }
 
 /* ---- Refine: rough → cut diamond ----------------------------------- */
 .refine__title {
+  position: relative;
+  width: fit-content;
+  margin-inline: auto;
   margin-bottom: var(--space-7);
   text-align: center;
   font-size: var(--step-3);
   line-height: 1.06;
   letter-spacing: var(--tracking-tight);
 }
+/* "It’s Simple": a thick accent brush stroke underneath, brushed in when
+   the title scrolls into view */
+.refine__brush {
+  position: absolute;
+  left: -4%;
+  bottom: -0.1em;
+  width: 108%;
+  height: 0.3em;
+  overflow: visible;
+  pointer-events: none;
+}
+.refine__brush path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 700ms cubic-bezier(0.25, 0.8, 0.3, 1) 250ms;
+}
+.refine__brush path + path { stroke-width: 2.2; opacity: 0.5; transition-delay: 380ms; }
+.js .refine__title.is-visible .refine__brush path,
+html:not(.js) .refine__brush path { stroke-dashoffset: 0; }
+
+/* scare quotes around AI's "Finished" */
+.scare { color: var(--accent); font-family: var(--font-serif); font-style: italic; }
+
 .refine__stones {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(64px, 12vw, 180px) minmax(0, 1fr);
@@ -270,6 +297,12 @@ main { position: relative; isolation: isolate; }
 }
 
 .stone { margin: 0; }
+/* Side by side, the rough stone is scaled down so both shadows sit at the same
+   height (measured from the renders: shadow centres at 81% vs 61% of the frame;
+   75% scale about a point 1.6% from the top lines them up). */
+@media (min-width: 801px) {
+  .stone:first-child .turntable { scale: 0.75; transform-origin: 50% 1.6%; }
+}
 .stone .turntable { width: 100%; max-width: 420px; margin-inline: auto; }
 .stone figcaption { margin-top: var(--space-4); text-align: center; }
 .stone__title {
@@ -529,6 +562,16 @@ main { position: relative; isolation: isolate; }
 @media (max-width: 560px) {
   .form { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---- Outro: the last word ------------------------------------------------ */
+.outro__line {
+  font-size: var(--step-5);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  max-width: 14ch;
+}
+.outro__line em { color: var(--accent); }
 
 /* ---- Footer ---------------------------------------------------------- */
 .site-footer {

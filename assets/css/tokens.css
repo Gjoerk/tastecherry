@@ -16,6 +16,7 @@
      per section. Contrast on --paper ≈ 5:1 (AA for text). */
   --accent:       #CE0058;
   --accent-ink:   #FFFFFF;   /* text placed on top of --accent */
+  --marker:       #2EE86B;   /* neon green highlighter: only the hero word's hover underline */
 
   /* ---- Typography ------------------------------------------------------ */
   --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;

@@ -27,11 +27,11 @@ assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio l
 assets/js/hero.js           hero word cycle (Taste/Sauce/Spice), drives the model swap
 assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
 assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
-assets/js/three/cupcake.js  cupcake + cherry wireframe under the #cherry heading (transparent stage)
+assets/js/three/cake.js     layer cake + cherry wireframe under the #cherry heading (transparent stage)
+assets/js/section-mark.js   accent asterisk after the current section's h2; flies (with a turn) to the next one
                             strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (the diamonds)
-assets/js/scroll-line.js    background line that draws itself from section title to section title while scrolling
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
 assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
@@ -65,7 +65,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle, leaning (ridged collar,
    cone nozzle, stopper on a tether), chili turned 20° clockwise (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
    starts on a given word (for reviewing a model). Screen readers get "Taste" only. Hovering the word draws a thick,
-   wobbly marker underline under it (two passes, `pathLength` dash trick; hidden at rest).
+   wobbly neon-green marker underline under it (`--marker`; two passes, `pathLength` dash trick; hidden at rest).
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
    (100svh minus header), content centred as one group; the title size is capped by viewport height; the model canvas
    takes the cherries' proportions (fruit.js sets --model-aspect), is capped to the height left after title and
@@ -81,19 +81,19 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    marks + Caveat notes; the phone layout opens up gaps to write in). Rebuild: `node render/compare/shoot.js`
    (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-{clean,pen}-*.webp`.
    If the phone image's size changes, update its width/height in index.html.
-3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows so a wireframe cupcake with a cherry on top
-   (`cupcake.js`) fills the free space under the heading (hidden when stacked, ≤960px).
-4. `#approach` — centred h2 "It’s Simple", then rough stone → arrow → cut brilliant ("AI's Finished Product" /
-   "My Finished Product" as h3s). No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
+3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows and a wireframe layer cake with a cherry on top
+   (`cake.js`, canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
+   the last line of copy (hidden when stacked, ≤960px).
+4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
+   stone → arrow → cut brilliant ("AI's “Finished” Product" with accent serif quotes / "My Finished Product" as h3s).
+   Side by side, the rough stone is scaled to 75% so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
 7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
-Background: a thin accent line (`scroll-line.js`) starts under the hero footnote and grows with scroll; when a section
-lands at the top (scroll-padding, where the nav links go) its end touches that section's h2 (4px left of the first
-letter). One smooth, organic curve behind all content: between titles it swings across the page a few times (slightly
-irregular; one swing on short hops), then comes in from the upper left onto the title. Scroll sets how far along the
-curve it should be (by length); the tip eases there each frame (`EASE`) so it glides like a pencil, no jumps. One path
-per hop; hops not started are hidden (a round cap would leave a dot). Behind everything (`main` isolates, z-index -1); reduced motion shows it fully drawn.
+8. `.outro` — the last word, big: "Let’s create *meaningful* websites." (em in accent).
+Section mark: an accent asterisk (`#asterisk`) sits just after the current section's h2 (raised, like a footnote
+mark); when the active section changes (its top passes 40% of the screen) it flies there with one turn
+(`section-mark.js`). Hidden over the hero; reduced motion jumps.
 Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
 Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own
@@ -118,6 +118,7 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 
 - `--paper` #F3F1EB off-white background
 - `--ink` #0F0F0E text
+- `--marker` #2EE86B neon green: only the hero word's hover underline.
 - `--accent` #CE0058 Rubine. Compare others with `?accent=cobalt|verdigris|oxide`.
 
 ## Type
