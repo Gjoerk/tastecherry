@@ -92,6 +92,23 @@
 }
 .hero__title em { letter-spacing: -0.03em; color: var(--accent); }
 
+/* The swapping word: all words share one grid cell. hero.js sets the slot to
+   the current word's width (in em, so it scales with the title) and it eases to
+   the next word's width while both are invisible: the line recentres smoothly. */
+.hero__words {
+  display: inline-grid;
+  justify-items: start;
+  transition: width 450ms var(--ease-out);
+}
+.hero__word {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 550ms var(--ease-out);     /* = FADE in hero.js / fruit.js */
+}
+.hero__word.is-active { opacity: 1; }
+.hero__note-word { transition: opacity 550ms var(--ease-out); }
+.hero__note-word.is-out { opacity: 0; }
+
 /* Six-petal asterisk: bigger, hung off the top of "Taste", turning slowly */
 .hero__mark {
   display: inline-block;

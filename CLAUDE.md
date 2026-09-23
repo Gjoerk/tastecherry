@@ -23,7 +23,10 @@ assets/css/layout.css       container, 12-col grid, labels, buttons, links, medi
 assets/css/sections.css     one block per section, in page order (+ turntable styles)
 assets/js/main.js           entry: boots data-scene (Three.js) / data-turntable (frames), header, reveal
 assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio lighting, dragRotate()
-assets/js/three/fruit.js    hero scene (cherries);  cherry.js = wireframe cherries;  strawberry.js = unused alt (solid + wireframe)
+assets/js/hero.js           hero word cycle (Taste/Sauce/Zest/Spice), drives the model swap
+assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
+assets/js/three/hero-models.js  ketchup bottle, lemon + slice, chili;  wire.js = shared wireframe builder + setFade
+                            strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js rough milky stone + cut brilliant scenes;  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (used once Blender renders exist)
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
@@ -52,12 +55,17 @@ One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- ki
 
 Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel" signed under the end of the wordmark (Caveat, accent) (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
 
-1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe cherries rising behind the
+1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe model rising behind the
    title (drag to rotate), footnote "*Taste is subjective. Mine just happens to be right." Nothing else in the hero.
+   The word cycles Taste → Sauce → Zest → Spice (`hero.js`, 4.2 s each): word, footnote's first word and model fade out
+   together (550 ms) and the next fade in; the word slot eases to each word's width so the line recentres smoothly.
+   Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), ketchup bottle, lemon + slice,
+   chili (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=zest` etc.
+   starts on a given word (for reviewing a model). Screen readers get "Taste" only.
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
-   (100svh minus header), content centred as one group; the title size is capped by viewport height; the cherry canvas
-   takes the drawing's proportions (fruit.js sets --model-aspect), is capped to the height left after title and
-   `--note-block` (footnote), and reaches up behind the title by --overlap so the leaf overlaps "with".
+   (100svh minus header), content centred as one group; the title size is capped by viewport height; the model canvas
+   takes the cherries' proportions (fruit.js sets --model-aspect), is capped to the height left after title and
+   `--note-block` (footnote), and reaches up behind the title by --overlap so the top overlaps "with".
    Checked at 375×667, 1024×720, 1440×900.
 2. `#problem` — 01 The problem: split (headline left, copy right) + "Exhibit A": a typical AI site (demo coffee roaster).
    Centred switch "AI slop / What’s wrong" (sliding block; "What’s wrong" in the Caveat hand, subset via `&text=`,

@@ -7,6 +7,7 @@
 
 import { turntable } from "./turntable.js";
 import { exhibit } from "./exhibit.js";
+import { heroWords } from "./hero.js";
 
 document.querySelectorAll("[data-turntable]").forEach(turntable);
 document.querySelectorAll("[data-exhibit]").forEach(exhibit);
@@ -18,13 +19,14 @@ const webgl = (() => {
   } catch { return false; }
 })();
 
+let heroModels = null;   // resolves to { show(i) } once the hero 3D is up
 if (webgl) {
   const scene = (name) => document.querySelector(`[data-scene=${name}]`);
 
   if (scene("fruit")) {
-    import("./three/fruit.js")
+    heroModels = import("./three/fruit.js")
       .then(({ initFruit }) => initFruit(scene("fruit")))
-      .catch((err) => console.error("Fruit scene failed", err));
+      .catch((err) => { console.error("Fruit scene failed", err); return null; });
   }
   if (scene("rough") && scene("cut")) {
     import("./three/diamonds.js")
@@ -32,6 +34,10 @@ if (webgl) {
       .catch((err) => console.error("Diamond scenes failed", err));
   }
 }
+
+// Hero: Taste → Sauce → Zest → Spice (word, footnote and model together)
+const hero = document.querySelector(".hero");
+if (hero) heroWords(hero, heroModels);
 
 // Header hairline once the page is scrolled
 const header = document.querySelector("[data-header]");
