@@ -6,8 +6,10 @@
 //   data-turntable="assets/img/…"        pre-rendered Blender frames (render/ pipeline)
 
 import { turntable } from "./turntable.js";
+import { compare } from "./compare.js";
 
 document.querySelectorAll("[data-turntable]").forEach(turntable);
+document.querySelectorAll("[data-compare]").forEach(compare);
 
 const webgl = (() => {
   try {

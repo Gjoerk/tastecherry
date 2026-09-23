@@ -24,7 +24,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap">
 
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
@@ -102,21 +102,31 @@
           <p>Same fonts. Same gradients. Same “Unlock your potential.” Everything looks good, and everything looks the same. No character, no love. <span class="aside">(Honestly? It looks like shit once you’ve seen a few.)</span></p>
         </div>
 
-        <!-- The generic look, crossed out -->
-        <ul class="samey split__full" aria-label="The same three things on every AI website" data-reveal>
-          <li class="samey__item">
-            <span class="samey__font" aria-hidden="true">Aa</span>
-            <span class="label">Same font</span>
-          </li>
-          <li class="samey__item">
-            <span class="samey__gradient" aria-hidden="true"></span>
-            <span class="label">Same gradient</span>
-          </li>
-          <li class="samey__item">
-            <span class="samey__headline" aria-hidden="true">Unlock your potential.</span>
-            <span class="label">Same headline</span>
-          </li>
-        </ul>
+        <!-- Before/after: the same demo site straight from the AI vs. after my pass.
+             Sources: render/compare/*.html → shoot.js → finalize.py compare -->
+        <figure class="compare split__full" data-compare data-reveal>
+          <div class="compare__frame">
+            <picture>
+              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-mobile.webp" width="780" height="1560">
+              <img class="compare__img" src="assets/img/compare/ai-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
+                   alt="A coffee roaster’s site straight from AI: purple-to-blue gradient, centred headline “Unlock the Perfect Cup of Coffee”, emoji icons on rounded cards.">
+            </picture>
+            <picture class="compare__after">
+              <source media="(max-width: 640px)" srcset="assets/img/compare/polished-mobile.webp" width="780" height="1560">
+              <img class="compare__img" src="assets/img/compare/polished-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
+                   alt="The same site after my pass: warm paper background, serif headline “Roasted on Tuesday. In your cup by Friday.”, this week’s coffees listed with prices.">
+            </picture>
+            <div class="compare__handle" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg>
+            </div>
+            <input class="compare__range" type="range" min="0" max="100" value="50"
+                   aria-label="Compare: left is straight from the AI, right is after my pass">
+          </div>
+          <figcaption class="compare__labels">
+            <span class="label">Straight from the AI</span>
+            <span class="label">After my pass</span>
+          </figcaption>
+        </figure>
       </div>
     </section>
 

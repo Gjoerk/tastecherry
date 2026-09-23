@@ -18,7 +18,7 @@
   --accent-ink:   #FFFFFF;   /* text placed on top of --accent */
 
   /* ---- Typography ------------------------------------------------------ */
-  --font-sans:  "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Newsreader", ui-serif, Georgia, serif;
   --font-mono:  ui-monospace, "SF Mono", Menlo, monospace;
 
@@ -34,7 +34,7 @@
   --leading-tight: 1.02;
   --leading-snug:  1.2;
   --leading-body:  1.55;
-  --tracking-tight: -0.035em;
+  --tracking-tight: -0.025em;
   --tracking-label: 0.08em;
 
   /* ---- Space (8pt-ish, fluid at the large end) ------------------------- */
@@ -60,13 +60,6 @@
   --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
   --dur-fast: 180ms;
   --dur-slow: 700ms;
-}
-
-/* The generic "AI site" look, used ONLY inside the crossed-out specimen in
-   #problem. Never use these anywhere else. */
-:root {
-  --cliche-from: #7C5CFF;
-  --cliche-to:   #3BA7FF;
 }
 
 /* Accent candidates for comparison — try them with ?accent=cobalt etc.

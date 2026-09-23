@@ -70,7 +70,7 @@
   font-size: var(--title-size);
   font-weight: 500;
   line-height: 0.95;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   text-align: center;
   color: var(--ink);
 }
@@ -218,62 +218,86 @@
   .refine__arrow svg { width: 72px; transform: rotate(90deg); }
 }
 
-/* ---- Problem: the generic look, crossed out ------------------------- */
-.samey {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--col-gap);
-  margin-top: var(--space-4);
-}
-.samey__item {
+/* ---- Problem: before/after slider ----------------------------------- */
+/* Two screenshots stacked; the top one (after) is clipped at --pos. */
+.compare { margin: var(--space-4) 0 0; }
+.compare__frame {
+  --pos: 50%;
   position: relative;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: var(--space-4);
-  min-height: clamp(8.5rem, 6rem + 6vw, 11.5rem);
-  padding: var(--space-5);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: var(--radius);
-  overflow: hidden;
+  background: var(--paper-deep);
+  cursor: ew-resize;
+  touch-action: pan-y;                        /* vertical page scroll still works on phones */
+  user-select: none;
+  -webkit-user-select: none;
 }
-/* one hairline stroke in the accent, corner to corner */
-.samey__item::after {
-  content: "";
+.compare__frame picture,
+.compare__img {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top right,
-    transparent calc(50% - 0.75px), var(--accent) 50%, transparent calc(50% + 0.75px));
+  width: 100%;
+  height: 100%;
+}
+.compare__img { object-fit: cover; object-position: top; pointer-events: none; }
+.compare__after { clip-path: inset(0 0 0 var(--pos)); }
+
+.compare__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 1px;
+  background: var(--paper);
+  box-shadow: 0 0 0 0.5px color-mix(in srgb, var(--ink) 25%, transparent);
   pointer-events: none;
 }
-.samey__font {
-  align-self: center;
-  font-family: system-ui, sans-serif;           /* the default everyone ships */
-  font-size: var(--step-4);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--ink-soft);
+.compare__handle svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.75rem;
+  height: 2.75rem;
+  max-width: none;                            /* base.css caps svg at the 1px line */
+  padding: 0.6rem;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--ink);
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 1.5;
+  transition: scale var(--dur-fast) var(--ease-out);
 }
-.samey__gradient {
-  align-self: center;
-  height: clamp(2.5rem, 2rem + 2vw, 3.5rem);
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--cliche-from), var(--cliche-to));
-  opacity: 0.55;
+.compare__frame:hover .compare__handle svg,
+.compare.is-dragging .compare__handle svg { scale: 1.08; }
+
+/* The range input is the keyboard / screen-reader control; pointer drags are
+   handled on the frame by compare.js so a tap anywhere works on touch too. */
+.compare__range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
 }
-.samey__headline {
-  align-self: center;
-  font-family: system-ui, sans-serif;
-  font-size: var(--step-1);
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--ink-soft);
+.compare__frame:has(.compare__range:focus-visible) .compare__handle svg {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.compare__labels {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
 }
 
 @media (max-width: 640px) {
-  .samey { grid-template-columns: minmax(0, 1fr); }
-  .samey__item { min-height: 0; grid-template-columns: 1fr auto; grid-template-rows: auto; align-items: center; }
-  .samey__font { font-size: var(--step-2); }
-  .samey__gradient { height: 1.75rem; }
+  .compare__frame { aspect-ratio: 9 / 16; }
 }
 
 /* ---- Why me: 2×2 on desktop, stacked on phones, hairlines not boxes -- */

@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- The same demo coffee roaster after the tastecherry pass: one type pairing,
+     a real grid, hairlines instead of cards, specific copy. Screenshotted by shoot.js. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halden Roastery</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Schibsted+Grotesk:wght@400;500&display=swap">
+<style>
+  :root { --paper: #EEE8DD; --ink: #1D1814; --soft: #6A5F55; --rule: #CFC5B6; --accent: #B4471C; }
+  * { box-sizing: border-box; margin: 0; }
+  p { text-wrap: pretty; }
+  body { font-family: "Schibsted Grotesk", sans-serif; color: var(--ink); background: var(--paper); font-size: 16px; }
+  .wrap { padding: 0 56px; }
+  nav { display: flex; align-items: baseline; justify-content: space-between; padding: 26px 0 22px; border-bottom: 1px solid var(--rule); }
+  .logo { font-family: Fraunces, serif; font-size: 26px; font-weight: 400; letter-spacing: -.02em; }
+  .logo i { color: var(--accent); }
+  nav ul { display: flex; gap: 36px; list-style: none; padding: 0; font-size: 15px; color: var(--soft); }
+  nav ul li:last-child { color: var(--ink); }
+  .hero { display: grid; grid-template-columns: 7fr 5fr; gap: 64px; padding: 64px 0 56px; align-items: end; }
+  .kicker { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); margin-bottom: 22px; }
+  h1 { font-family: Fraunces, serif; font-weight: 300; font-size: 84px; line-height: .98; letter-spacing: -.035em; font-variation-settings: "opsz" 144; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .intro { margin-top: 28px; font-size: 19px; line-height: 1.5; max-width: 30em; color: var(--soft); }
+  .link { display: inline-block; margin-top: 26px; font-weight: 500; border-bottom: 1px solid var(--ink); padding-bottom: 3px; }
+  .week h2 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); font-weight: 400; display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
+  .coffee { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 16px 0; border-bottom: 1px solid var(--rule); }
+  .coffee b { font-family: Fraunces, serif; font-weight: 400; font-size: 23px; letter-spacing: -.01em; }
+  .coffee span { font-size: 15px; font-variant-numeric: tabular-nums; align-self: center; }
+  .coffee small { grid-column: 1 / -1; font-size: 14px; color: var(--soft); }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule); }
+  .facts p { padding: 22px 32px 30px 0; font-size: 15px; line-height: 1.5; color: var(--soft); }
+  .facts p + p { padding-left: 32px; border-left: 1px solid var(--rule); }
+  .facts strong { display: block; color: var(--ink); font-weight: 500; margin-bottom: 4px; }
+  @media (max-width: 700px) {
+    .wrap { padding: 0 22px; }
+    nav ul li:not(:last-child) { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 36px; padding: 40px 0 36px; }
+    h1 { font-size: 48px; }
+    .intro { font-size: 17px; margin-top: 20px; }
+    .facts { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav><span class="logo">Halden<i>.</i></span><ul><li>Coffee</li><li>Subscriptions</li><li>Our farms</li><li>Shop</li></ul></nav>
+    <section class="hero">
+      <div>
+        <p class="kicker">Small-batch roastery · Hamburg</p>
+        <h1>Roasted on Tuesday. In your cup by <em>Friday.</em></h1>
+        <p class="intro">Six farms we know by name, roasted in 12&nbsp;kg batches every week. Nothing sits on a&nbsp;shelf.</p>
+        <a class="link">Shop this week’s coffee →</a>
+      </div>
+      <div class="week">
+        <h2><span>This week</span><span>Roast no. 214</span></h2>
+        <div class="coffee"><b>Kiambu AA</b><span>€ 16</span><small>Kenya · blackcurrant, grapefruit, cane sugar</small></div>
+        <div class="coffee"><b>Finca La Loma</b><span>€ 14</span><small>Colombia · milk chocolate, red apple</small></div>
+        <div class="coffee"><b>Halden House</b><span>€ 12</span><small>Brazil &amp; Ethiopia · hazelnut, cocoa, for milk</small></div>
+      </div>
+    </section>
+    <section class="facts">
+      <p><strong>Roasted weekly</strong>Every Tuesday, shipped Wednesday.</p>
+      <p><strong>Direct trade</strong>We pay 2–3× the market price and visit every&nbsp;farm.</p>
+      <p><strong>Free shipping</strong>On orders from € 30 in Germany.</p>
+    </section>
+  </div>
+</body>
+</html>

@@ -5,6 +5,7 @@
 
 python3 render/finalize.py title
 python3 render/finalize.py seq strawberry|rough|cut
+python3 render/finalize.py compare   (screenshots from render/compare/shoot.js)
 """
 
 import os
@@ -50,8 +51,22 @@ def seq(name, shadow=0.6):
     print(name, len(files), "frames")
 
 
+def compare():
+    """Before/after screenshots for the slider in #problem (opaque, so plain WebP)."""
+    src = os.path.join(RAW, "compare")
+    for name in ("ai", "polished"):
+        for size, width in (("desktop", 2000), ("mobile", 780)):
+            im = Image.open(os.path.join(src, f"{name}-{size}.png")).convert("RGB")
+            if im.width > width:
+                im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
+            save_webp(im, os.path.join(DST, "compare", f"{name}-{size}.webp"), 84)
+            print(f"{name}-{size}", im.size)
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "title":
         title()
+    elif sys.argv[1] == "compare":
+        compare()
     else:
         seq(sys.argv[2])

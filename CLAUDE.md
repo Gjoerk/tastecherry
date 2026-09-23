@@ -26,6 +26,8 @@ assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio l
 assets/js/three/fruit.js    hero scene (cherries);  cherry.js = wireframe cherries;  strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js rough milky stone + cut brilliant scenes;  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (used once Blender renders exist)
+assets/js/compare.js        before/after slider in #problem
+assets/img/compare/         slider screenshots (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
 assets/img/turntable/<name>/000–059.webp   (not rendered yet)
 
@@ -35,7 +37,8 @@ render/                     Blender pipeline (not needed at runtime; exclude fro
   title.py                  voxel-fused, smoothed ceramic letters; exposure calibrated to --paper
   strawberry.py             procedural fruit: Poisson-disk seeds, dimples, calyx, baked boolean bite, flesh shader
   stones.py                 kind=rough (frosted skin + milky volume) | kind=cut (57-facet brilliant, dispersion)
-  finalize.py               softens shadow-catcher shadows, writes WebP into assets/img
+  finalize.py               softens shadow-catcher shadows, writes WebP into assets/img (+ `compare` screenshots)
+  compare/                  demo site for the #problem slider: ai.html, polished.html, shoot.js
   inspect_render.py         composites a render over --paper and reports the dominant face colour
   fonts/                    TTFs for the title (Blender can't read WOFF)
   out/                      raw PNG frames + build.log (scratch)
@@ -56,8 +59,12 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, s
    takes the drawing's proportions (fruit.js sets --model-aspect), is capped to the height left after title and
    `--note-block` (footnote), and reaches up behind the title by --overlap so the leaf overlaps "with".
    Checked at 375×667, 1024×720, 1440×900.
-2. `#problem` — 01 The problem: split (headline left, copy right) + crossed-out specimen row (same font / gradient / headline;
-   the only place `--cliche-*` colours may appear).
+2. `#problem` — 01 The problem: split (headline left, copy right) + a before/after slider (`.compare`, `compare.js`):
+   the same demo coffee-roaster site straight from the AI (left) vs. after my pass (right). Drag anywhere, arrow keys
+   on the hidden range input; one intro sweep when it scrolls into view (off with reduced motion). The demo pages
+   live in `render/compare/` (`ai.html` is the only place the generic AI look is allowed). To change them:
+   `node render/compare/shoot.js` (needs `npm i playwright`) then `python3 render/finalize.py compare`
+   → `assets/img/compare/{ai,polished}-{desktop,mobile}.webp`.
 3. `#cherry` — 02 Cherry on top: split layout.
 4. `#approach` — centred h2 "It’s Simple", then rough milky stone → arrow → cut brilliant ("AI's Finished Product" /
    "My Finished Product" as h3s), then a quiet ink-soft "capisce?" underneath. No other copy.
@@ -88,6 +95,11 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 - `--paper` #F3F1EB off-white background
 - `--ink` #0F0F0E text
 - `--accent` #CE0058 Rubine. Compare others with `?accent=cobalt|verdigris|oxide`.
+
+## Type
+
+- Familjen Grotesk (`--font-sans`) for everything: a grotesk with character (single-storey a), not the default everyone ships.
+- Newsreader italic (`<em>`) only for emphasis inside headlines. Both from Google Fonts.
 
 ## Design rules (anti-vibe-coded checklist)
 
