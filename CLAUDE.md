@@ -50,7 +50,7 @@ One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- ki
 
 ## Current page (built step by step)
 
-Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
+Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel" (Caveat, ink-soft) (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
 
 1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe cherries rising behind the
    title (drag to rotate), footnote "*Taste is subjective. Mine just happens to be right." Nothing else in the hero.
@@ -76,7 +76,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, s
 5. `#why` — 03 Why me: four numbered items (accent 01–04, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
 7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
-Footer: Built with taste. (Obviously.) · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
+Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
 Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own
 line under the sentence it comments on and is never broken inside (inline only in the footer and captions).
@@ -106,7 +106,8 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 
 - Familjen Grotesk (`--font-sans`) for everything: a grotesk with character (single-storey a), not the default everyone ships.
 - Newsreader italic (`<em>`) only for emphasis inside headlines. Both from Google Fonts.
-- Caveat (`--font-hand`) only for the red-pen bits of Exhibit A, loaded as a subset of just those letters.
+- Caveat (`--font-hand`) only for the red-pen bits of Exhibit A and the "by gabriel" signature, loaded as a subset of
+  just those letters (extend the `&text=` in index.html if you add words).
 
 ## Design rules (anti-vibe-coded checklist)
 

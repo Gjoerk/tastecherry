@@ -20,7 +20,7 @@
   /* ---- Typography ------------------------------------------------------ */
   --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Newsreader", ui-serif, Georgia, serif;
-  --font-hand:  "Caveat", "Bradley Hand", cursive;  /* red-pen notes; subset to the Exhibit A switch */
+  --font-hand:  "Caveat", "Bradley Hand", cursive;  /* handwriting: Exhibit A switch + header signature; subset */
 
   /* Fluid type scale (min @ 360px → max @ 1440px) */
   --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);  /* 13 → 14 */

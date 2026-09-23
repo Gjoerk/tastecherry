@@ -30,6 +30,31 @@
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+/* handwritten signature after the wordmark */
+.wordmark__sig {
+  margin-left: 0.35em;
+  font-family: var(--font-hand);
+  font-size: 1.2em;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+  rotate: -4deg;
+  translate: 0 0.08em;
+  white-space: nowrap;
+}
+/* phones: no room beside the wordmark, so sign underneath it */
+@media (max-width: 480px) {
+  .wordmark { position: relative; }
+  .wordmark__sig {
+    position: absolute;
+    left: 1.5em;                                /* under "tastecherry", past the mark */
+    top: 1.05em;
+    margin: 0;
+    font-size: 1.05em;
+    rotate: -3deg;
+    translate: none;
+  }
+}
 .wordmark__mark {
   width: 1.1em;
   height: 1.1em;
