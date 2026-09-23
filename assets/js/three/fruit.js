@@ -1,5 +1,5 @@
 // Hero catch: fine-line wireframes in the accent colour that swap with the
-// title's word: cherries (Taste), ketchup squeeze bottle (Sauce), chili
+// title's word: cherries (Taste), dripping ketchup bottle (Sauce), chili
 // (Spice). Drag to rotate; slow idle spin otherwise.
 
 import * as THREE from "three";
@@ -9,6 +9,7 @@ import { createKetchup, createChili } from "./hero-models.js";
 import { setFade } from "./wire.js";
 
 const FADE = 0.8;    // seconds out, then the same in
+const ease = (x) => x * x * (3 - 2 * x);   // smoothstep: soft start and finish
 
 export function initFruit(container) {
   const stage = createStage(container, { fov: 24 });
@@ -63,11 +64,11 @@ export function initFruit(container) {
     pivot.position.y = Math.sin(t * 1.1) * 0.035;
     if (next !== shown) {
       k = Math.max(0, k - dt / FADE);
-      setFade(slots[shown], k);
+      setFade(slots[shown], ease(k));
       if (k === 0) shown = next;
     } else if (k < 1) {
       k = Math.min(1, k + dt / FADE);
-      setFade(slots[shown], k);
+      setFade(slots[shown], ease(k));
     }
   };
 

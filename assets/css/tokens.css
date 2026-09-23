@@ -59,6 +59,7 @@
   --header-h: 4.25rem;
   --radius: 2px;             /* nearly square on purpose */
   --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.25, 1);  /* hero word swap: soft both ends */
   --dur-fast: 180ms;
   --dur-slow: 700ms;
   --dur-draw: 1400ms;       /* the red pen sweeping over Exhibit A */

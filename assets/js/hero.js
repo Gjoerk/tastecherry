@@ -3,7 +3,7 @@
 // the next ones fade in. Only runs while the hero is on screen, never with
 // reduced motion (then it simply stays on Taste).
 
-const HOLD = 6000;   // ms each word stays
+const HOLD = 3700;   // ms each word stays fully visible (≈ 5.3 s per word with the fades)
 const FADE = 800;    // ms out, then the same in (matches fruit.js and the CSS)
 
 export function heroWords(hero, model) {
