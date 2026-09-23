@@ -322,15 +322,14 @@ main { position: relative; isolation: isolate; }
 }
 
 /* Switch: two options, a solid block slides under the chosen one */
-/* "AI slop" gets the generic pill; "What’s wrong?" stays sharp. The sliding
-   block morphs between the two shapes. */
+/* A pill switch; the pill-shaped block slides between the two options. */
 .exhibit__toggle {
   position: relative;
   display: none;                                /* needs JS; without it the pen is simply on */
   grid-template-columns: 1fr 1fr;
   padding: 4px;
   border: 1px solid var(--ink);
-  border-radius: 999px var(--radius) var(--radius) 999px;
+  border-radius: 999px;
   background: var(--paper);
 }
 .js .exhibit__toggle { display: grid; }
@@ -341,10 +340,9 @@ main { position: relative; isolation: isolate; }
   width: calc(50% - 4px);
   border-radius: 999px;
   background: var(--ink);
-  transition: translate var(--dur-slow) var(--ease-out), background var(--dur-slow) var(--ease-out),
-              border-radius var(--dur-slow) var(--ease-out);
+  transition: translate var(--dur-slow) var(--ease-out), background var(--dur-slow) var(--ease-out);
 }
-.exhibit.is-marked .exhibit__toggle::before { translate: 100% 0; background: var(--accent); border-radius: var(--radius); }
+.exhibit.is-marked .exhibit__toggle::before { translate: 100% 0; background: var(--accent); }
 .exhibit__toggle button {
   position: relative;                           /* above the block */
   display: grid;

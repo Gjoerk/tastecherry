@@ -72,7 +72,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    `--note-block` (footnote), and reaches up behind the title by --overlap so the top overlaps "with".
    Checked at 375×667, 1024×720, 1440×900.
 2. `#problem` — 01 The problem: split (headline left, copy right) + "Exhibit A": a typical AI site (demo coffee roaster).
-   Centred switch "AI slop / What’s wrong?" ("AI slop" end is a pill, the sliding block morphs pill ↔ sharp) (sliding block; "What’s wrong" in the Caveat hand, subset via `&text=`,
+   Centred pill switch "AI slop / What’s wrong?" (pill-shaped block slides between them) (sliding block; "What’s wrong" in the Caveat hand, subset via `&text=`,
    plus a scribbled "(go on, click it)" on wide screens) → picture (full width of the text, phones too) → caption. It shows clean first, then a
    red pen sweeps over it (left-to-right clip, `--dur-draw`) 1.2 s after it is well in view; the switch or a click on
    the picture flips it (`exhibit.js`). Without JS the pen is just on. The pen is a transparent layer over the clean
@@ -91,8 +91,9 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
 Background: a thin accent line (`scroll-line.js`) starts under the hero footnote and grows with scroll; when a section
 lands at the top (scroll-padding, where the nav links go) its end touches that section's h2 (4px left of the first
 letter). One smooth, organic curve behind all content: between titles it swings across the page a few times (slightly
-irregular), then comes in from the upper left onto the title. Its end rides at a steady height on screen (drawn amount
-found by height, one path per hop). Behind everything (`main` isolates, z-index -1); reduced motion shows it fully drawn.
+irregular; one swing on short hops), then comes in from the upper left onto the title. Scroll sets how far along the
+curve it should be (by length); the tip eases there each frame (`EASE`) so it glides like a pencil, no jumps. One path
+per hop; hops not started are hidden (a round cap would leave a dot). Behind everything (`main` isolates, z-index -1); reduced motion shows it fully drawn.
 Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
 Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own
