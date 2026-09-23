@@ -41,7 +41,7 @@ export function createKetchup(style) {
 // A chili pepper: curved tapering pod, a low calyx and a crooked stem
 export function createChili(style) {
   const w = new Wire();
-  const lean = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(0.15, 0, 0.95));   // lies on a diagonal
+  const lean = new THREE.Matrix4().makeRotationZ(-0.35);   // 20° clockwise: top upright, tip runs along the title
   const pod = new THREE.CatmullRomCurve3([
     V3(0.05, 0.72, 0), V3(0.13, 0.32, 0.05), V3(0.06, -0.16, 0.02), V3(-0.14, -0.6, -0.03), V3(-0.44, -0.9, 0), V3(-0.64, -0.97, 0.02),
   ].map((p) => p.applyMatrix4(lean)));

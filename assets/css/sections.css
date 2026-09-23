@@ -64,6 +64,23 @@
 .site-nav a:hover { color: var(--ink); }
 .site-nav .site-nav__cta { color: var(--accent); }
 
+/* ---- Scroll line: behind everything in main (scroll-line.js) ---------- */
+main { position: relative; isolation: isolate; }
+.scroll-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: visible;
+}
+.scroll-line path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
 /* ---- Hero: title + cherries, always exactly one screen tall ---------- */
 /* Title size follows width AND height, so title + cherries + note always fit
    above the fold; the cherry stage takes whatever height is left. */
@@ -187,6 +204,23 @@
 }
 .turntable.is-ready canvas { opacity: 1; }
 
+/* ---- Cherry on top: glasses under the heading ------------------------- */
+/* The copy spans both rows on the right; the glasses fill the free space
+   under the heading on the left. Phones (stacked) have no such space. */
+#cherry .split__body { grid-row: 1 / span 2; }
+.turntable.cherry__glasses {
+  grid-column: 1 / span 6;
+  grid-row: 2;
+  width: min(100%, 40rem);
+  aspect-ratio: 3 / 2;
+  border-radius: 0;
+  margin-top: var(--space-5);
+}
+@media (max-width: 960px) {
+  #cherry .split__body { grid-row: auto; }
+  .turntable.cherry__glasses { display: none; }
+}
+
 /* ---- Refine: rough → cut diamond ----------------------------------- */
 .refine__title {
   margin-bottom: var(--space-7);
@@ -194,13 +228,6 @@
   font-size: var(--step-3);
   line-height: 1.06;
   letter-spacing: var(--tracking-tight);
-}
-/* the sign-off: quiet, like a shrug */
-.refine__coda {
-  margin-top: var(--space-7);
-  text-align: center;
-  font-size: var(--step-1);
-  color: var(--ink-soft);
 }
 .refine__stones {
   display: grid;

@@ -7,13 +7,13 @@ The site itself is the proof, so it must never look "vibe coded".
 
 Plain HTML/CSS/JS, no build step for the site. Preview: `python3 -m http.server 4321` (or the `site` config in `.claude/launch.json`).
 
-3D currently runs **real-time in Three.js** (CDN import map). The hero cherries and both diamonds rotate by drag.
+3D: the hero models and the glasses run **real-time in Three.js** (CDN import map) and rotate by drag. The two
+diamonds in `#approach` are **Cycles turntables** (pre-rendered frames, `turntable.js`), also draggable.
 The hero title is plain black HTML text. A ceramic Blender render of it (`assets/img/hero/title*.webp`) is kept but unused.
 
-A full **Blender Cycles pipeline** in `render/` can replace the real-time models with photoreal 360° turntables
-(60 WebP frames each, shown by `assets/js/turntable.js`). It's parked for now: rendering takes about 2.5 h on the
-laptop M1, so it will be run on the desktop. To switch an object over, render it, then change its markup from
-`data-scene="cut"` to `data-turntable="assets/img/turntable/cut" data-frames="60"`.
+The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (60 WebP frames each). Rough and cut
+are rendered (on the desktop GPU) and live in `assets/img/turntable/`. To switch another object over, render it,
+then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="60"`.
 
 ```
 index.html                  all content, sections in page order
@@ -26,13 +26,15 @@ assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio l
 assets/js/hero.js           hero word cycle (Taste/Sauce/Spice), drives the model swap
 assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
 assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
+assets/js/three/glasses.js  round glasses wireframe under the #cherry heading (transparent stage)
                             strawberry.js = unused alt (solid + wireframe)
-assets/js/three/diamonds.js rough milky stone + cut brilliant scenes;  gem.js = ray-traced gem shader
-assets/js/turntable.js      viewer for pre-rendered frames (used once Blender renders exist)
+assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
+assets/js/turntable.js      viewer for pre-rendered frames (the diamonds)
+assets/js/scroll-line.js    background line that draws itself from section title to section title while scrolling
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
 assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
-assets/img/turntable/<name>/000–059.webp   (not rendered yet)
+assets/img/turntable/<name>/000–059.webp   rough, cut
 
 render/                     Blender pipeline (not needed at runtime; exclude from deploys)
   build.sh                  render + convert: `render/build.sh [title cut strawberry rough]`
@@ -60,7 +62,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    The word cycles Taste → Sauce → Spice (`hero.js`, ≈5.3 s each): word, footnote's first word and model fade out
    together (800 ms, eased in and out) and the next fade in; the word slot eases to each word's width so the line recentres smoothly.
    Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle, leaning (ridged collar,
-   cone nozzle, stopper on a tether), chili on a diagonal (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
+   cone nozzle, stopper on a tether), chili turned 20° clockwise (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
    starts on a given word (for reviewing a model). Screen readers get "Taste" only.
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
    (100svh minus header), content centred as one group; the title size is capped by viewport height; the model canvas
@@ -78,12 +80,18 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    marks + Caveat notes; the phone layout opens up gaps to write in). Rebuild: `node render/compare/shoot.js`
    (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-{clean,pen}-*.webp`.
    If the phone image's size changes, update its width/height in index.html and `--ratio` in sections.css.
-3. `#cherry` — 02 Cherry on top: split layout.
-4. `#approach` — centred h2 "It’s Simple", then rough milky stone → arrow → cut brilliant ("AI's Finished Product" /
-   "My Finished Product" as h3s), then a quiet ink-soft "capisce?" underneath. No other copy.
+3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows so a wireframe of round glasses (`glasses.js`)
+   fills the free space under the heading (hidden when stacked, ≤960px).
+4. `#approach` — centred h2 "It’s Simple", then rough stone → arrow → cut brilliant ("AI's Finished Product" /
+   "My Finished Product" as h3s). No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
 5. `#why` — 03 Why me: four numbered items (accent 01–04, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
 7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
+Background: a thin accent line (`scroll-line.js`) starts under the hero footnote and grows with scroll; when a section
+lands at the top (scroll-padding, where the nav links go) its end touches that section's h2 (4px left of the first
+letter). It drops down the left margin, snakes across only in the gaps between sections and comes down onto each
+title from above-left of its label, so it never crosses copy (checked at 375, 1024, 1440). Behind everything
+(`main` isolates, z-index -1); reduced motion shows it fully drawn.
 Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
 Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own

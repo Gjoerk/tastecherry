@@ -10,8 +10,10 @@ export function cssColor(name) {
   return new THREE.Color(value);
 }
 
-export function createStage(container, { fov = 30, shadows = false } = {}) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+// `transparent`: no painted background, so whatever is behind the canvas
+// (e.g. the scroll line) shows through.
+export function createStage(container, { fov = 30, shadows = false, transparent = false } = {}) {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: transparent, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.toneMapping = THREE.NoToneMapping; // keeps the canvas background identical to --paper
   renderer.shadowMap.enabled = shadows;
@@ -20,7 +22,7 @@ export function createStage(container, { fov = 30, shadows = false } = {}) {
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = cssColor("--paper");
+  scene.background = transparent ? null : cssColor("--paper");
 
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 100);
 

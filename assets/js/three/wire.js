@@ -62,9 +62,10 @@ export class Wire {
   }
 
   // A tube of varying radius along a 3D curve: rings across it, lines along it.
-  tube(curve, radius, { rings = 16, lines = 10, solid = true, ringsFrom = 0, ringsTo = 1 } = {}) {
-    const N = 64;
-    const frames = curve.computeFrenetFrames(N, false);
+  // `closed` for loops (a lens rim): frames are made seamless around the loop.
+  tube(curve, radius, { rings = 16, lines = 10, solid = true, ringsFrom = 0, ringsTo = 1, closed = false, segments = 64 } = {}) {
+    const N = segments;
+    const frames = curve.computeFrenetFrames(N, closed);
     const point = (i, a) => {
       const t = i / N, r = radius(t);
       return curve.getPointAt(t).clone()

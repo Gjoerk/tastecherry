@@ -2,12 +2,13 @@
 // WebGL or JavaScript.
 //
 // Two ways to show a rotatable object:
-//   data-scene="fruit|rough|cut"         real-time Three.js model (current)
-//   data-turntable="assets/img/…"        pre-rendered Blender frames (render/ pipeline)
+//   data-scene="fruit|glasses|rough|cut" real-time Three.js model
+//   data-turntable="assets/img/…"        pre-rendered Blender frames (the diamonds)
 
 import { turntable } from "./turntable.js";
 import { exhibit } from "./exhibit.js";
 import { heroWords } from "./hero.js";
+import { scrollLine } from "./scroll-line.js";
 
 document.querySelectorAll("[data-turntable]").forEach(turntable);
 document.querySelectorAll("[data-exhibit]").forEach(exhibit);
@@ -28,6 +29,11 @@ if (webgl) {
       .then(({ initFruit }) => initFruit(scene("fruit")))
       .catch((err) => { console.error("Fruit scene failed", err); return null; });
   }
+  if (scene("glasses") && getComputedStyle(scene("glasses")).display !== "none") {
+    import("./three/glasses.js")
+      .then(({ initGlasses }) => initGlasses(scene("glasses")))
+      .catch((err) => console.error("Glasses scene failed", err));
+  }
   if (scene("rough") && scene("cut")) {
     import("./three/diamonds.js")
       .then(({ initDiamonds }) => initDiamonds({ rough: scene("rough"), cut: scene("cut") }))
@@ -38,6 +44,12 @@ if (webgl) {
 // Hero: Taste → Sauce → Spice (word, footnote and model together)
 const hero = document.querySelector(".hero");
 if (hero) heroWords(hero, heroModels);
+
+// Background line that draws itself from title to title as you scroll
+scrollLine(document.querySelector("main"), {
+  start: document.querySelector(".hero__note"),
+  titles: [...document.querySelectorAll("main > .section h2")],
+});
 
 // Header hairline once the page is scrolled
 const header = document.querySelector("[data-header]");
