@@ -9,6 +9,7 @@ import { turntable } from "./turntable.js";
 import { exhibit } from "./exhibit.js";
 import { heroWords } from "./hero.js";
 import { sectionMark } from "./section-mark.js";
+import { themeToggle } from "./theme.js";
 
 document.querySelectorAll("[data-turntable]").forEach(turntable);
 document.querySelectorAll("[data-exhibit]").forEach(exhibit);
@@ -45,8 +46,18 @@ if (webgl) {
 const hero = document.querySelector(".hero");
 if (hero) heroWords(hero, heroModels);
 
-// Asterisk that marks the current section, next to its title
-sectionMark(document.querySelector("main"), [...document.querySelectorAll("main > .section h2")]);
+// Asterisk that marks the current section, next to its label; lives in the hero footnote's asterisk
+sectionMark(document.querySelector("main"), [...document.querySelectorAll("main > .section")],
+  document.querySelector(".hero__note-mark"));
+
+// "It's Simple": the brush stroke comes in while the title is well on screen, goes when it leaves
+const simple = document.querySelector(".refine__title");
+if (simple) new IntersectionObserver(([e]) => simple.classList.toggle("is-brushed", e.isIntersecting),
+  { rootMargin: "-18% 0px -18% 0px" }).observe(simple);
+
+// Light / dark switch
+const toggle = document.querySelector("[data-theme-toggle]");
+if (toggle) themeToggle(toggle);
 
 // Header hairline once the page is scrolled
 const header = document.querySelector("[data-header]");

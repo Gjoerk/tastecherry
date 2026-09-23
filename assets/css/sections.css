@@ -53,6 +53,50 @@
   flex: none;
 }
 
+/* Light / dark switch: centred in the header (between logo and nav on phones) */
+.site-header__inner { position: relative; }
+.theme-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.45em 0.9em;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: var(--step--1);
+  font-weight: 500;
+  color: var(--ink-soft);
+  line-height: 1;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink-soft); }
+.theme-toggle__icon {
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: rotate var(--dur-slow) var(--ease-out);
+}
+.theme-toggle__icon path { fill: currentColor; stroke: none; }
+:root[data-theme="dark"] .theme-toggle__icon { rotate: 180deg; }
+@media (min-width: 700px) {
+  .theme-toggle { position: absolute; left: 50%; translate: -50% 0; }
+}
+@media (max-width: 699px) {
+  .theme-toggle { padding: 0.4em; }
+  .theme-toggle__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+/* the smallest phones: logo, switch and nav only just fit */
+@media (max-width: 360px) {
+  .site-header__inner { gap: var(--space-2); }
+  .site-nav ul { gap: 0.5rem; }
+  .wordmark { font-size: 0.92rem; }
+  .site-nav a { font-size: 0.72rem; }
+  .theme-toggle { font-size: 0.72rem; }
+  .wordmark__sig { right: 0; }                 /* signed under the wordmark, not past it */
+}
+
 .site-nav ul { display: flex; gap: clamp(1rem, 3.5vw, 2.25rem); }
 .site-nav a {
   font-size: var(--step--1);
@@ -73,7 +117,7 @@ main { position: relative; }
   z-index: 2;
   color: var(--accent);
   pointer-events: none;
-  transition: transform 1000ms var(--ease-in-out), opacity 400ms var(--ease-out);
+  opacity: 0;                                   /* section-mark.js drives position, size and fade */
 }
 
 /* ---- Hero: title + cherries, always exactly one screen tall ---------- */
@@ -133,7 +177,7 @@ main { position: relative; }
 }
 .hero__underline path {
   fill: none;
-  stroke: var(--marker);
+  stroke: var(--accent);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 4;                              /* in the svg's units: scales with the word */
@@ -241,7 +285,7 @@ main { position: relative; }
   grid-column: 1 / span 6;
   grid-row: 1 / span 2;                         /* same rows as the copy… */
   align-self: end;                              /* …so its bottom is the copy's bottom */
-  width: min(100%, 24rem);
+  width: min(100%, 20rem);
   aspect-ratio: 16 / 10;                        /* cake.js sets the exact drawing proportions */
   border-radius: 0;
 }
@@ -261,8 +305,8 @@ main { position: relative; }
   line-height: 1.06;
   letter-spacing: var(--tracking-tight);
 }
-/* "It’s Simple": a thick accent brush stroke underneath, brushed in when
-   the title scrolls into view */
+/* "It’s Simple": a thick accent brush stroke underneath, brushed in while the
+   title is well on screen and wiped out again when it leaves (main.js) */
 .refine__brush {
   position: absolute;
   left: -4%;
@@ -279,14 +323,20 @@ main { position: relative; }
   stroke-linecap: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 700ms cubic-bezier(0.25, 0.8, 0.3, 1) 250ms;
+  opacity: 0;                                   /* else the round tip leaves a dot at rest */
+  transition: stroke-dashoffset 450ms cubic-bezier(0.5, 0, 0.75, 0), opacity 0s 450ms;   /* wipe out */
 }
-.refine__brush path + path { stroke-width: 2.2; opacity: 0.5; transition-delay: 380ms; }
-.js .refine__title.is-visible .refine__brush path,
-html:not(.js) .refine__brush path { stroke-dashoffset: 0; }
+.refine__brush path + path { stroke-width: 2.2; }
+.refine__title.is-brushed .refine__brush path,
+html:not(.js) .refine__brush path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 750ms cubic-bezier(0.25, 0.8, 0.3, 1) 150ms, opacity 0s 150ms;   /* brush in */
+}
+.refine__title.is-brushed .refine__brush path + path { opacity: 0.5; transition-delay: 300ms; }
 
 /* scare quotes around AI's "Finished" */
-.scare { color: var(--accent); font-family: var(--font-serif); font-style: italic; }
+.scare { font-family: var(--font-serif); font-style: italic; }
 
 .refine__stones {
   display: grid;
@@ -297,11 +347,12 @@ html:not(.js) .refine__brush path { stroke-dashoffset: 0; }
 }
 
 .stone { margin: 0; }
-/* Side by side, the rough stone is scaled down so both shadows sit at the same
-   height (measured from the renders: shadow centres at 81% vs 61% of the frame;
-   75% scale about a point 1.6% from the top lines them up). */
+/* Side by side, the cut stone is scaled up to the rough one's size so both
+   shadows sit at the same height (measured from the renders: shadow centres at
+   81% vs 61% of the frame; 120% about a point 38% above the frame lines them up,
+   and both stones then stand on the same ground). */
 @media (min-width: 801px) {
-  .stone:first-child .turntable { scale: 0.75; transform-origin: 50% 1.6%; }
+  .stone:last-child .turntable { scale: 1.2; transform-origin: 50% -38.3%; }
 }
 .stone .turntable { width: 100%; max-width: 420px; margin-inline: auto; }
 .stone figcaption { margin-top: var(--space-4); text-align: center; }
@@ -562,16 +613,6 @@ html:not(.js) .refine__brush path { stroke-dashoffset: 0; }
 @media (max-width: 560px) {
   .form { grid-template-columns: minmax(0, 1fr); }
 }
-
-/* ---- Outro: the last word ------------------------------------------------ */
-.outro__line {
-  font-size: var(--step-5);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: var(--tracking-tight);
-  max-width: 14ch;
-}
-.outro__line em { color: var(--accent); }
 
 /* ---- Footer ---------------------------------------------------------- */
 .site-footer {

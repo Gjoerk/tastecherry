@@ -23,6 +23,8 @@ export function createStage(container, { fov = 30, shadows = false, transparent 
 
   const scene = new THREE.Scene();
   scene.background = transparent ? null : cssColor("--paper");
+  // light / dark switch: repaint the background in the new paper colour
+  if (!transparent) addEventListener("themechange", () => { scene.background = cssColor("--paper"); stage.render(); });
 
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 100);
 

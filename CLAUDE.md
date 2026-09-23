@@ -28,7 +28,8 @@ assets/js/hero.js           hero word cycle (Taste/Sauce/Spice), drives the mode
 assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
 assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
 assets/js/three/cake.js     layer cake + cherry wireframe under the #cherry heading (transparent stage)
-assets/js/section-mark.js   accent asterisk after the current section's h2; flies (with a turn) to the next one
+assets/js/theme.js          light/dark switch in the header
+assets/js/section-mark.js   accent asterisk after the current section's label; flies (with a turn) to the next one
                             strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (the diamonds)
@@ -56,6 +57,7 @@ One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- ki
 
 ## Current page (built step by step)
 
+Header: light/dark switch in the middle (`theme.js`; pill, half-filled circle + "Dark"/"Light", icon only on phones).
 Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel" signed under the end of the wordmark (Caveat, accent) (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
 
 1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe model rising behind the
@@ -65,7 +67,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle, leaning (ridged collar,
    cone nozzle, stopper on a tether), chili turned 20° clockwise (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
    starts on a given word (for reviewing a model). Screen readers get "Taste" only. Hovering the word draws a thick,
-   wobbly neon-green marker underline under it (`--marker`; two passes, `pathLength` dash trick; hidden at rest).
+   wobbly accent marker underline under it (two passes, `pathLength` dash trick; hidden at rest).
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
    (100svh minus header), content centred as one group; the title size is capped by viewport height; the model canvas
    takes the cherries' proportions (fruit.js sets --model-aspect), is capped to the height left after title and
@@ -85,15 +87,15 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    (`cake.js`, canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
    the last line of copy (hidden when stacked, ≤960px).
 4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
-   stone → arrow → cut brilliant ("AI's “Finished” Product" with accent serif quotes / "My Finished Product" as h3s).
-   Side by side, the rough stone is scaled to 75% so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
+   stone → arrow → cut brilliant ("AI's “Finished” Product", serif italic quotes / "My Finished Product" as h3s).
+   Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
-7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
-8. `.outro` — the last word, big: "Let’s create *meaningful* websites." (em in accent).
-Section mark: an accent asterisk (`#asterisk`) sits just after the current section's h2 (raised, like a footnote
-mark); when the active section changes (its top passes 40% of the screen) it flies there with one turn
-(`section-mark.js`). Hidden over the hero; reduced motion jumps.
+7. `#contact` — 05 Contact, h2 "Let’s create *meaningful* websites.": split — pitch + mailto left, form right (Name, Email, Message; labels + required).
+Section mark: an accent asterisk (`#asterisk`) sits just after the current section's label ("02 Cherry on top"; the
+h2 where there's no label); when the active section changes (its top passes 40% of the screen) it flies there with
+one turn (`section-mark.js`). Its home is the hero footnote's asterisk: it flies out of it into the first section and
+back into it (fading) at the top. Reduced motion jumps.
 Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
 Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own
@@ -118,8 +120,11 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 
 - `--paper` #F3F1EB off-white background
 - `--ink` #0F0F0E text
-- `--marker` #2EE86B neon green: only the hero word's hover underline.
 - `--accent` #CE0058 Rubine. Compare others with `?accent=cobalt|verdigris|oxide`.
+
+Dark mode: `:root[data-theme="dark"]` in tokens.css — anthracite `--paper` #293133 (RAL 7016), white `--ink`, same
+accent and models. Set before first paint by the inline script in index.html (saved choice, else the device
+setting); the switch saves it, updates meta theme-color and fires `themechange`, on which opaque 3D stages repaint.
 
 ## Type
 

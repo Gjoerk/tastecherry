@@ -16,6 +16,7 @@ html {
 body {
   background: var(--paper);
   color: var(--ink);
+  transition: background-color var(--dur-slow) var(--ease-out), color var(--dur-slow) var(--ease-out);
   font-family: var(--font-sans);
   font-size: var(--step-0);
   line-height: var(--leading-body);

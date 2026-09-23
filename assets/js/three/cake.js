@@ -48,20 +48,45 @@ export function initCake(container) {
   pivot.add(cake);
   scene.add(pivot);
 
+  // Fit by measuring, not guessing: the outline of everything the spin can
+  // show (circles at full radius, top and bottom) is projected through the
+  // camera, and distance and aim are adjusted until it just fits.
   const { yMin, yMax, rMax } = cake.userData.bounds;
-  const centerY = (yMin + yMax) / 2;
-  const lift = 0.3;                                          // camera height factor: a little from above
-  // seen from above, the round top adds depth to the height of the picture
-  const halfH = ((yMax - yMin) / 2 + rMax * lift * 0.6) * 1.06, halfW = rMax * 1.08;
-  // the canvas takes the drawing's proportions, so its bottom is the plate
-  container.style.aspectRatio = (halfW / halfH).toFixed(3);
-
-  stage.onResize = (wpx, hpx) => {
-    const t = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
-    const dist = Math.max(halfH / t, halfW / (t * (wpx / hpx))) + rMax * 0.4;
-    camera.position.set(0, centerY + dist * lift, dist);
-    camera.lookAt(0, centerY, 0);
+  const outline = [];
+  for (let k = 0; k < 32; k++) {
+    const a = (k / 32) * Math.PI * 2;
+    for (const y of [yMin, yMax]) outline.push(new THREE.Vector3(rMax * Math.cos(a), y, rMax * Math.sin(a)));
+  }
+  const dir = new THREE.Vector3(0, 0.3, 1).normalize();       // a little from above
+  const target = new THREE.Vector3(0, (yMin + yMax) / 2, 0);
+  const fit = (aspect, margin = 0.94) => {
+    camera.aspect = aspect;
+    camera.updateProjectionMatrix();
+    let dist = rMax * 6;
+    const p = new THREE.Vector3();
+    let box;
+    for (let i = 0; i < 6; i++) {
+      camera.position.copy(target).addScaledVector(dir, dist);
+      camera.lookAt(target);
+      camera.updateMatrixWorld();
+      box = { x0: 1, x1: -1, y0: 1, y1: -1 };
+      for (const q of outline) {
+        p.copy(q).project(camera);
+        box.x0 = Math.min(box.x0, p.x); box.x1 = Math.max(box.x1, p.x);
+        box.y0 = Math.min(box.y0, p.y); box.y1 = Math.max(box.y1, p.y);
+      }
+      const half = Math.max((box.x1 - box.x0) / 2, (box.y1 - box.y0) / 2);
+      // re-aim at the middle of the drawing, then scale the distance to fit
+      target.y += ((box.y0 + box.y1) / 2) * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+      dist *= half / margin;
+    }
+    camera.position.copy(target).addScaledVector(dir, dist);
+    camera.lookAt(target);
+    return (box.x1 - box.x0) / (box.y1 - box.y0);          // drawing's width : height at this aspect
   };
+  // canvas takes the drawing's proportions, so its bottom is the plate
+  container.style.aspectRatio = fit(1).toFixed(3);
+  stage.onResize = (wpx, hpx) => fit(wpx / hpx);
 
   const spin = dragRotate(container, pivot, { idleSpeed: 0.3 });
   stage.onFrame = (t, dt) => spin(dt);

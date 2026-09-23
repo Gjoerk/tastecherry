@@ -16,7 +16,6 @@
      per section. Contrast on --paper ≈ 5:1 (AA for text). */
   --accent:       #CE0058;
   --accent-ink:   #FFFFFF;   /* text placed on top of --accent */
-  --marker:       #2EE86B;   /* neon green highlighter: only the hero word's hover underline */
 
   /* ---- Typography ------------------------------------------------------ */
   --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -64,6 +63,17 @@
   --dur-fast: 180ms;
   --dur-slow: 700ms;
   --dur-draw: 1400ms;       /* the red pen sweeping over Exhibit A */
+}
+
+/* Dark mode: anthracite (RAL 7016) with white text; same accent, same models.
+   Set on <html data-theme="dark"> by the header switch (theme.js). */
+:root[data-theme="dark"] {
+  --paper:      #293133;
+  --paper-deep: #222A2C;
+  --ink:        #F7F6F2;
+  --ink-soft:   #B5BBBB;
+  --rule:       #455053;
+  color-scheme: dark;
 }
 
 /* Accent candidates for comparison — try them with ?accent=cobalt etc.
