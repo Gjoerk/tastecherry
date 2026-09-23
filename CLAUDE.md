@@ -59,7 +59,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    title (drag to rotate), footnote "*Taste is subjective. Mine just happens to be right." Nothing else in the hero.
    The word cycles Taste → Sauce → Spice (`hero.js`, ≈5.3 s each): word, footnote's first word and model fade out
    together (800 ms, eased in and out) and the next fade in; the word slot eases to each word's width so the line recentres smoothly.
-   Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle (ridged collar,
+   Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle, leaning (ridged collar,
    cone nozzle, stopper on a tether), chili (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
    starts on a given word (for reviewing a model). Screen readers get "Taste" only.
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
