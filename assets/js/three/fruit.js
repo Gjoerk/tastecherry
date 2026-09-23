@@ -3,7 +3,7 @@
 // (Spice). Drag to rotate; slow idle spin otherwise.
 
 import * as THREE from "three";
-import { createStage, cssColor, dragRotate } from "./stage.js";
+import { createStage, cssColor, dragRotate, trackLines } from "./stage.js";
 import { createCherryWireframe } from "./cherry.js";
 import { createKetchup, createChili } from "./hero-models.js";
 import { setFade } from "./wire.js";
@@ -14,7 +14,7 @@ const ease = (x) => x * x * (3 - 2 * x);   // smoothstep: soft start and finish
 export function initFruit(container) {
   const stage = createStage(container, { fov: 24 });
   const { scene, camera } = stage;
-  const style = { color: cssColor("--accent"), width: 1.1, ghost: 0.12 };
+  const style = { color: cssColor("--line"), width: 1.1, ghost: 0.12 };
 
   const cherries = createCherryWireframe(style);
   const models = [cherries, createKetchup(style), createChili(style)];
@@ -38,6 +38,7 @@ export function initFruit(container) {
     return slot;
   });
   scene.add(pivot);
+  trackLines(pivot);
 
   // Publish the drawing's proportions so CSS can size the canvas to it: no
   // dead space, the top reaches the title and the footnote sits right under.

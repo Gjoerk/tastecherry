@@ -4,7 +4,7 @@
 // its stem in the middle, on a thin plate. Drag to rotate; slow idle spin.
 
 import * as THREE from "three";
-import { createStage, cssColor, dragRotate } from "./stage.js";
+import { createStage, cssColor, dragRotate, trackLines } from "./stage.js";
 import { Wire } from "./wire.js";
 
 const V2 = (r, y) => new THREE.Vector2(r, y);
@@ -43,10 +43,11 @@ export function createCake(style) {
 export function initCake(container) {
   const stage = createStage(container, { fov: 22, transparent: true });
   const { scene, camera } = stage;
-  const cake = createCake({ color: cssColor("--accent"), width: 1.1, ghost: 0.1 });
+  const cake = createCake({ color: cssColor("--line"), width: 1.1, ghost: 0.1 });
   const pivot = new THREE.Group();
   pivot.add(cake);
   scene.add(pivot);
+  trackLines(pivot);
 
   // Fit by measuring, not guessing: the outline of everything the spin can
   // show (circles at full radius, top and bottom) is projected through the

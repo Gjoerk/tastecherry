@@ -53,7 +53,7 @@ sectionMark(document.querySelector("main"), [...document.querySelectorAll("main 
 // "It's Simple": the brush stroke comes in while the title is well on screen, goes when it leaves
 const simple = document.querySelector(".refine__title");
 if (simple) new IntersectionObserver(([e]) => simple.classList.toggle("is-brushed", e.isIntersecting),
-  { rootMargin: "-18% 0px -18% 0px" }).observe(simple);
+  { rootMargin: "-8% 0px -12% 0px" }).observe(simple);
 
 // Light / dark switch
 const toggle = document.querySelector("[data-theme-toggle]");

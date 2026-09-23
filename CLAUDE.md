@@ -122,8 +122,9 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 - `--ink` #0F0F0E text
 - `--accent` #CE0058 Rubine. Compare others with `?accent=cobalt|verdigris|oxide`.
 
-Dark mode: `:root[data-theme="dark"]` in tokens.css — anthracite `--paper` #293133 (RAL 7016), white `--ink`, same
-accent and models. Set before first paint by the inline script in index.html (saved choice, else the device
+Dark mode: `:root[data-theme="dark"]` in tokens.css — dark espresso brown `--paper` #2A201B, white `--ink`, same
+accent; the wireframes use `--line` (= accent in light, brighter #FF4D94 in dark) and are recoloured live via
+`trackLines()` in stage.js. Set before first paint by the inline script in index.html (saved choice, else the device
 setting); the switch saves it, updates meta theme-color and fires `themechange`, on which opaque 3D stages repaint.
 
 ## Type
