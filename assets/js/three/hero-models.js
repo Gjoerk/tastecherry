@@ -1,5 +1,5 @@
-// The hero's rotating cast next to the cherries: a glass ketchup bottle
-// ("Sauce") and a chili pepper ("Spice"). All fine-line
+// The hero's rotating cast next to the cherries: a diner squeeze bottle of
+// ketchup ("Sauce") and a chili pepper ("Spice"). All fine-line
 // wireframes (see wire.js), roughly 2 units tall around the origin; fruit.js
 // rescales each to the cherries' frame.
 
@@ -9,19 +9,29 @@ import { Wire } from "./wire.js";
 const V2 = (r, y) => new THREE.Vector2(r, y);
 const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
 
-// Classic glass ketchup bottle, upright: long neck, shoulders, label band, ridged cap
+// Diner squeeze bottle, upright: tall straight body, ridged screw collar, a
+// step ring, a slim cone nozzle with its stopper, and the stopper's tether strap
 export function createKetchup(style) {
   const w = new Wire();
-  const tilt = new THREE.Matrix4().makeRotationZ(-0.1);
-  const body = [
-    V2(0, -1.05), V2(0.3, -1.05), V2(0.4, -1.0), V2(0.43, -0.85), V2(0.44, -0.4), V2(0.43, -0.05),
-    V2(0.38, 0.18), V2(0.27, 0.38), V2(0.19, 0.58), V2(0.16, 0.78), V2(0.155, 0.9), V2(0.178, 0.93), V2(0.172, 0.96),
-  ];
-  w.lathe(body, { rings: 11, meridians: 16, matrix: tilt });
-  // label band: doubled lines like a printed edge
-  w.lathe(body, { ringsAt: [0.2, 0.207, 0.5, 0.507], meridians: 0, solid: false, matrix: tilt });
-  const cap = [V2(0, 0.95), V2(0.188, 0.95), V2(0.194, 0.97), V2(0.194, 1.17), V2(0.176, 1.2), V2(0, 1.2)];
-  w.lathe(cap, { ringsAt: [0.12, 0.62], meridians: 28, matrix: tilt });
+  // body: straight sides, softly rounded foot and shoulder
+  w.lathe([
+    V2(0, -1.25), V2(0.25, -1.25), V2(0.292, -1.22), V2(0.3, -1.14), V2(0.3, -0.4), V2(0.3, 0.42),
+    V2(0.292, 0.5), V2(0.27, 0.545),
+  ], { rings: 12, meridians: 16 });
+  // screw collar: lots of fine vertical ridges
+  w.lathe([V2(0.285, 0.54), V2(0.292, 0.56), V2(0.292, 0.66), V2(0.292, 0.76), V2(0.28, 0.785)],
+    { ringsAt: [0.02, 0.97], meridians: 28, solid: false });
+  w.lathe([V2(0, 0.54), V2(0.292, 0.54), V2(0.292, 0.785), V2(0, 0.785)], { ringsAt: [], meridians: 0 });
+  // top of the collar, step ring, cone up to the stopper
+  w.lathe([
+    V2(0.28, 0.785), V2(0.2, 0.8), V2(0.168, 0.81), V2(0.168, 0.87), V2(0.14, 0.9), V2(0.1, 0.93),
+    V2(0.075, 1.04), V2(0.052, 1.17), V2(0.038, 1.26), V2(0.05, 1.275), V2(0.05, 1.33), V2(0.032, 1.355), V2(0, 1.36),
+  ], { ringsAt: [0.1, 0.2, 0.3, 0.52, 0.66, 0.8, 0.9], meridians: 12 });
+  // tether: a thin strap from the stopper, looping out and down to the collar
+  const strap = new THREE.CatmullRomCurve3([
+    V3(0.05, 1.3, 0), V3(0.2, 1.3, 0.02), V3(0.36, 1.12, 0.03), V3(0.36, 0.86, 0.02), V3(0.29, 0.72, 0),
+  ]);
+  w.tube(strap, () => 0.012, { rings: 0, lines: 3 });
   return w.build(style);
 }
 

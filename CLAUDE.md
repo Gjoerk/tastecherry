@@ -25,7 +25,7 @@ assets/js/main.js           entry: boots data-scene (Three.js) / data-turntable 
 assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio lighting, dragRotate()
 assets/js/hero.js           hero word cycle (Taste/Sauce/Spice), drives the model swap
 assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
-assets/js/three/hero-models.js  glass ketchup bottle, chili;  wire.js = shared wireframe builder + setFade
+assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
                             strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js rough milky stone + cut brilliant scenes;  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (used once Blender renders exist)
@@ -59,8 +59,8 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    title (drag to rotate), footnote "*Taste is subjective. Mine just happens to be right." Nothing else in the hero.
    The word cycles Taste → Sauce → Spice (`hero.js`, ≈5.3 s each): word, footnote's first word and model fade out
    together (800 ms, eased in and out) and the next fade in; the word slot eases to each word's width so the line recentres smoothly.
-   Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), upright glass ketchup bottle (label
-   band, ridged cap), chili (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
+   Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle (ridged collar,
+   cone nozzle, stopper on a tether), chili (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
    starts on a given word (for reviewing a model). Screen readers get "Taste" only.
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
    (100svh minus header), content centred as one group; the title size is capped by viewport height; the model canvas
