@@ -32,12 +32,25 @@ def reset():
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
 
+    # Use the best GPU backend this machine has: NVIDIA (OptiX, CUDA), AMD (HIP),
+    # Intel (oneAPI) or Apple (Metal). Falls back to CPU if none is available.
     prefs = bpy.context.preferences.addons["cycles"].preferences
-    prefs.compute_device_type = "METAL"
-    prefs.get_devices()
+    backend = "NONE"
+    for candidate in ("OPTIX", "CUDA", "HIP", "ONEAPI", "METAL"):
+        try:
+            prefs.compute_device_type = candidate
+        except TypeError:          # backend not built for this OS
+            continue
+        prefs.get_devices()
+        if any(d.type == candidate for d in prefs.devices):
+            backend = candidate
+            break
+    if backend == "NONE":
+        prefs.compute_device_type = "NONE"
     for d in prefs.devices:
         d.use = True
-    scene.cycles.device = "GPU"
+    scene.cycles.device = "CPU" if backend == "NONE" else "GPU"
+    print(f"[render] Cycles device: {backend if backend != 'NONE' else 'CPU'}", flush=True)
     return scene
 
 

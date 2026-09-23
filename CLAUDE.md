@@ -40,7 +40,9 @@ render/                     Blender pipeline (not needed at runtime; exclude fro
   fonts/                    TTFs for the title (Blender can't read WOFF)
   out/                      raw PNG frames + build.log (scratch)
 ```
-Requires Blender 5.2+ at /Applications/Blender.app (`brew install --cask blender`).
+Requires Blender 5.2+. macOS: /Applications/Blender.app (`brew install --cask blender`). Windows: run `build.sh` from
+Git Bash with `export BLENDER="/c/Program Files/Blender Foundation/Blender 5.2/blender.exe"`. The GPU backend is picked
+automatically (OptiX → CUDA → HIP → oneAPI → Metal, else CPU); each run prints `[render] Cycles device: …`.
 One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- kind=cut res=560 samples=96`.
 
 ## Current page (built step by step)
