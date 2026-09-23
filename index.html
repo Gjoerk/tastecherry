@@ -102,30 +102,15 @@
           <p>Same fonts. Same gradients. Same “Unlock your potential.” Everything looks good, and everything looks the same. No character, no love. <span class="aside">(Honestly? It looks like shit once you’ve seen a few.)</span></p>
         </div>
 
-        <!-- Before/after: the same demo site straight from the AI vs. after my pass.
-             Sources: render/compare/*.html → shoot.js → finalize.py compare -->
-        <figure class="compare split__full" data-compare data-reveal>
-          <div class="compare__frame">
-            <picture>
-              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-mobile.webp" width="780" height="1560">
-              <img class="compare__img" src="assets/img/compare/ai-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
-                   alt="A coffee roaster’s site straight from AI: purple-to-blue gradient, centred headline “Unlock the Perfect Cup of Coffee”, emoji icons on rounded cards.">
-            </picture>
-            <picture class="compare__after">
-              <source media="(max-width: 640px)" srcset="assets/img/compare/polished-mobile.webp" width="780" height="1560">
-              <img class="compare__img" src="assets/img/compare/polished-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
-                   alt="The same site after my pass: warm paper background, serif headline “Roasted on Tuesday. In your cup by Friday.”, this week’s coffees listed with prices.">
-            </picture>
-            <div class="compare__handle" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg>
-            </div>
-            <input class="compare__range" type="range" min="0" max="100" value="50"
-                   aria-label="Compare: left is straight from the AI, right is after my pass">
-          </div>
-          <figcaption class="compare__labels">
-            <span class="label">Straight from the AI</span>
-            <span class="label">After my pass</span>
-          </figcaption>
+        <!-- A typical AI site, marked up in red pen.
+             Sources: render/compare/ai.html + annotate.js → shoot.js → finalize.py compare -->
+        <figure class="exhibit split__full" data-reveal>
+          <picture>
+            <source media="(max-width: 640px)" srcset="assets/img/compare/ai-annotated-mobile.webp" width="780" height="1982">
+            <img class="exhibit__img" src="assets/img/compare/ai-annotated-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
+                 alt="A coffee roaster’s website straight from AI, marked up in red pen: gradient emoji logo, “shitty button #1”, “sparkles = AI was here”, “unlock what? the door?”, gradient text in Inter, buzzword bingo, “shitty buttons (rocket included, free)”, rounded cards with emoji icons, everything centred.">
+          </picture>
+          <figcaption class="exhibit__caption"><span class="label">Exhibit A</span> A&nbsp;typical AI first draft. <span class="aside">(Names changed to protect the guilty.)</span></figcaption>
         </figure>
       </div>
     </section>

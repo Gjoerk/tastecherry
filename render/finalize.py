@@ -52,15 +52,14 @@ def seq(name, shadow=0.6):
 
 
 def compare():
-    """Before/after screenshots for the slider in #problem (opaque, so plain WebP)."""
+    """Marked-up AI screenshot for #problem (opaque, so plain WebP)."""
     src = os.path.join(RAW, "compare")
-    for name in ("ai", "polished"):
-        for size, width in (("desktop", 2000), ("mobile", 780)):
-            im = Image.open(os.path.join(src, f"{name}-{size}.png")).convert("RGB")
-            if im.width > width:
-                im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
-            save_webp(im, os.path.join(DST, "compare", f"{name}-{size}.webp"), 84)
-            print(f"{name}-{size}", im.size)
+    for size, width in (("desktop", 2000), ("mobile", 780)):
+        im = Image.open(os.path.join(src, f"ai-annotated-{size}.png")).convert("RGB")
+        if im.width > width:
+            im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
+        save_webp(im, os.path.join(DST, "compare", f"ai-annotated-{size}.webp"), 84)
+        print(f"ai-annotated-{size}", im.size)
 
 
 if __name__ == "__main__":

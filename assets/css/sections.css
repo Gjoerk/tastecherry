@@ -218,86 +218,22 @@
   .refine__arrow svg { width: 72px; transform: rotate(90deg); }
 }
 
-/* ---- Problem: before/after slider ----------------------------------- */
-/* Two screenshots stacked; the top one (after) is clipped at --pos. */
-.compare { margin: var(--space-4) 0 0; }
-.compare__frame {
-  --pos: 50%;
-  position: relative;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
+/* ---- Problem: a typical AI site, marked up in red pen ---------------- */
+.exhibit { margin: var(--space-4) 0 0; }
+.exhibit__img {
+  width: 100%;
+  height: auto;
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   background: var(--paper-deep);
-  cursor: ew-resize;
-  touch-action: pan-y;                        /* vertical page scroll still works on phones */
-  user-select: none;
-  -webkit-user-select: none;
 }
-.compare__frame picture,
-.compare__img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.compare__img { object-fit: cover; object-position: top; pointer-events: none; }
-.compare__after { clip-path: inset(0 0 0 var(--pos)); }
-
-.compare__handle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--pos);
-  width: 1px;
-  background: var(--paper);
-  box-shadow: 0 0 0 0.5px color-mix(in srgb, var(--ink) 25%, transparent);
-  pointer-events: none;
-}
-.compare__handle svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2.75rem;
-  height: 2.75rem;
-  max-width: none;                            /* base.css caps svg at the 1px line */
-  padding: 0.6rem;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: var(--ink);
-  fill: none;
-  stroke: var(--paper);
-  stroke-width: 1.5;
-  transition: scale var(--dur-fast) var(--ease-out);
-}
-.compare__frame:hover .compare__handle svg,
-.compare.is-dragging .compare__handle svg { scale: 1.08; }
-
-/* The range input is the keyboard / screen-reader control; pointer drags are
-   handled on the frame by compare.js so a tap anywhere works on touch too. */
-.compare__range {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-.compare__frame:has(.compare__range:focus-visible) .compare__handle svg {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-.compare__labels {
+.exhibit__caption {
   display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
   margin-top: var(--space-3);
-}
-
-@media (max-width: 640px) {
-  .compare__frame { aspect-ratio: 9 / 16; }
+  font-size: var(--step--1);
 }
 
 /* ---- Why me: 2×2 on desktop, stacked on phones, hairlines not boxes -- */
