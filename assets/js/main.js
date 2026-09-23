@@ -53,7 +53,21 @@ sectionMark(document.querySelector("main"), [...document.querySelectorAll("main 
 // "It's Simple": the brush stroke comes in while the title is well on screen, goes when it leaves
 const simple = document.querySelector(".refine__title");
 if (simple) new IntersectionObserver(([e]) => simple.classList.toggle("is-brushed", e.isIntersecting),
-  { rootMargin: "-8% 0px -12% 0px" }).observe(simple);
+  { rootMargin: "-8% 0px -45% 0px" }).observe(simple);   // only while in the upper part of the screen
+
+// Cherry on top: centre the cake under the heading's text (narrower than its column)
+const cake = document.querySelector(".cherry__model");
+const cakeTitle = document.querySelector("#cherry h2");
+if (cake && cakeTitle) {
+  const centre = () => {
+    const range = document.createRange();
+    range.selectNodeContents(cakeTitle);
+    const widest = Math.max(...[...range.getClientRects()].map((r) => r.width));
+    cake.style.marginLeft = `${Math.max(0, (widest - cake.offsetWidth) / 2)}px`;
+  };
+  new ResizeObserver(centre).observe(cakeTitle);
+  document.fonts?.ready.then(centre);
+}
 
 // Light / dark switch
 const toggle = document.querySelector("[data-theme-toggle]");

@@ -72,6 +72,9 @@ export function sectionMark(main, sections, home) {
     const line = scrollY + innerHeight * 0.4;
     let now = -1;
     sections.forEach((s, i) => { if (pageOf(s).y <= line) now = i; });
+    // at the very bottom the last section is the one you're reading, even when a
+    // tall screen can't scroll its top up to the 40% line
+    if (scrollY >= document.documentElement.scrollHeight - innerHeight - 2) now = sections.length - 1;
     if (now === active) return;
     turns += now > active ? 1 : -1;                 // one turn per move, either direction
     active = now;

@@ -85,7 +85,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    If the phone image's size changes, update its width/height in index.html.
 3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows and a wireframe layer cake with a cherry on top
    (`cake.js`, canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
-   the last line of copy (hidden when stacked, ≤960px).
+   the last line of copy and centred under the heading's text (main.js) (hidden when stacked, ≤960px).
 4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
    stone → arrow → cut brilliant ("AI's “Finished” Product", serif italic quotes / "My Finished Product" as h3s).
    Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
@@ -122,9 +122,8 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 - `--ink` #0F0F0E text
 - `--accent` #CE0058 Rubine. Compare others with `?accent=cobalt|verdigris|oxide`.
 
-Dark mode: `:root[data-theme="dark"]` in tokens.css — dark espresso brown `--paper` #2A201B, white `--ink`, same
-accent; the wireframes use `--line` (= accent in light, brighter #FF4D94 in dark) and are recoloured live via
-`trackLines()` in stage.js. Set before first paint by the inline script in index.html (saved choice, else the device
+Dark mode: `:root[data-theme="dark"]` in tokens.css — black `--paper`, white `--ink`, same accent and model colour
+(`--line`, recoloured live via `trackLines()` in stage.js if it's ever themed). Set before first paint by the inline script in index.html (saved choice, else the device
 setting); the switch saves it, updates meta theme-color and fires `themechange`, on which opaque 3D stages repaint.
 
 ## Type

@@ -16,7 +16,7 @@
      per section. Contrast on --paper ≈ 5:1 (AA for text). */
   --accent:       #CE0058;
   --accent-ink:   #FFFFFF;   /* text placed on top of --accent */
-  --line:         var(--accent);   /* the 3D wireframes; brighter in dark mode */
+  --line:         var(--accent);   /* the 3D wireframes */
 
   /* ---- Typography ------------------------------------------------------ */
   --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -66,16 +66,14 @@
   --dur-draw: 1400ms;       /* the red pen sweeping over Exhibit A */
 }
 
-/* Dark mode: dark espresso brown with white text; same accent, the models'
-   lines a brighter rubine so they glow on the dark ground.
+/* Dark mode: black with white text; same accent, same models.
    Set on <html data-theme="dark"> by the header switch (theme.js). */
 :root[data-theme="dark"] {
-  --paper:      #2A201B;
-  --paper-deep: #211914;
-  --ink:        #F8F4EF;
-  --ink-soft:   #C2B5AA;
-  --rule:       #4A3B32;
-  --line:       #FF4D94;
+  --paper:      #000000;
+  --paper-deep: #111111;
+  --ink:        #F7F6F2;
+  --ink-soft:   #A9A9A6;
+  --rule:       #2E2E2D;
   color-scheme: dark;
 }
 

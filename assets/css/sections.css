@@ -443,6 +443,7 @@ html:not(.js) .refine__brush path {
   transition: color var(--dur-slow) var(--ease-out);
 }
 .exhibit__toggle [aria-pressed="true"] { color: var(--paper); }
+.exhibit__toggle [data-show="pen"][aria-pressed="true"] { color: var(--accent-ink); }   /* white on red, in both themes */
 .exhibit__toggle button:not([aria-pressed="true"]):hover { color: var(--accent); }
 .exhibit__pen-label {
   font-family: var(--font-hand);
