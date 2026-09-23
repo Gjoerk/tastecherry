@@ -35,7 +35,7 @@ if (webgl) {
   }
 }
 
-// Hero: Taste → Sauce → Zest → Spice (word, footnote and model together)
+// Hero: Taste → Sauce → Spice (word, footnote and model together)
 const hero = document.querySelector(".hero");
 if (hero) heroWords(hero, heroModels);
 

@@ -98,15 +98,15 @@
 .hero__words {
   display: inline-grid;
   justify-items: start;
-  transition: width 450ms var(--ease-out);
+  transition: width 650ms var(--ease-out);
 }
 .hero__word {
   grid-area: 1 / 1;
   opacity: 0;
-  transition: opacity 550ms var(--ease-out);     /* = FADE in hero.js / fruit.js */
+  transition: opacity 800ms var(--ease-out);     /* = FADE in hero.js / fruit.js */
 }
 .hero__word.is-active { opacity: 1; }
-.hero__note-word { transition: opacity 550ms var(--ease-out); }
+.hero__note-word { transition: opacity 800ms var(--ease-out); }
 .hero__note-word.is-out { opacity: 0; }
 
 /* Six-petal asterisk: bigger, hung off the top of "Taste", turning slowly */

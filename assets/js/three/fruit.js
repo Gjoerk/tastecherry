@@ -1,14 +1,14 @@
 // Hero catch: fine-line wireframes in the accent colour that swap with the
-// title's word: cherries (Taste), ketchup bottle (Sauce), lemon (Zest),
-// chili (Spice). Drag to rotate; slow idle spin otherwise.
+// title's word: cherries (Taste), ketchup squeeze bottle (Sauce), chili
+// (Spice). Drag to rotate; slow idle spin otherwise.
 
 import * as THREE from "three";
 import { createStage, cssColor, dragRotate } from "./stage.js";
 import { createCherryWireframe } from "./cherry.js";
-import { createKetchup, createLemon, createChili } from "./hero-models.js";
+import { createKetchup, createChili } from "./hero-models.js";
 import { setFade } from "./wire.js";
 
-const FADE = 0.55;   // seconds out, then the same in
+const FADE = 0.8;    // seconds out, then the same in
 
 export function initFruit(container) {
   const stage = createStage(container, { fov: 24 });
@@ -16,7 +16,7 @@ export function initFruit(container) {
   const style = { color: cssColor("--accent"), width: 1.1, ghost: 0.12 };
 
   const cherries = createCherryWireframe(style);
-  const models = [cherries, createKetchup(style), createLemon(style), createChili(style)];
+  const models = [cherries, createKetchup(style), createChili(style)];
 
   // Frame everything on the cherries: every other model is scaled and moved
   // into the same box, so the canvas (sized from --model-aspect) never changes.

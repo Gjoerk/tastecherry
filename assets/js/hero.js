@@ -1,10 +1,10 @@
-// Hero word swap: "Websites with Taste" → Sauce → Zest → Spice → Taste…
+// Hero word swap: "Websites with Taste" → Sauce → Spice → Taste…
 // The word, the footnote's first word and the 3D model fade out together and
 // the next ones fade in. Only runs while the hero is on screen, never with
 // reduced motion (then it simply stays on Taste).
 
-const HOLD = 4200;   // ms each word stays
-const FADE = 550;    // ms out, then the same in (matches fruit.js and the CSS)
+const HOLD = 6000;   // ms each word stays
+const FADE = 800;    // ms out, then the same in (matches fruit.js and the CSS)
 
 export function heroWords(hero, model) {
   const words = [...hero.querySelectorAll(".hero__word")];
