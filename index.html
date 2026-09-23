@@ -102,15 +102,28 @@
           <p>Same fonts. Same gradients. Same “Unlock your potential.” Everything looks good, and everything looks the same. No character, no love. <span class="aside">(Honestly? It looks like shit once you’ve seen a few.)</span></p>
         </div>
 
-        <!-- A typical AI site, marked up in red pen.
+        <!-- A typical AI site: clean first, then the red pen sweeps over it (exhibit.js).
              Sources: render/compare/ai.html + annotate.js → shoot.js → finalize.py compare -->
-        <figure class="exhibit split__full" data-reveal>
-          <picture>
-            <source media="(max-width: 640px)" srcset="assets/img/compare/ai-annotated-mobile.webp" width="780" height="1982">
-            <img class="exhibit__img" src="assets/img/compare/ai-annotated-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
-                 alt="A coffee roaster’s website straight from AI, marked up in red pen: gradient emoji logo, “shitty button #1”, “sparkles = AI was here”, “unlock what? the door?”, gradient text in Inter, buzzword bingo, “shitty buttons (rocket included, free)”, rounded cards with emoji icons, everything centred.">
-          </picture>
-          <figcaption class="exhibit__caption"><span class="label">Exhibit A</span> A&nbsp;typical AI first draft. <span class="aside">(Names changed to protect the guilty.)</span></figcaption>
+        <figure class="exhibit split__full" data-exhibit data-reveal>
+          <figcaption class="exhibit__bar">
+            <p class="exhibit__caption"><span class="label">Exhibit A</span> A&nbsp;typical AI first draft. <span class="aside">(Names changed to protect the guilty.)</span></p>
+            <div class="exhibit__toggle" role="group" aria-label="Show Exhibit A">
+              <button type="button" data-show="clean" aria-pressed="false">Looks fine</button>
+              <button type="button" data-show="pen" aria-pressed="true">Red pen</button>
+            </div>
+          </figcaption>
+          <div class="exhibit__frame">
+            <picture>
+              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-clean-mobile.webp" width="780" height="1982">
+              <img class="exhibit__img" src="assets/img/compare/ai-clean-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
+                   alt="A coffee roaster’s website straight from AI: purple-to-blue gradient logo, centred headline “Unlock the Perfect Cup of Coffee”, gradient buttons, three rounded cards with emoji icons.">
+            </picture>
+            <picture class="exhibit__pen">
+              <source media="(max-width: 640px)" srcset="assets/img/compare/ai-pen-mobile.webp" width="780" height="1982">
+              <img class="exhibit__img" src="assets/img/compare/ai-pen-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
+                   alt="Red-pen notes on it: “emoji + gradient logo. bold choice. (it isn’t)”, “shitty button #1”, “sparkles = AI was here”, “gradient text. in Inter. again.”, “buzzword bingo! 3/3”, “shitty buttons (rocket included, free)”, “3 rounded cards, drop shadows, emoji in a box. every. time.”">
+            </picture>
+          </div>
         </figure>
       </div>
     </section>

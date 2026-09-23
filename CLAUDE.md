@@ -26,7 +26,8 @@ assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio l
 assets/js/three/fruit.js    hero scene (cherries);  cherry.js = wireframe cherries;  strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js rough milky stone + cut brilliant scenes;  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (used once Blender renders exist)
-assets/img/compare/         marked-up AI screenshot for #problem (built from render/compare/)
+assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
+assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
 assets/img/turntable/<name>/000–059.webp   (not rendered yet)
 
@@ -58,11 +59,13 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, s
    takes the drawing's proportions (fruit.js sets --model-aspect), is capped to the height left after title and
    `--note-block` (footnote), and reaches up behind the title by --overlap so the leaf overlaps "with".
    Checked at 375×667, 1024×720, 1440×900.
-2. `#problem` — 01 The problem: split (headline left, copy right) + "Exhibit A": a typical AI site (demo coffee roaster)
-   marked up in red pen (hand-drawn circles, arrows, jokes like "shitty button #1"). Desktop and phone versions.
+2. `#problem` — 01 The problem: split (headline left, copy right) + "Exhibit A": a typical AI site (demo coffee roaster).
+   It shows clean first ("Looks fine"), then a red pen sweeps over it (left-to-right clip, `--dur-draw`) 1.2 s after it
+   is well in view; a toggle (Looks fine / Red pen) or a click on the picture flips it (`exhibit.js`). Without JS the
+   pen is just on. The pen is a transparent layer over the clean shot; desktop and phone versions.
    Sources in `render/compare/`: `ai.html` (the only place the generic AI look is allowed) + `annotate.js` (rough.js
    marks + Caveat notes; the phone layout opens up gaps to write in). Rebuild: `node render/compare/shoot.js`
-   (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-annotated-*.webp`.
+   (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-{clean,pen}-*.webp`.
 3. `#cherry` — 02 Cherry on top: split layout.
 4. `#approach` — centred h2 "It’s Simple", then rough milky stone → arrow → cut brilliant ("AI's Finished Product" /
    "My Finished Product" as h3s), then a quiet ink-soft "capisce?" underneath. No other copy.

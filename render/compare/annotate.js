@@ -28,7 +28,6 @@
     { marks: [["circle", ".logo"]], at: () => [22, R("nav").bottom + 52], rot: -4, text: "emoji + gradient\nlogo. bold. (not)" },
     { marks: [["circle", "nav .btn"]], at: () => [252, R("nav").bottom + 56], rot: 4, text: "shitty\nbutton #1" },
     { marks: [["circle", ".pill"]], at: () => [118, R(".pill").bottom + 50], rot: -3, text: "✨ = AI was here" },
-    { marks: [["wave", ["h1", "Unlock"]]], at: () => [14, R("h1").bottom + 38], rot: -4, text: "unlock what?\nthe door?", arrow: false },
     { marks: [["wave", "h1 span"]], at: () => [226, R("h1").bottom + 38], rot: 4, text: "gradient text.\nInter. again.", arrow: false },
     { marks: [["under", ["header p", "Elevate"]], ["under", ["header p", "seamless"]], ["under", ["header p", "Supercharge"]]],
       at: () => [96, R("header p").bottom + 48], rot: -2, text: "buzzword bingo! 3/3", arrow: false },
@@ -36,16 +35,13 @@
     { marks: [["circle", ".card:first-child .icon"]], at: () => [34, R(".card").top - 22], rot: -2, text: "emoji in a rounded box. every. time.", arrow: false },
   ] : [
     { marks: [["circle", ".logo"]], at: [52, 150], rot: -4, text: "emoji + gradient logo.\nbold choice. (it isn't)" },
-    { marks: [["under", "nav ul"]], at: [520, 104], rot: -2, text: "“Features”? It’s coffee.", arrow: false },
     { marks: [["circle", "nav .btn"]], at: [1040, 158], rot: 4, text: "shitty button #1" },
     { marks: [["circle", ".pill"]], at: [860, 214], rot: 3, text: "✨ sparkles = AI was here" },
-    { marks: [["wave", ["h1", "Unlock"]]], at: [66, 262], rot: -5, text: "unlock what?\nthe door?" },
-    { marks: [["wave", "h1 span"]], at: [1000, 262], rot: 5, text: "gradient text.\nin Inter. again." },
+    { marks: [["wave", "h1 span"]], at: [860, 332], rot: 4, text: "gradient text.\nin Inter. again." },
     { marks: [["under", ["header p", "Elevate"]], ["under", ["header p", "seamless"]], ["under", ["header p", "Supercharge"]]],
       at: [70, 420], rot: -3, text: "buzzword bingo!\n3/3", arrow: "Elevate" },
     { marks: [["box", ".ctas .btn"]], at: [880, 505], rot: 3, text: "shitty buttons\n(rocket included, free)" },
     { marks: [["circle", ".card:first-child .icon"]], at: [36, 548], rot: -4, text: "3 rounded cards,\ndrop shadows, emoji\nin a box. every. time." },
-    { marks: [], at: [1010, 590], rot: 4, text: "everything centred.\nbecause why not.", arrow: false },
   ];
 
   // ---------------------------------------------------------------- geometry
@@ -153,5 +149,6 @@
     const pick = typeof n.arrow === "string" ? done.find((d) => Array.isArray(d.target) && d.target[1] === n.arrow) : done[0];
     arrow(b, pick.m);
   }
+  svg.id = "pen";
   window.__shotHeight = Math.ceil(document.querySelector(".card h3").getBoundingClientRect().bottom + 24);
 })();

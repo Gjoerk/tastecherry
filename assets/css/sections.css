@@ -218,23 +218,60 @@
   .refine__arrow svg { width: 72px; transform: rotate(90deg); }
 }
 
-/* ---- Problem: a typical AI site, marked up in red pen ---------------- */
+/* ---- Problem: Exhibit A — clean AI site, then the red pen ----------- */
+/* The pen marks are a transparent layer over the clean screenshot; the
+   sweep is a left-to-right clip, like a pen moving across the page. */
 .exhibit { margin: var(--space-4) 0 0; }
-.exhibit__img {
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-deep);
+.exhibit__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-3);
 }
 .exhibit__caption {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-1) var(--space-3);
-  margin-top: var(--space-3);
   font-size: var(--step--1);
 }
+
+.exhibit__toggle {
+  display: none;                                /* needs JS; without it the pen is simply on */
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+}
+.js .exhibit__toggle { display: inline-flex; }
+.exhibit__toggle button {
+  padding: 0.55em 1.1em;
+  font-size: var(--step--1);
+  font-weight: 500;
+  line-height: 1;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.exhibit__toggle button + button { border-left: 1px solid var(--ink); }
+.exhibit__toggle [aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.exhibit__toggle [data-show="pen"][aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.exhibit__toggle button:not([aria-pressed="true"]):hover { background: var(--paper-deep); }
+
+.exhibit__frame {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper-deep);
+}
+.js .exhibit__frame { cursor: pointer; }
+.exhibit__img { display: block; width: 100%; height: auto; }
+.exhibit__pen {
+  position: absolute;
+  inset: 0;
+  transition: clip-path var(--dur-draw) cubic-bezier(0.45, 0, 0.2, 1);
+}
+.js .exhibit:not(.is-marked) .exhibit__pen { clip-path: inset(0 100% 0 0); }
+.js .exhibit.is-marked .exhibit__pen { clip-path: inset(0 0 0 0); }
 
 /* ---- Why me: 2×2 on desktop, stacked on phones, hairlines not boxes -- */
 .why {
