@@ -6,11 +6,15 @@
 //   data-turntable="assets/img/…"        pre-rendered Blender frames (the diamonds)
 //   data-gaze="assets/img/eye"           pre-rendered gaze grid (Cycles eye; parked, not in the page)
 
+import { initLang } from "./i18n.js";
 import { turntable } from "./turntable.js";
 import { exhibit } from "./exhibit.js";
 import { heroWords } from "./hero.js";
 import { sectionMark } from "./section-mark.js";
 import { themeToggle } from "./theme.js";
+
+// English / German first, so everything below measures the right text
+initLang();
 
 document.querySelectorAll("[data-turntable]").forEach(turntable);
 document.querySelectorAll("[data-exhibit]").forEach(exhibit);

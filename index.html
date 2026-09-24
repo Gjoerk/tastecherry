@@ -13,7 +13,7 @@
 
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 
-  <!-- Accent preview (?accent=cobalt etc.), JS flag and theme, before paint -->
+  <!-- Accent preview (?accent=cobalt etc.), JS flag, theme and language, before paint -->
   <script>
     (function () {
       var a = new URLSearchParams(location.search).get("accent");
@@ -24,6 +24,16 @@
       try { t = localStorage.getItem("theme"); } catch (e) {}
       if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       document.documentElement.setAttribute("data-theme", t);
+      // language before first paint: the saved choice, else the browser's. German
+      // text is swapped in by i18n.js; hide the page until then (at most 1.5 s)
+      var l = null;
+      try { l = localStorage.getItem("lang"); } catch (e) {}
+      if (!l) l = /^de\b/i.test(navigator.language || "") ? "de" : "en";
+      if (l === "de") {
+        document.documentElement.lang = "de";
+        document.documentElement.classList.add("i18n-pending");
+        setTimeout(function () { document.documentElement.classList.remove("i18n-pending"); }, 1500);
+      }
     })();
   </script>
 
@@ -31,7 +41,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap">
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&text=What%E2%80%99s%20wrong%3F(go%20on%2C%20click%20it)by%20gabriel&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&text=What%E2%80%99s%20wrong%3F(go%20on%2C%20click%20it)by%20gabrielWas%20stimmt%20nicht%3F(na%20los%2C%20klick%20drauf)&display=swap">
 
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
@@ -48,7 +58,7 @@
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
 
   <!-- Shared symbol: six-petal asterisk (logo mark, title mark, footnote) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -68,18 +78,24 @@
   <!-- ============================================================ HEADER -->
   <header class="site-header" data-header>
     <div class="container site-header__inner">
-      <a class="wordmark" href="#hero" aria-label="tastecherry by gabriel, home">
+      <a class="wordmark" href="#hero" aria-label="tastecherry by gabriel, home" data-i18n-attr="aria-label:wordmark">
         <svg class="wordmark__mark" aria-hidden="true"><use href="#asterisk"/></svg>tastecherry<span class="wordmark__sig">by gabriel</span>
       </a>
-      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
-        <svg class="theme-toggle__icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.25"/><path d="M10 1.75a8.25 8.25 0 0 1 0 16.5z"/></svg>
-        <span class="theme-toggle__label">Dark</span>
-      </button>
-      <nav class="site-nav" aria-label="Primary">
+      <div class="header-tools">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <svg class="theme-toggle__icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.25"/><path d="M10 1.75a8.25 8.25 0 0 1 0 16.5z"/></svg>
+          <span class="theme-toggle__label">Dark</span>
+        </button>
+        <div class="lang-switch" role="group" aria-label="Language" data-lang-switch data-i18n-attr="aria-label:lang">
+          <button type="button" data-lang="en" lang="en" aria-pressed="true" aria-label="English">EN</button>
+          <button type="button" data-lang="de" lang="de" aria-pressed="false" aria-label="Deutsch">DE</button>
+        </div>
+      </div>
+      <nav class="site-nav" aria-label="Primary" data-i18n-attr="aria-label:nav">
         <ul>
-          <li><a href="#why">Why me</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a class="site-nav__cta" href="#contact">Contact</a></li>
+          <li><a href="#why" data-i18n="nav.why">Why me</a></li>
+          <li><a href="#pricing" data-i18n="nav.pricing">Pricing</a></li>
+          <li><a class="site-nav__cta" href="#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>
       </nav>
     </div>
@@ -90,14 +106,14 @@
     <!-- ============================================================ HERO -->
     <section class="hero" id="hero" aria-labelledby="hero-title">
       <h1 class="hero__title" id="hero-title">
-        Websites<br>with <em class="hero__words"><span class="hero__word is-active">Taste</span><span class="hero__word" aria-hidden="true">Sauce</span><span class="hero__word" aria-hidden="true">Spice</span><svg class="hero__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8 C 95.2 7.6, 90.5 8.9, 86 9.7"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></em><a class="hero__mark" href="#taste-note" aria-describedby="taste-note"><svg aria-hidden="true"><use href="#asterisk"/></svg><span class="visually-hidden">(see footnote)</span></a>
+        <span data-i18n="hero.with">Websites<br>with</span> <em class="hero__words"><span class="hero__word is-active" data-i18n="hero.taste">Taste</span><span class="hero__word" aria-hidden="true">Sauce</span><span class="hero__word" aria-hidden="true">Spice</span><svg class="hero__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8 C 95.2 7.6, 90.5 8.9, 86 9.7"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></em><a class="hero__mark" href="#taste-note" aria-describedby="taste-note"><svg aria-hidden="true"><use href="#asterisk"/></svg><span class="visually-hidden" data-i18n="hero.seenote">(see footnote)</span></a>
       </h1>
 
       <div class="hero__stage turntable" data-scene="fruit"
-           role="img" aria-label="A line drawing of two cherries on a stem, now and then swapped for a ketchup squeeze bottle or a chili."></div>
+           role="img" aria-label="A line drawing of two cherries on a stem, now and then swapped for a ketchup squeeze bottle or a chili." data-i18n-attr="aria-label:hero.model"></div>
 
       <p class="hero__note" id="taste-note">
-        <svg class="hero__note-mark" aria-hidden="true"><use href="#asterisk"/></svg><span class="hero__note-word">Taste</span> is subjective.<br class="hero__note-break"> Mine just happens to be right.
+        <svg class="hero__note-mark" aria-hidden="true"><use href="#asterisk"/></svg><span class="hero__note-word">Taste</span><span data-i18n="hero.note"> is subjective.<br class="hero__note-break"> Mine just happens to be right.</span>
       </p>
     </section>
 
@@ -105,40 +121,40 @@
     <section class="section" id="problem" aria-labelledby="problem-title">
       <div class="container split">
         <header class="section-head" data-reveal>
-          <p class="label"><span class="index">01</span> The problem</p>
-          <h2 class="section-head__title" id="problem-title">AI can build you a website in 30&nbsp;seconds.</h2>
+          <p class="label" data-i18n="problem.label"><span class="index">01</span> The problem</p>
+          <h2 class="section-head__title" id="problem-title" data-i18n="problem.title">AI can build you a website in 30&nbsp;seconds.</h2>
         </header>
         <div class="split__body prose" data-reveal>
-          <p class="lead">And it’ll look fine. <span class="aside">(Just like the other 10,000.)</span></p>
-          <p>Same fonts. Same gradients. Same “Unlock your potential.” Everything looks good, and everything looks the same. No character, no love.</p>
+          <p class="lead" data-i18n="problem.lead">And it’ll look fine. <span class="aside">(Just like the other 10,000.)</span></p>
+          <p data-i18n="problem.body">Same fonts. Same gradients. Same “Unlock your potential.” Everything looks good, and everything looks the same. No character, no love.</p>
         </div>
 
         <!-- A typical AI site: clean first, then the red pen sweeps over it (exhibit.js).
              Sources: render/compare/ai.html + annotate.js → shoot.js → finalize.py compare -->
         <figure class="exhibit split__full" data-exhibit data-reveal>
-          <div class="exhibit__toggle" role="group" aria-label="Show Exhibit A as">
-            <button type="button" data-show="clean" aria-pressed="false">AI slop</button>
-            <button type="button" data-show="pen" aria-pressed="true"><span class="exhibit__pen-label">What’s wrong?</span></button>
-            <span class="exhibit__nudge" aria-hidden="true">(go on, click&nbsp;it)</span>
+          <div class="exhibit__toggle" role="group" aria-label="Show Exhibit A as" data-i18n-attr="aria-label:exhibit.group">
+            <button type="button" data-show="clean" aria-pressed="false" data-i18n="exhibit.clean">AI slop</button>
+            <button type="button" data-show="pen" aria-pressed="true"><span class="exhibit__pen-label" data-i18n="exhibit.pen">What’s wrong?</span></button>
+            <span class="exhibit__nudge" aria-hidden="true" data-i18n="exhibit.nudge">(go on, click&nbsp;it)</span>
           </div>
           <div class="exhibit__frame">
             <picture class="exhibit__clean exhibit__clean--light">
               <source media="(max-width: 640px)" srcset="assets/img/compare/ai-clean-mobile.webp" width="780" height="1586">
-              <img class="exhibit__img" src="assets/img/compare/ai-clean-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
+              <img class="exhibit__img" src="assets/img/compare/ai-clean-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async" data-i18n-attr="alt:exhibit.alt.clean"
                    alt="A coffee roaster’s website straight from AI: purple-to-blue gradient logo, centred headline “Unlock the Perfect Cup of Coffee”, gradient buttons, three rounded cards with emoji icons.">
             </picture>
             <picture class="exhibit__clean exhibit__clean--dark">
               <source media="(max-width: 640px)" srcset="assets/img/compare/ai-clean-mobile-dark.webp" width="780" height="1586">
-              <img class="exhibit__img" src="assets/img/compare/ai-clean-desktop-dark.webp" width="2000" height="1250" loading="lazy" decoding="async"
+              <img class="exhibit__img" src="assets/img/compare/ai-clean-desktop-dark.webp" width="2000" height="1250" loading="lazy" decoding="async" data-i18n-attr="alt:exhibit.alt.dark"
                    alt="The same AI site in its dark theme: near-black navy, glowing purple-to-blue gradients, dark rounded cards with emoji icons.">
             </picture>
             <picture class="exhibit__pen">
               <source media="(max-width: 640px)" srcset="assets/img/compare/ai-pen-mobile.webp" width="780" height="1586">
-              <img class="exhibit__img" src="assets/img/compare/ai-pen-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async"
+              <img class="exhibit__img" src="assets/img/compare/ai-pen-desktop.webp" width="2000" height="1250" loading="lazy" decoding="async" data-i18n-attr="alt:exhibit.alt.pen"
                    alt="Red-pen notes on it: “emoji + gradient logo. bold choice.”, “shitty button #1”, “sparkles = AI was here”, “gradient text. in Inter. again.”, “buzzword bingo! 3/3”, “shitty buttons (rocket included, free)”, “3 rounded cards, drop shadows, emoji in a box. every. time.”">
             </picture>
           </div>
-          <figcaption class="exhibit__caption"><span class="label">Exhibit A</span> A&nbsp;typical AI first draft.</figcaption>
+          <figcaption class="exhibit__caption" data-i18n="exhibit.caption"><span class="label">Exhibit A</span> A&nbsp;typical AI first draft.</figcaption>
         </figure>
       </div>
     </section>
@@ -147,15 +163,15 @@
     <section class="section" id="cherry" aria-labelledby="cherry-title">
       <div class="container split">
         <header class="section-head" data-reveal>
-          <p class="label"><span class="index">02</span> Cherry on top</p>
-          <h2 class="section-head__title" id="cherry-title">That’s where I&nbsp;come in.</h2>
+          <p class="label" data-i18n="cherry.label"><span class="index">02</span> Cherry on top</p>
+          <h2 class="section-head__title" id="cherry-title" data-i18n="cherry.title">That’s where I&nbsp;come in.</h2>
         </header>
         <div class="turntable cherry__model" data-scene="cake"
-             role="img" aria-label="A line drawing of a round layer cake with a cherry on top."></div>
+             role="img" aria-label="A line drawing of a round layer cake with a cherry on top." data-i18n-attr="aria-label:cherry.model"></div>
         <div class="split__body prose" data-reveal>
-          <p class="lead">AI does the heavy lifting.<br> I&nbsp;do the part it can’t: taste.</p>
-          <p>I&nbsp;steer the AI, rework the design and make the calls that give your site a personality. I&nbsp;know what your customers want to see, and what makes them close the tab.</p>
-          <p>Every detail matters. Fonts, spacing, colours, that one button that’s two pixels off. Nothing ships untouched. <span class="aside">(It&nbsp;bugs me more than it bugs you.)</span></p>
+          <p class="lead" data-i18n="cherry.lead">AI does the heavy lifting.<br> I&nbsp;do the part it can’t: taste.</p>
+          <p data-i18n="cherry.p1">I&nbsp;steer the AI, rework the design and make the calls that give your site a personality. I&nbsp;know what your customers want to see, and what makes them close the tab.</p>
+          <p data-i18n="cherry.p2">Every detail matters. Fonts, spacing, colours, that one button that’s two pixels off. Nothing ships untouched. <span class="aside">(It&nbsp;bugs me more than it bugs you.)</span></p>
         </div>
       </div>
     </section>
@@ -163,12 +179,12 @@
     <!-- ========================================================== REFINE -->
     <section class="section refine" id="approach" aria-labelledby="approach-title">
       <div class="container">
-        <h2 class="refine__title" id="approach-title" data-reveal>It’s Simple<svg class="refine__brush" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 8.8 C 16 7.2, 33 8.4, 50 7.1 S 79 5.9, 97.5 6.6"/><path pathLength="1" d="M5 10.6 C 25 9.6, 47 10.2, 66 9.1 S 88 8.6, 95 8.2"/></svg></h2>
+        <h2 class="refine__title" id="approach-title" data-reveal><span data-i18n="refine.title">It’s Simple</span><svg class="refine__brush" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 8.8 C 16 7.2, 33 8.4, 50 7.1 S 79 5.9, 97.5 6.6"/><path pathLength="1" d="M5 10.6 C 25 9.6, 47 10.2, 66 9.1 S 88 8.6, 95 8.2"/></svg></h2>
         <div class="refine__stones">
           <figure class="stone" data-reveal>
             <div class="turntable" data-turntable="assets/img/turntable/rough" data-frames="60"
-                 role="img" aria-label="A rough, milky uncut diamond."></div>
-            <figcaption><h3 class="stone__title">AI's <span class="scare">“</span>Finished<span class="scare">”</span> Product</h3></figcaption>
+                 role="img" aria-label="A rough, milky uncut diamond." data-i18n-attr="aria-label:refine.rough"></div>
+            <figcaption><h3 class="stone__title" data-i18n="refine.ai">AI's <span class="scare">“</span>Finished<span class="scare">”</span> Product</h3></figcaption>
           </figure>
 
           <div class="refine__arrow" aria-hidden="true" data-reveal>
@@ -180,8 +196,8 @@
 
           <figure class="stone" data-reveal>
             <div class="turntable" data-turntable="assets/img/turntable/cut" data-frames="60"
-                 role="img" aria-label="A polished round brilliant diamond."></div>
-            <figcaption><h3 class="stone__title">My Finished Product</h3></figcaption>
+                 role="img" aria-label="A polished round brilliant diamond." data-i18n-attr="aria-label:refine.cut"></div>
+            <figcaption><h3 class="stone__title" data-i18n="refine.mine">My Finished Product</h3></figcaption>
           </figure>
         </div>
       </div>
@@ -191,29 +207,29 @@
     <section class="section" id="why" aria-labelledby="why-title">
       <div class="container">
         <header class="section-head" data-reveal>
-          <p class="label"><span class="index">03</span> Why me</p>
-          <h2 class="section-head__title" id="why-title">Why me and not an agency?</h2>
+          <p class="label" data-i18n="why.label"><span class="index">03</span> Why me</p>
+          <h2 class="section-head__title" id="why-title" data-i18n="why.title">Why me and not an agency?</h2>
         </header>
         <ol class="why" data-reveal>
           <li class="why__item">
             <span class="why__num" aria-hidden="true">01</span>
-            <h3 class="why__title">Way cheaper.</h3>
-            <p>Agency quality without the agency invoice. <span class="aside">(No&nbsp;office dog to&nbsp;feed.)</span></p>
+            <h3 class="why__title" data-i18n="why.1.title">Way cheaper.</h3>
+            <p data-i18n="why.1.body">Agency quality without the agency invoice. <span class="aside">(No&nbsp;office dog to&nbsp;feed.)</span></p>
           </li>
           <li class="why__item">
             <span class="why__num" aria-hidden="true">02</span>
-            <h3 class="why__title">Actually finished.</h3>
-            <p>You get a working website, not a Figma file and a “phase&nbsp;2” meeting.</p>
+            <h3 class="why__title" data-i18n="why.2.title">Actually finished.</h3>
+            <p data-i18n="why.2.body">You get a working website, not a Figma file and a “phase&nbsp;2” meeting.</p>
           </li>
           <li class="why__item">
             <span class="why__num" aria-hidden="true">03</span>
-            <h3 class="why__title">Be brutally honest.</h3>
-            <p>Hate something? Say it. I’ll fix it.</p>
+            <h3 class="why__title" data-i18n="why.3.title">Be brutally honest.</h3>
+            <p data-i18n="why.3.body">Hate something? Say it. I’ll fix it.</p>
           </li>
           <li class="why__item">
             <span class="why__num" aria-hidden="true">04</span>
-            <h3 class="why__title">Looks premium, looks like you.</h3>
-            <p>Not a template with your logo slapped on.</p>
+            <h3 class="why__title" data-i18n="why.4.title">Looks premium, looks like you.</h3>
+            <p data-i18n="why.4.body">Not a template with your logo slapped on.</p>
           </li>
         </ol>
       </div>
@@ -223,52 +239,52 @@
     <section class="section" id="pricing" aria-labelledby="pricing-title">
       <div class="container">
         <header class="section-head" data-reveal>
-          <p class="label"><span class="index">04</span> Pricing</p>
-          <h2 class="section-head__title" id="pricing-title">Pricing</h2>
-          <p class="section-head__sub">Fixed prices. <span class="aside">(No hourly rates, no surprise invoices.)</span></p>
+          <p class="label" data-i18n="pricing.label"><span class="index">04</span> Pricing</p>
+          <h2 class="section-head__title" id="pricing-title" data-i18n="pricing.title">Pricing</h2>
+          <p class="section-head__sub" data-i18n="pricing.sub">Fixed prices. <span class="aside">(No hourly rates, no surprise invoices.)</span></p>
         </header>
 
         <ul class="plans" data-reveal>
           <li class="plan">
             <h3 class="plan__name">One Page</h3>
-            <p class="plan__price"><span class="plan__from">from</span> <span class="plan__amount">€490<svg class="plan__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></span></p>
+            <p class="plan__price"><span class="plan__from" data-i18n="pricing.from">from</span> <span class="plan__amount"><span data-i18n="pricing.one.amount">€490</span><svg class="plan__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></span></p>
             <ul class="plan__features">
-              <li>One page</li>
-              <li>Mobile-ready</li>
-              <li>Contact form</li>
-              <li>Domain setup</li>
-              <li>3 feedback rounds</li>
+              <li data-i18n="pricing.f.onepage">One page</li>
+              <li data-i18n="pricing.f.mobile">Mobile-ready</li>
+              <li data-i18n="pricing.f.form">Contact form</li>
+              <li data-i18n="pricing.f.domain">Domain setup</li>
+              <li data-i18n="pricing.f.feedback">3 feedback rounds</li>
             </ul>
-            <p class="plan__for"><span class="label">For</span> Getting online fast <span class="aside">(and looking good doing&nbsp;it)</span></p>
+            <p class="plan__for" data-i18n="pricing.one.for"><span class="label">For</span> Getting online fast <span class="aside">(and looking good doing&nbsp;it)</span></p>
           </li>
           <li class="plan">
             <h3 class="plan__name">Business</h3>
-            <p class="plan__price"><span class="plan__from">from</span> <span class="plan__amount">€1,190<svg class="plan__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></span></p>
+            <p class="plan__price"><span class="plan__from" data-i18n="pricing.from">from</span> <span class="plan__amount"><span data-i18n="pricing.business.amount">€1,190</span><svg class="plan__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></span></p>
             <ul class="plan__features">
-              <li>Up to 5 pages</li>
-              <li>Mobile-ready</li>
-              <li>Contact form</li>
-              <li>Domain setup</li>
-              <li>Content you can edit&nbsp;yourself</li>
-              <li>Basic SEO</li>
-              <li>3 feedback rounds</li>
+              <li data-i18n="pricing.f.pages">Up to 5 pages</li>
+              <li data-i18n="pricing.f.mobile">Mobile-ready</li>
+              <li data-i18n="pricing.f.form">Contact form</li>
+              <li data-i18n="pricing.f.domain">Domain setup</li>
+              <li data-i18n="pricing.f.cms">Content you can edit&nbsp;yourself</li>
+              <li data-i18n="pricing.f.seo">Basic SEO</li>
+              <li data-i18n="pricing.f.feedback">3 feedback rounds</li>
             </ul>
-            <p class="plan__for"><span class="label">For</span> When one page isn’t enough</p>
+            <p class="plan__for" data-i18n="pricing.business.for"><span class="label">For</span> When one page isn’t enough</p>
           </li>
           <li class="plan">
             <h3 class="plan__name">Care</h3>
-            <p class="plan__price"><span class="plan__amount">€29<svg class="plan__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></span> <span class="plan__from">/ month</span></p>
+            <p class="plan__price"><span class="plan__amount"><span data-i18n="pricing.care.amount">€29</span><svg class="plan__underline" viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2.5 9.6 C 14 8.1, 27 8.9, 41 7.8 S 70 6.3, 84 6.9 C 90 7.1, 95 6.4, 97.6 5.8"/><path pathLength="1" d="M6 10.4 C 22 9.3, 43 9.8, 60 8.6 S 84 7.9, 93 7.4"/></svg></span> <span class="plan__from" data-i18n="pricing.month">/ month</span></p>
             <ul class="plan__features">
-              <li>Hosting</li>
-              <li>Updates</li>
-              <li>Backups</li>
-              <li>Up to 30&nbsp;min of changes per&nbsp;month</li>
+              <li data-i18n="pricing.f.hosting">Hosting</li>
+              <li data-i18n="pricing.f.updates">Updates</li>
+              <li data-i18n="pricing.f.backups">Backups</li>
+              <li data-i18n="pricing.f.changes">Up to 30&nbsp;min of changes per&nbsp;month</li>
             </ul>
-            <p class="plan__for"><span class="label">For</span> So you never have to think about&nbsp;it</p>
+            <p class="plan__for" data-i18n="pricing.care.for"><span class="label">For</span> So you never have to think about&nbsp;it</p>
           </li>
         </ul>
 
-        <p class="plans__note" data-reveal>Not sure which one? <a class="link-cta" href="#contact">Just ask.</a></p>
+        <p class="plans__note" data-reveal data-i18n="pricing.note">Not sure which one? <a class="link-cta" href="#contact">Just ask.</a></p>
       </div>
     </section>
 
@@ -276,28 +292,28 @@
     <section class="section" id="contact" aria-labelledby="contact-title">
       <div class="container split">
         <header class="section-head" data-reveal>
-          <p class="label"><span class="index">05</span> Contact</p>
-          <h2 class="section-head__title" id="contact-title">Let’s create <em>meaningful</em> websites.</h2>
-          <p class="section-head__sub contact__intro">Tell me what you do and what you need. I&nbsp;reply within 24&nbsp;hours. <span class="aside">(Usually faster.)</span></p>
-          <p class="contact__alt">Or just write: <a class="link-cta" href="mailto:hello@tastecherry.com">hello@tastecherry.com</a></p>
+          <p class="label" data-i18n="contact.label"><span class="index">05</span> Contact</p>
+          <h2 class="section-head__title" id="contact-title" data-i18n="contact.title">Let’s create <em>meaningful</em> websites.</h2>
+          <p class="section-head__sub contact__intro" data-i18n="contact.intro">Tell me what you do and what you need. I&nbsp;reply within 24&nbsp;hours. <span class="aside">(Usually faster.)</span></p>
+          <p class="contact__alt" data-i18n="contact.alt">Or just write: <a class="link-cta" href="mailto:hello@tastecherry.com">hello@tastecherry.com</a></p>
         </header>
 
         <!-- TODO: connect a form handler (action/method) -->
         <form class="form split__body" action="#" method="post" data-reveal>
           <div class="field">
-            <label class="label" for="contact-name">Name</label>
+            <label class="label" for="contact-name" data-i18n="contact.name">Name</label>
             <input id="contact-name" name="name" type="text" autocomplete="name" required>
           </div>
           <div class="field">
-            <label class="label" for="contact-email">Email</label>
+            <label class="label" for="contact-email" data-i18n="contact.email">Email</label>
             <input id="contact-email" name="email" type="email" autocomplete="email" required>
           </div>
           <div class="field field--full">
-            <label class="label" for="contact-message">Message</label>
+            <label class="label" for="contact-message" data-i18n="contact.message">Message</label>
             <textarea id="contact-message" name="message" rows="5" required></textarea>
           </div>
           <div class="form__actions">
-            <button class="button button--accent" type="submit">Send</button>
+            <button class="button button--accent" type="submit" data-i18n="contact.send">Send</button>
           </div>
         </form>
       </div>
@@ -307,9 +323,9 @@
     <section class="section eye" id="eye" aria-labelledby="eye-title">
       <div class="container">
         <div class="turntable eye__stage" data-scene="eye"
-             role="img" aria-label="A line drawing of an eyeball that follows your cursor."></div>
-        <h2 class="eye__title" id="eye-title" data-reveal>What you <em>see</em> is what you get.</h2>
-        <p class="eye__sub" data-reveal>I&nbsp;put as much care into your website as into this one.</p>
+             role="img" aria-label="A realistic eyeball that follows your cursor." data-i18n-attr="aria-label:eye.model"></div>
+        <h2 class="eye__title" id="eye-title" data-reveal data-i18n="eye.title">What you <em>see</em> is what you get.</h2>
+        <p class="eye__sub" data-reveal data-i18n="eye.sub">I&nbsp;put as much care into your website as into this one.</p>
       </div>
     </section>
 
@@ -318,13 +334,13 @@
   <!-- ============================================================ FOOTER -->
   <footer class="site-footer">
     <div class="container site-footer__inner">
-      <p>Built with taste.</p>
+      <p data-i18n="footer.built">Built with taste.</p>
       <ul class="site-footer__links">
         <li><a href="#">Impressum</a></li><!-- TODO: Impressum page -->
         <li><a href="#">Datenschutz</a></li><!-- TODO: Datenschutz page -->
         <li>© 2026 tastecherry</li>
       </ul>
-      <a class="link-arrow link-arrow--up" href="#hero">Back to top</a>
+      <a class="link-arrow link-arrow--up" href="#hero" data-i18n="footer.top">Back to top</a>
     </div>
   </footer>
 

@@ -53,8 +53,15 @@
   flex: none;
 }
 
-/* Light / dark switch: centred in the header (between logo and nav on phones) */
+/* Header tools, centred in the header (between logo and nav on phones):
+   the light / dark switch and the EN / DE switch */
 .site-header__inner { position: relative; }
+.header-tools {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
 .theme-toggle {
   flex: none;
   display: inline-flex;
@@ -81,11 +88,38 @@
 .theme-toggle__icon path { fill: currentColor; stroke: none; }
 :root[data-theme="dark"] .theme-toggle__icon { rotate: 180deg; }
 @media (min-width: 700px) {
-  .theme-toggle { position: absolute; left: 50%; translate: -50% 0; }
+  .header-tools { position: absolute; left: 50%; translate: -50% 0; }
 }
+/* EN / DE: the same pill, the current language in ink */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2em;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: var(--step--1);
+  font-weight: 500;
+  line-height: 1;
+}
+.lang-switch button {
+  padding: 0.25em 0.55em;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.lang-switch button:hover { color: var(--ink); }
+.lang-switch button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
+html:not(.js) .lang-switch { display: none; }   /* German needs JS */
+/* German on first paint: hidden until i18n.js has swapped the text in */
+html.i18n-pending body { visibility: hidden; }
 @media (max-width: 699px) {
   .theme-toggle { padding: 0.4em; }
   .theme-toggle__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+/* phones: logo, both switches and the accent Contact link (Why me / Pricing are a scroll away) */
+@media (max-width: 480px) {
+  .site-nav li:not(:last-child) { display: none; }
 }
 /* the smallest phones: logo, switch and nav only just fit */
 @media (max-width: 360px) {
@@ -93,7 +127,9 @@
   .site-nav ul { gap: 0.5rem; }
   .wordmark { font-size: 0.92rem; }
   .site-nav a { font-size: 0.72rem; }
-  .theme-toggle { font-size: 0.72rem; }
+  .theme-toggle, .lang-switch { font-size: 0.72rem; }
+  .header-tools { gap: 0.25rem; }
+  .lang-switch button { padding: 0.25em 0.4em; }
   .wordmark__sig { right: 0; }                 /* signed under the wordmark, not past it */
 }
 
@@ -136,6 +172,9 @@ main { position: relative; }
   justify-items: center;
   padding: var(--pad-top) var(--gutter) var(--pad-bottom);
 }
+/* German: "Geschmack" is longer than "Taste"; on narrow screens the title
+   steps down a little so "mit Geschmack*" stays on one line */
+html[lang="de"] .hero { --title-size: clamp(2.6rem, min(1.2rem + 8vw, 13svh), 10rem); }
 .hero__title {
   position: relative;
   z-index: 1;                                    /* sits over the cherries */
@@ -145,6 +184,7 @@ main { position: relative; }
   letter-spacing: -0.035em;
   text-align: center;
   color: var(--ink);
+  white-space: nowrap;                           /* the asterisk never drops onto its own line */
 }
 .hero__title em { letter-spacing: -0.03em; color: var(--accent); }
 

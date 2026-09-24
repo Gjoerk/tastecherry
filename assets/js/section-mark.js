@@ -91,6 +91,7 @@ export function sectionMark(main, sections, home) {
   const relayout = () => place(false);
   new ResizeObserver(relayout).observe(document.body);
   document.fonts?.ready.then(relayout);
+  addEventListener("langchange", relayout);      // labels change length
   place(false);          // start at home, hidden
   update(false);         // already scrolled down on load? sit there without flying
 }

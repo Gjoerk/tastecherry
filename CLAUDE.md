@@ -29,6 +29,7 @@ assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.j
 assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
 assets/js/three/cake.js     layer cake + cherry wireframe under the #cherry heading (transparent stage)
 assets/js/theme.js          light/dark switch in the header
+assets/js/i18n.js           English / German switch: German copy (DE table), swaps keyed text, remembers the choice
 assets/js/section-mark.js   accent asterisk after the current section's label; flies (with a turn) to the next one
                             strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
@@ -62,6 +63,15 @@ One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- ki
 ## Current page (built step by step)
 
 Header: light/dark switch in the middle (`theme.js`; pill, half-filled circle + "Dark"/"Light", icon only on phones).
+Next to it an EN / DE switch (`i18n.js`). The page is written in English; each translatable bit carries
+`data-i18n="key"` (its HTML is swapped) or `data-i18n-attr="alt:key,…"`, and the German lives in the `DE` table in
+`i18n.js` (du-form; AI → KI; buzzwords and plan names stay English: Sauce, Spice, One Page, Business, Care; Taste →
+Geschmack). English originals are read from the page, so edit English in index.html and German in `DE` (new copy
+needs a key in both). Choice saved in localStorage; first visit follows the browser language; the inline head script
+sets `lang` and hides the page (`i18n-pending`, max 1.5 s) until German is swapped in. Scripts that write text use
+`t(key)`; scripts that measure text listen for `langchange` (hero slot, section mark, theme label). German prices:
+"ab 490 €", "1.190 €", "/ Monat". The German hero title steps down a little on narrow screens ("mit Geschmack*" on
+one line). Phones ≤480px show only the Contact link in the nav (room for both switches).
 Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel" signed under the end of the wordmark (Caveat, accent) (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
 
 1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe model rising behind the
@@ -160,7 +170,7 @@ motion). 3D stages are transparent, so they always change with the page.
 - Familjen Grotesk (`--font-sans`) for everything: a grotesk with character (single-storey a), not the default everyone ships.
 - Newsreader italic (`<em>`) only for emphasis inside headlines. Both from Google Fonts.
 - Caveat (`--font-hand`) only for the red-pen bits of Exhibit A and the "by gabriel" signature, loaded as a subset of
-  just those letters (extend the `&text=` in index.html if you add words).
+  just those letters, English and German (extend the `&text=` in index.html if you add words).
 
 ## Design rules (anti-vibe-coded checklist)
 

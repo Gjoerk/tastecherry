@@ -27,9 +27,14 @@ export function heroWords(hero, model) {
   if (start > 0) {
     words[0].classList.remove("is-active");
     words[start].classList.add("is-active");
-    note.textContent = words[start].textContent;
     i = start;
   }
+  // English / German: "Taste" becomes "Geschmack"; the footnote and the slot follow
+  addEventListener("langchange", () => {
+    note.textContent = words[i].dataset.note ?? words[i].textContent;
+    fit(words[i]);
+  });
+  note.textContent = words[i].dataset.note ?? words[i].textContent;   // German: Geschmack
   document.fonts.ready.then(() => {           // first fit without the ease
     slot.style.transition = "none";
     fit(words[i]);

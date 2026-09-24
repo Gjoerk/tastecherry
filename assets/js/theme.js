@@ -5,6 +5,8 @@
 // button (View Transitions), so the 3D canvases can't change before or after
 // the rest. Without View Transitions, or with reduced motion, it's instant.
 
+import { t } from "./i18n.js";
+
 export function themeToggle(button) {
   const root = document.documentElement;
   const meta = document.querySelector('meta[name="theme-color"]');
@@ -13,8 +15,8 @@ export function themeToggle(button) {
   const sync = () => {
     const dark = root.dataset.theme === "dark";
     button.setAttribute("aria-pressed", String(dark));
-    button.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-    label.textContent = dark ? "Light" : "Dark";          // what you switch to
+    button.setAttribute("aria-label", t(dark ? "theme.toLight" : "theme.toDark"));
+    label.textContent = t(dark ? "theme.light" : "theme.dark");   // what you switch to
     meta?.setAttribute("content", getComputedStyle(root).getPropertyValue("--paper").trim());
   };
 
@@ -37,5 +39,6 @@ export function themeToggle(button) {
       );
     });
   });
+  addEventListener("langchange", sync);
   sync();
 }
