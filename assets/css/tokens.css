@@ -16,11 +16,12 @@
      per section. Contrast on --paper ≈ 5:1 (AA for text). */
   --accent:       #CE0058;
   --accent-ink:   #FFFFFF;   /* text placed on top of --accent */
+  --line:         var(--accent);   /* the 3D wireframes */
 
   /* ---- Typography ------------------------------------------------------ */
-  --font-sans:  "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:  "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Newsreader", ui-serif, Georgia, serif;
-  --font-mono:  ui-monospace, "SF Mono", Menlo, monospace;
+  --font-hand:  "Caveat", "Bradley Hand", cursive;  /* handwriting: Exhibit A switch + header signature; subset */
 
   /* Fluid type scale (min @ 360px → max @ 1440px) */
   --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);  /* 13 → 14 */
@@ -34,7 +35,7 @@
   --leading-tight: 1.02;
   --leading-snug:  1.2;
   --leading-body:  1.55;
-  --tracking-tight: -0.035em;
+  --tracking-tight: -0.025em;
   --tracking-label: 0.08em;
 
   /* ---- Space (8pt-ish, fluid at the large end) ------------------------- */
@@ -56,17 +57,26 @@
   --col-gap:  clamp(1rem, 0.6rem + 1.5vw, 1.5rem);
 
   /* ---- Shape & motion -------------------------------------------------- */
+  --header-h: 4.25rem;
   --radius: 2px;             /* nearly square on purpose */
   --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.25, 1);  /* hero word swap: soft both ends */
   --dur-fast: 180ms;
   --dur-slow: 700ms;
+  --dur-draw: 1400ms;       /* the red pen sweeping over Exhibit A */
 }
 
-/* The generic "AI site" look, used ONLY inside the crossed-out specimen in
-   #problem. Never use these anywhere else. */
-:root {
-  --cliche-from: #7C5CFF;
-  --cliche-to:   #3BA7FF;
+/* Dark mode: the warm paper's night side — a charcoal with a faint cherry
+   undertone (reads as black, feels warm, lets the rubine glow), and the light
+   theme's paper as the text colour. Same accent, same models.
+   Set on <html data-theme="dark"> by the header switch (theme.js). */
+:root[data-theme="dark"] {
+  --paper:      #1C1718;
+  --paper-deep: #151112;
+  --ink:        #F3F1EB;
+  --ink-soft:   #ABA3A1;
+  --rule:       #3A3133;
+  color-scheme: dark;
 }
 
 /* Accent candidates for comparison — try them with ?accent=cobalt etc.

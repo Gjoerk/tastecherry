@@ -1,9 +1,20 @@
-// Rough milky diamond → cut round brilliant. Each lives on its own canvas.
+// Rough milky diamond → cut round brilliant, rendered live (each on its own
+// transparent canvas, drag to turn). Tuned to match the Cycles renders:
+//
+//   rough  dense rounded-octahedron mesh (lumps, etching, trigon pits) with the
+//          same ray-traced gem shader: rays enter through the bumpy surface
+//          (frosted), bounce inside the stone's 96 bounding planes and come
+//          out partly scattered to white (milky)
+//   cut    57-facet round brilliant with the ray-traced gem shader (gem.js):
+//          8 internal bounces, total internal reflection, diamond dispersion,
+//          against a high-contrast studio of soft boxes and black flags
+//
+// Both sit on a soft contact shadow cast to the right, like the renders.
 
 import * as THREE from "three";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
-import { createStage, studioEnvironment, dragRotate } from "./stage.js";
-import { createGemMaterial, cubeEnvironment, gemStudio } from "./gem.js";
+import { createStage, dragRotate } from "./stage.js";
+import { createGemMaterial, cubeEnvironment, gemStudio, supportPlanes } from "./gem.js";
 
 // ---------------------------------------------------------------- noise
 const hash = (x, y, z) => {
@@ -32,12 +43,21 @@ const fbm = (v, octaves = 4) => {
 };
 
 // ------------------------------------------------------- rough crystal
-// A rounded, slightly lopsided octahedron with an etched, frosted skin.
-function roughGeometry() {
-  let geo = new THREE.IcosahedronGeometry(1, 40);
+// A rounded, slightly lopsided octahedron: big lumps, fine etching, and the
+// shallow triangular pits ("trigons") real rough diamonds have on their faces.
+function roughGeometry(detail = 72) {
+  let geo = new THREE.IcosahedronGeometry(1, detail);
   geo.deleteAttribute("normal");
   geo.deleteAttribute("uv");
   geo = mergeVertices(geo);
+
+  // trigon pits: centres scattered over the eight octahedron faces
+  let seed = 3;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const pits = Array.from({ length: 70 }, () => {
+    const d = new THREE.Vector3(rnd() * 2 - 1, rnd() * 2 - 1, rnd() * 2 - 1).normalize();
+    return { d, r: 0.05 + rnd() * 0.09, depth: 0.004 + rnd() * 0.01 };
+  });
 
   const pos = geo.attributes.position;
   const v = new THREE.Vector3();
@@ -47,8 +67,13 @@ function roughGeometry() {
     octa.copy(v).divideScalar(Math.abs(v.x) + Math.abs(v.y) + Math.abs(v.z));
     const r = v.clone().lerp(octa.multiplyScalar(1.5), 0.72);
     const lump = 1 + fbm(v.clone().multiplyScalar(1.4), 3) * 0.1;
-    const etch = 1 + fbm(v.clone().multiplyScalar(8), 3) * 0.012;
-    r.multiplyScalar(lump * etch);
+    const etch = 1 + fbm(v.clone().multiplyScalar(9), 3) * 0.009 + fbm(v.clone().multiplyScalar(26), 2) * 0.003;
+    let pit = 0;
+    for (const p of pits) {
+      const d = v.distanceTo(p.d);
+      if (d < p.r) pit -= p.depth * smooth(1 - d / p.r);
+    }
+    r.multiplyScalar(lump * etch + pit);
     r.y *= 1.08;
     r.x *= 0.96;
     pos.setXYZ(i, r.x, r.y, r.z);
@@ -119,19 +144,21 @@ function brilliantGeometry() {
 }
 
 // ------------------------------------------------------- soft floor shadow
-function contactShadow(opacity = 0.16) {
-  const size = 128;
+// Offset to the right and stretched, as the renders' key light casts it
+function contactShadow(opacity = 0.22) {
+  const size = 256;
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = size;
   const ctx = canvas.getContext("2d");
   const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
   g.addColorStop(0, `rgba(15,15,14,${opacity})`);
+  g.addColorStop(0.45, `rgba(15,15,14,${opacity * 0.55})`);
   g.addColorStop(1, "rgba(15,15,14,0)");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   const mesh = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1),
-    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true, depthWrite: false })
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true, depthWrite: false, toneMapped: false })
   );
   mesh.rotation.x = -Math.PI / 2;
   return mesh;
@@ -141,75 +168,63 @@ function frame(stage, radius) {
   stage.onResize = (w, h) => {
     const vFov = THREE.MathUtils.degToRad(stage.camera.fov);
     const fit = Math.max(radius / Math.tan(vFov / 2), radius / (Math.tan(vFov / 2) * (w / h)));
-    stage.camera.position.set(0, fit * 0.18, fit);
-    stage.camera.lookAt(0, -0.05, 0);
+    stage.camera.position.set(0, fit * 0.2, fit);
+    stage.camera.lookAt(0, -0.12, 0);
   };
 }
 
+const filmic = (stage, exposure) => {
+  stage.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  stage.renderer.toneMappingExposure = exposure;
+};
+
 // ---------------------------------------------------------------- scenes
 export function initDiamonds({ rough, cut }) {
-  // Rough: frosted, milky, softly lit
-  const a = createStage(rough, { fov: 24 });
-  a.scene.environment = studioEnvironment(a.renderer, { wall: 0.35, panels: 4 });
-  a.scene.environmentIntensity = 1.35;
-  const roughStone = new THREE.Mesh(roughGeometry(), new THREE.MeshPhysicalMaterial({
-    color: "#F7F8F8",
-    emissive: "#EEF1F2",       // a little inner glow reads as "milky"
-    emissiveIntensity: 0.16,
-    roughness: 0.38,
-    transmission: 0.75,
-    thickness: 1.6,
-    ior: 1.8,
-    attenuationColor: new THREE.Color("#B4BBBF"),
-    attenuationDistance: 2.4,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.25,
-    sheen: 1,
-    sheenColor: new THREE.Color("#ffffff"),
-    sheenRoughness: 0.35,
-    iridescence: 0.25,
-    iridescenceIOR: 1.6,
+  // Rough: ray-traced like the cut stone, but frosted and milky
+  const a = createStage(rough, { fov: 24, transparent: true });
+  filmic(a, 1.0);
+  const roughGeo = roughGeometry();
+  const roughEnv = cubeEnvironment(a.renderer, gemStudio({ wall: 0.58, light: 5, flags: 22, boxes: 14, seed: 11 }), 512);
+  const roughStone = new THREE.Mesh(roughGeo, createGemMaterial(roughGeo, roughEnv, {
+    ior: 2.0, dispersion: 0.012, bounces: 6, planes: supportPlanes(roughGeo), milk: 0.16, frost: 0.9,
   }));
-  roughStone.scale.setScalar(0.88);
-  roughStone.rotation.set(0.35, 0.4, 0.2);
+  roughStone.onBeforeRender = (renderer, scene, camera) => roughStone.material.userData.update(roughStone, camera);
+  const roughBody = new THREE.Group();
+  roughBody.add(roughStone);
+  roughBody.scale.setScalar(0.88);
+  roughBody.rotation.set(0.35, 0.4, 0.2);
   const roughPivot = new THREE.Group();
-  roughPivot.add(roughStone);
+  roughPivot.add(roughBody);
   a.scene.add(roughPivot);
-  const shadowA = contactShadow(0.14);
-  shadowA.scale.set(2.4, 1.6, 1);
-  shadowA.position.y = -1.35;
+  const shadowA = contactShadow(0.24);
+  shadowA.scale.set(2.8, 1.5, 1);
+  shadowA.position.set(0.45, -1.12, -0.1);
   a.scene.add(shadowA);
   frame(a, 1.6);
 
   // Cut: ray-traced facets against a high-contrast studio
-  const b = createStage(cut, { fov: 24 });
+  const b = createStage(cut, { fov: 24, transparent: true });
+  filmic(b, 1.05);
   const gemGeo = brilliantGeometry();
-  const envCube = cubeEnvironment(b.renderer, gemStudio({ wall: 0.7, flags: 26, boxes: 18 }));
-  const cutStone = new THREE.Mesh(gemGeo, createGemMaterial(gemGeo, envCube));
+  const envCube = cubeEnvironment(b.renderer, gemStudio({ wall: 0.8, light: 5, flags: 22, boxes: 20 }), 512);
+  const cutStone = new THREE.Mesh(gemGeo, createGemMaterial(gemGeo, envCube, { dispersion: 0.02, bounces: 8, frost: 0.4 }));
   cutStone.onBeforeRender = (renderer, scene, camera) => cutStone.material.userData.update(cutStone, camera);
   const cutPivot = new THREE.Group();
   cutPivot.rotation.x = 0.22;       // three-quarter view: table, crown and pointed pavilion all read
   cutPivot.scale.setScalar(1.32);
   cutPivot.add(cutStone);
   b.scene.add(cutPivot);
-  const shadowB = contactShadow(0.12);
-  shadowB.scale.set(2.2, 1.4, 1);
-  shadowB.position.y = -1.2;
+  const shadowB = contactShadow(0.26);
+  shadowB.scale.set(2.8, 1.4, 1);
+  shadowB.position.set(0.5, -0.98, -0.1);
   b.scene.add(shadowB);
   frame(b, 1.6);
 
   // Drag to rotate (idle spin when untouched)
   const spinRough = dragRotate(rough, roughPivot, { idleSpeed: 0.25 });
   const spinCut = dragRotate(cut, cutPivot, { idleSpeed: 0.35 });
-
-  a.onFrame = (t, dt) => {
-    spinRough(dt);
-    roughPivot.position.y = Math.sin(t * 0.9) * 0.04;
-  };
-  b.onFrame = (t, dt) => {
-    spinCut(dt);
-    cutPivot.position.y = Math.sin(t * 0.9 + 1.2) * 0.04;
-  };
+  a.onFrame = (t, dt) => spinRough(dt);
+  b.onFrame = (t, dt) => spinCut(dt);
 
   a.resize();
   b.resize();

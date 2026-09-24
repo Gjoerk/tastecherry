@@ -7,13 +7,15 @@ The site itself is the proof, so it must never look "vibe coded".
 
 Plain HTML/CSS/JS, no build step for the site. Preview: `python3 -m http.server 4321` (or the `site` config in `.claude/launch.json`).
 
-3D currently runs **real-time in Three.js** (CDN import map). The hero cherries and both diamonds rotate by drag.
+3D: everything on the page runs **real-time in Three.js** (CDN import map): hero models, cake, eye and the two
+diamonds in `#approach` (drag to rotate). The diamonds were Cycles turntables for a while (`turntable.js`, frames in
+`assets/img/turntable/`, kept but unused): even at 360 frames in sprite sheets, dragging felt laggy, so they went live.
 The hero title is plain black HTML text. A ceramic Blender render of it (`assets/img/hero/title*.webp`) is kept but unused.
 
-A full **Blender Cycles pipeline** in `render/` can replace the real-time models with photoreal 360° turntables
-(60 WebP frames each, shown by `assets/js/turntable.js`). It's parked for now: rendering takes about 2.5 h on the
-laptop M1, so it will be run on the desktop. To switch an object over, render it, then change its markup from
-`data-scene="cut"` to `data-turntable="assets/img/turntable/cut" data-frames="60"`.
+The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (360 WebP frames each by default, 1° apart;
+fewer looks choppy). Rough and cut are rendered (on the desktop GPU) and live in `assets/img/turntable/`. To switch another object over, render it,
+then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="360" data-sheet="3x3"`
+(`data-frames` must match the number of frames; the frames are packed 9 per image by `finalize.py sheets`).
 
 ```
 index.html                  all content, sections in page order
@@ -23,19 +25,34 @@ assets/css/layout.css       container, 12-col grid, labels, buttons, links, medi
 assets/css/sections.css     one block per section, in page order (+ turntable styles)
 assets/js/main.js           entry: boots data-scene (Three.js) / data-turntable (frames), header, reveal
 assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio lighting, dragRotate()
-assets/js/three/fruit.js    hero scene (cherries);  cherry.js = wireframe cherries;  strawberry.js = unused alt (solid + wireframe)
-assets/js/three/diamonds.js rough milky stone + cut brilliant scenes;  gem.js = ray-traced gem shader
-assets/js/turntable.js      viewer for pre-rendered frames (used once Blender renders exist)
+assets/js/hero.js           hero word cycle (Taste/Sauce/Spice), drives the model swap
+assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
+assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
+assets/js/three/cake.js     live, lit layer cake with a slice cut out + cherry, under the #cherry heading
+assets/js/theme.js          light/dark switch in the header
+assets/js/i18n.js           English / German switch: German copy (DE table), swaps keyed text, remembers the choice
+assets/js/section-mark.js   accent asterisk after the current section's label; flies (with a turn) to the next one
+                            strawberry.js = unused alt (solid + wireframe)
+assets/js/three/diamonds.js live rough + cut stones in #approach;  gem.js = ray-traced gem shader (both stones)
+assets/js/turntable.js      viewer for pre-rendered frames / sprite sheets (unused now; the Cycles diamonds)
+assets/js/three/eye.js      realistic real-time eyeball in #eye that looks at the cursor
+assets/js/gaze.js           viewer for the Cycles eye's gaze grid (parked; not in the page)
+assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
+assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
-assets/img/turntable/<name>/000–059.webp   (not rendered yet)
+assets/img/turntable/<name>/sheet-00–39.webp   rough, cut: 360 frames in 3×3 sprite sheets (≈12 MB each)
+assets/img/eye/000–116.webp + grid.json   Cycles eye gaze grid (not rendered yet; render/eye.py)
 
 render/                     Blender pipeline (not needed at runtime; exclude from deploys)
   build.sh                  render + convert: `render/build.sh [title cut strawberry rough]`
   common.py                 Cycles/Metal setup, colour management, studio lights, cards, turntable loop
   title.py                  voxel-fused, smoothed ceramic letters; exposure calibrated to --paper
   strawberry.py             procedural fruit: Poisson-disk seeds, dimples, calyx, baked boolean bite, flesh shader
+  eye.py                    eyeball gaze grid: sclera (veins, tear-film coat), iris fibres, glass cornea; 13×9 frames
   stones.py                 kind=rough (frosted skin + milky volume) | kind=cut (57-facet brilliant, dispersion)
-  finalize.py               softens shadow-catcher shadows, writes WebP into assets/img
+  finalize.py               softens shadow-catcher shadows, writes WebP into assets/img; `sheets` packs turntables
+                            into 3×3 sprite sheets (+ `compare` screenshots)
+  compare/                  "Exhibit A" in #problem: ai.html, annotate.js (red-pen markup), shoot.js
   inspect_render.py         composites a render over --paper and reports the dominant face colour
   fonts/                    TTFs for the title (Blender can't read WOFF)
   out/                      raw PNG frames + build.log (scratch)
@@ -47,27 +64,93 @@ One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- ki
 
 ## Current page (built step by step)
 
-Nav: six-petal asterisk mark + "tastecherry" wordmark (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
+Header: light/dark switch in the middle (`theme.js`; pill, half-filled circle + "Dark"/"Light", icon only on phones).
+Next to it an EN / DE switch (`i18n.js`); switching is one motion like the theme switch: an ink cover grows out of
+the button with a greeting in the new language ("Hallo." / "Hello.", serif italic, name in accent below), the text is
+swapped under it, then it fades (≈1.5 s; instant with reduced motion). The page is written in English; each translatable bit carries
+`data-i18n="key"` (its HTML is swapped) or `data-i18n-attr="alt:key,…"`, and the German lives in the `DE` table in
+`i18n.js` (du-form; AI → KI; buzzwords and plan names stay English: Sauce, Spice, One Page, Business, Care; Taste →
+Geschmack; the eye headline "What you see is what you get." stays English in both). English originals are read from the page, so edit English in index.html and German in `DE` (new copy
+needs a key in both). Choice saved in localStorage; first visit follows the browser language; the inline head script
+sets `lang` and hides the page (`i18n-pending`, max 1.5 s) until German is swapped in. Scripts that write text use
+`t(key)`; scripts that measure text listen for `langchange` (hero slot, section mark, theme label). German prices:
+"ab 490 €", "1.190 €", "/ Monat". The German hero title steps down a little on narrow screens ("mit Geschmack*" on
+one line). Phones ≤480px show only the Contact link in the nav (room for both switches).
+Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel" signed under the end of the wordmark (Caveat, accent) (SVG symbol `#asterisk`, same as favicon; no emoji) · Why me · Pricing · Contact (accent).
 
-1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe cherries rising behind the
+1. `#hero` — "Websites with *Taste*" + six-petal asterisk (links to the footnote), wireframe model rising behind the
    title (drag to rotate), footnote "*Taste is subjective. Mine just happens to be right." Nothing else in the hero.
+   The word cycles Taste → Sauce → Spice (`hero.js`, ≈5.3 s each): word, footnote's first word and model fade out
+   together (800 ms, eased in and out) and the next fade in; the word slot eases to each word's width so the line recentres smoothly.
+   Models (all accent wireframes, framed on the cherries' box): cherries (`cherry.js`), diner squeeze bottle, leaning (ridged collar,
+   cone nozzle, stopper on a tether), chili turned 20° clockwise (`hero-models.js`, built with `wire.js`). Pauses off screen; reduced motion stays on Taste. `?hero=sauce` etc.
+   starts on a given word (for reviewing a model). Screen readers get "Taste" only. Hovering the word draws a thick,
+   wobbly accent marker underline under it (two passes, `pathLength` dash trick; hidden at rest).
    **Rule: everything in the hero must be visible on first load on every device.** The hero is exactly one screen tall
-   (100svh minus header), content centred as one group; the title size is capped by viewport height; the cherry canvas
-   takes the drawing's proportions (fruit.js sets --model-aspect), is capped to the height left after title and
-   `--note-block` (footnote), and reaches up behind the title by --overlap so the leaf overlaps "with".
+   (100svh minus header), content centred as one group; the title size is capped by viewport height; the model canvas
+   takes the cherries' proportions (fruit.js sets --model-aspect), is capped to the height left after title and
+   `--note-block` (footnote), and reaches up behind the title by --overlap so the top overlaps "with".
    Checked at 375×667, 1024×720, 1440×900.
-2. `#problem` — 01 The problem: split (headline left, copy right) + crossed-out specimen row (same font / gradient / headline;
-   the only place `--cliche-*` colours may appear).
-3. `#cherry` — 02 Cherry on top: split layout.
-4. `#approach` — centred h2 "It’s Simple", then rough milky stone → arrow → cut brilliant ("AI's Finished Product" /
-   "My Finished Product" as h3s), then a quiet ink-soft "capisce?" underneath. No other copy.
-5. `#why` — 03 Why me: four numbered items (mono accent 01–04), 2×2 on desktop, stacked on phones, hairlines, no icons.
+2. `#problem` — 01 The problem: split (headline left, copy right) + "Exhibit A": a typical AI site (demo coffee roaster).
+   Centred pill switch "AI slop / What’s wrong?" (pill-shaped block slides between them) (sliding block; "What’s wrong" in the Caveat hand, subset via `&text=`,
+   plus a scribbled "(go on, click it)" on wide screens) → picture (full width of the text, phones too) → caption. It shows clean first, then a
+   red pen sweeps over it (left-to-right clip, `--dur-draw`) 1.2 s after it is well in view; the switch or a click on
+   the picture flips it (`exhibit.js`). Without JS the pen is just on. The pen is a transparent layer over the clean
+   shot; desktop (1280×800) and phone (390 wide, cropped after the buttons) versions.
+   Sources in `render/compare/`: `ai.html` (the only place the generic AI look is allowed) + `annotate.js` (rough.js
+   marks + Caveat notes; the phone layout opens up gaps to write in). Rebuild: `node render/compare/shoot.js`
+   (needs `npm i playwright`) then `python3 render/finalize.py compare` → `assets/img/compare/ai-{clean,pen}-*.webp`.
+   `ai.html` also has a dark variant (`<html class="dark">`, the usual dark AI theme); dark mode shows
+   `ai-clean-*-dark.webp` under the same pen layer (identical layout).
+   If the phone image's size changes, update its width/height in index.html.
+3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows and a real-looking layer cake with a cherry on top
+   (`cake.js`: physically based, ACES, soft key-light shadows; warm buttercream with palette-knife ridges, a 40° slice
+   cut out showing sponge / cream / cherry jam / sponge (canvas crumb texture + bump), 12 star-tip rosettes, a glossy
+   cherry on a tapered stem in the middle, crumbs on a white ceramic plate; the slice starts three-quarters toward you;
+   canvas takes the drawing's proportions, framed so the plate stays in view even at the drag's full tilt, ±0.4 rad) shares those rows, bottom-aligned so the plate is level with
+   the last line of copy and centred under the heading's text (main.js) (hidden when stacked, ≤960px).
+4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
+   stone → arrow → cut brilliant ("AI's “Finished” Website", serif italic quotes / "My Finished Website" as h3s).
+   The stones are tucked up under the title (the renders have empty sky). The arrow is a straight accent arrow
+   that draws itself in (shaft, then head) while it is on screen, wipes when it leaves, and nudges toward the cut
+   stone every few seconds (points down on phones; no motion with reduced motion).
+   No other copy. Both stones are live (`diamonds.js`, transparent stages, ACES tone mapping, drag to turn, slow idle
+   spin), both with the ray-traced gem shader (`gem.js`: refraction through the stone's planes, total internal
+   reflection, per-channel dispersion). Cut: 57-facet brilliant, 8 bounces, dispersion 0.02, contrasty studio of soft
+   boxes and black flags. Rough: dense rounded octahedron (lumps, etching, trigon pits); rays enter through the bumpy
+   surface and exit through 96 bounding planes (`supportPlanes`), with `milk` (scatter to white) and `frost` (env blur).
+   Soft contact shadows offset to the right, like the old renders. (If the Cycles turntables come back: markup
+   `data-turntable="assets/img/turntable/<name>" data-frames="360" data-sheet="3x3"`; the cut stone then needs the
+   120% scale in sections.css, which only applies to `[data-turntable]`.)
+5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
-7. `#contact` — 05 Contact: split — pitch + mailto left, form right (Name, Email, Message; labels + required).
-Footer: Built with taste. (Obviously.) · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
+   One Page from €490 · Business from €1,190 (everything in One Page plus 5 pages, editable content, basic SEO; both
+   with 3 feedback rounds) · Care €29 / month (hosting, updates, backups, up to 30 min of changes per month).
+   Each feature has a hand-drawn accent tick (CSS mask, not an icon font). Hovering a price turns the amount accent and draws the hero's marker underline under it. The "For" aside stays
+   on the sentence's line (the one exception to asides on their own line).
+7. `#contact` — 05 Contact, h2 "Let’s create *meaningful* websites.": split — pitch + mailto left, form right (Name, Email, Message; labels + required).
+Section mark: an accent asterisk (`#asterisk`) sits just after the current section's label ("02 Cherry on top"; the
+h2 where there's no label); when the active section changes (its top passes 40% of the screen) it flies there with
+one turn (`section-mark.js`). Its home is the hero footnote's asterisk: it flies out of it into the first section and
+back into it (fading) at the top. Reduced motion jumps.
+8. `#eye` — the last word: a realistic eyeball, rendered live (`three/eye.js`, physically based, ACES tone mapping,
+   studio environment for the catchlights) that turns to look at the cursor (eased, ≤36°, with tiny fixation
+   tremors), and under it the h2 "What you *see* is what you get." and a quiet ink-soft line "I put as much care into your
+   website as into this one." Sclera: sphere open at the front, canvas-painted
+   map (warm white, vessels running from the back toward the iris, branching and tapering; grey limbal shadow),
+   clear coat for the tear film. Iris: slightly domed disc sunk behind a dark limbal wall; colour + bump maps baked
+   once on the GPU from simplex noise (hazel: amber collarette, green-grey fibres, crypts, furrows, dark limbal ring).
+   Cornea: reflections only, additive (a transmission pass blurred the iris), faded at its rim. A soft contact
+   shadow grounds it. No mouse, or a quiet one → it glances around by itself (not with reduced motion).
+   Stage capped at 40svh so eye and lines fit on one screen.
+   A photoreal Cycles version is parked: `render/eye.py` renders a 13×9 **gaze grid** (±36° × ±24°, frame = row·13 + col,
+   `grid.json` alongside) via `render/build.sh eye` into `assets/img/eye/`, and `gaze.js` (`data-gaze`) blends the
+   four frames nearest the cursor. To use it: swap the stage for `<div class="eye__stage" data-gaze="assets/img/eye">` (its CSS is in commit 2f37716).
+Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
-Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft).
-Section system: `.section` (padding `--space-section`, hairline on top) → `.section-head` (numbered `.label` above an
+Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own
+line under the sentence it comments on and is never broken inside (inline only in the footer, captions and the pricing "For" lines).
+Section system: `.section` (padding `--space-section`, hairline on top) → `.section-head` (`.label` with a big accent `.index` number, above an
 `h2.section-head__title`, optional `__sub`). Text sections use `.container.split`: head in columns 1–6, `.split__body`
 in 8–12, `.split__full` spans all; stacks below 960px. Other primitives: `.prose`/`.lead`, `.aside`,
 `.button--accent`, `.field`.
@@ -89,6 +172,20 @@ next word with `&nbsp;` so it never ends a line. Keep that when editing copy.
 - `--ink` #0F0F0E text
 - `--accent` #CE0058 Rubine. Compare others with `?accent=cobalt|verdigris|oxide`.
 
+Dark mode: `:root[data-theme="dark"]` in tokens.css — warm charcoal with a cherry undertone `--paper` #1C1718, the
+light paper #F3F1EB as `--ink`, same accent and model colour
+(`--line`, recoloured live via `trackLines()` in stage.js if it's ever themed). Set before first paint by the inline script in index.html (saved choice, else the device
+setting); the switch saves it, updates meta theme-color and fires `themechange`. The switch is one motion for the
+whole page: a circle of the new theme grows from the button (View Transitions; instant without them or with reduced
+motion). 3D stages are transparent, so they always change with the page.
+
+## Type
+
+- Familjen Grotesk (`--font-sans`) for everything: a grotesk with character (single-storey a), not the default everyone ships.
+- Newsreader italic (`<em>`) only for emphasis inside headlines. Both from Google Fonts.
+- Caveat (`--font-hand`) only for the red-pen bits of Exhibit A and the "by gabriel" signature, loaded as a subset of
+  just those letters, English and German (extend the `&text=` in index.html if you add words).
+
 ## Design rules (anti-vibe-coded checklist)
 
 Do:
@@ -108,9 +205,18 @@ Don't:
 - Inter or Geist as the default font; Tailwind default colours
 - Filler copy like "Unlock", "Elevate", "Seamless", "Supercharge"
 
+## Deploy
+
+Live on GitHub Pages: https://gjoerk.github.io/tastecherry/ (repo public; Settings → Pages → Source: GitHub Actions).
+`.github/workflows/pages.yml` publishes on every push to `main` (or run it by hand): it copies only `index.html` +
+`assets/` into `_site/`, minus `assets/img/turntable/` and `assets/img/hero/` (unused renders); `render/` and the rest
+of the repo are never published (≈0.7 MB live). All paths are relative, so the `/tastecherry/` subpath just works;
+keep it that way (no leading `/`). If the Cycles turntables come back, drop the `turntable` line from the workflow.
+Custom domain later: add a `CNAME` file to `_site` in the workflow + DNS at the registrar.
+
 ## Placeholders to replace (TODO)
 
-- Prices: One Page, Business, Care (`€ TODO` in `#pricing`).
 - Contact form handler: the form posts to `#` (no backend yet).
 - Impressum and Datenschutz links (`href="#"` in the footer).
 - Confirm hello@tastecherry.com is a live mailbox.
+

@@ -30,11 +30,135 @@
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+/* handwritten signature, signed under the end of the wordmark */
+.wordmark { position: relative; }
+.wordmark__sig {
+  position: absolute;
+  right: -0.55em;
+  top: 1.02em;
+  font-family: var(--font-hand);
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--accent);
+  rotate: -5deg;
+  white-space: nowrap;
+  pointer-events: none;
+}
 .wordmark__mark {
   width: 1.1em;
   height: 1.1em;
   color: var(--accent);
   flex: none;
+}
+
+/* Header tools, centred in the header (between logo and nav on phones):
+   the light / dark switch and the EN / DE switch */
+.site-header__inner { position: relative; }
+.header-tools {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.theme-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.45em 0.9em;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: var(--step--1);
+  font-weight: 500;
+  color: var(--ink-soft);
+  line-height: 1;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink-soft); }
+.theme-toggle__icon {
+  width: 1.1em;
+  height: 1.1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: rotate var(--dur-slow) var(--ease-out);
+}
+.theme-toggle__icon path { fill: currentColor; stroke: none; }
+:root[data-theme="dark"] .theme-toggle__icon { rotate: 180deg; }
+@media (min-width: 700px) {
+  .header-tools { position: absolute; left: 50%; translate: -50% 0; }
+}
+/* EN / DE: the same pill, the current language in ink */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2em;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: var(--step--1);
+  font-weight: 500;
+  line-height: 1;
+}
+.lang-switch button {
+  padding: 0.25em 0.55em;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.lang-switch button:hover { color: var(--ink); }
+.lang-switch button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
+html:not(.js) .lang-switch { display: none; }   /* German needs JS */
+/* Language switch: a cover grows out of the button with a greeting in the new
+   language while the text is swapped behind it (i18n.js) */
+.lang-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  background: var(--ink);
+  color: var(--paper);
+  clip-path: circle(0 at 50% 0);
+}
+.lang-wipe__word {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-5);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.lang-wipe__name {
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+/* German on first paint: hidden until i18n.js has swapped the text in */
+html.i18n-pending body { visibility: hidden; }
+@media (max-width: 699px) {
+  .theme-toggle { padding: 0.4em; }
+  .theme-toggle__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+/* phones: logo, both switches and the accent Contact link (Why me / Pricing are a scroll away) */
+@media (max-width: 480px) {
+  .site-nav li:not(:last-child) { display: none; }
+}
+/* the smallest phones: logo, switch and nav only just fit */
+@media (max-width: 360px) {
+  .site-header__inner { gap: var(--space-2); }
+  .site-nav ul { gap: 0.5rem; }
+  .wordmark { font-size: 0.92rem; }
+  .site-nav a { font-size: 0.72rem; }
+  .theme-toggle, .lang-switch { font-size: 0.72rem; }
+  .header-tools { gap: 0.25rem; }
+  .lang-switch button { padding: 0.25em 0.4em; }
+  .wordmark__sig { right: 0; }                 /* signed under the wordmark, not past it */
 }
 
 .site-nav ul { display: flex; gap: clamp(1rem, 3.5vw, 2.25rem); }
@@ -47,6 +171,18 @@
 }
 .site-nav a:hover { color: var(--ink); }
 .site-nav .site-nav__cta { color: var(--accent); }
+
+/* ---- Section mark: the asterisk beside the current section's title ------ */
+main { position: relative; }
+.section-mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  color: var(--accent);
+  pointer-events: none;
+  opacity: 0;                                   /* section-mark.js drives position, size and fade */
+}
 
 /* ---- Hero: title + cherries, always exactly one screen tall ---------- */
 /* Title size follows width AND height, so title + cherries + note always fit
@@ -64,17 +200,70 @@
   justify-items: center;
   padding: var(--pad-top) var(--gutter) var(--pad-bottom);
 }
+/* German: "Geschmack" is longer than "Taste"; on narrow screens the title
+   steps down a little so "mit Geschmack*" stays on one line */
+html[lang="de"] .hero { --title-size: clamp(2.6rem, min(1.2rem + 8vw, 13svh), 10rem); }
 .hero__title {
   position: relative;
   z-index: 1;                                    /* sits over the cherries */
   font-size: var(--title-size);
   font-weight: 500;
   line-height: 0.95;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   text-align: center;
   color: var(--ink);
+  white-space: nowrap;                           /* the asterisk never drops onto its own line */
 }
 .hero__title em { letter-spacing: -0.03em; color: var(--accent); }
+
+/* The swapping word: all words share one grid cell. hero.js sets the slot to
+   the current word's width (in em, so it scales with the title) and it eases to
+   the next word's width while both are invisible: the line recentres smoothly. */
+.hero__words {
+  position: relative;                           /* for the hover underline */
+  display: inline-grid;
+  justify-items: start;
+  transition: width 800ms var(--ease-in-out);
+}
+.hero__word {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 800ms var(--ease-in-out);  /* = FADE in hero.js / fruit.js */
+}
+.hero__word.is-active { opacity: 1; }
+
+/* Hover the word: a thick marker stroke draws itself underneath, wobbly and
+   hooked at the end like a real pen swipe; a thinner second pass trails it. */
+.hero__underline {
+  position: absolute;
+  left: -3%;
+  bottom: 0.07em;                               /* tucked up close under the word */
+  width: 106%;
+  height: 0.2em;
+  overflow: visible;
+  pointer-events: none;
+}
+.hero__underline path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;                              /* in the svg's units: scales with the word */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;                                   /* else the round tip leaves a dot at rest */
+  transition: stroke-dashoffset 380ms cubic-bezier(0.5, 0, 0.75, 0), opacity 0s 380ms;   /* retract quick, then hide */
+}
+.hero__underline path + path { stroke-width: 1.8; }
+.hero__words:hover .hero__underline path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 620ms cubic-bezier(0.25, 0.8, 0.3, 1), opacity 0s;   /* draw: fast start, eases out */
+}
+.hero__words:hover .hero__underline path + path { opacity: 0.55; }
+.hero__words:hover .hero__underline path + path { transition-delay: 140ms; }
+.hero__note-word { transition: opacity 800ms var(--ease-in-out); }
+.hero__note-word.is-out { opacity: 0; }
 
 /* Six-petal asterisk: bigger, hung off the top of "Taste", turning slowly */
 .hero__mark {
@@ -154,21 +343,70 @@
 }
 .turntable.is-ready canvas { opacity: 1; }
 
+/* ---- Cherry on top: a cake under the heading ---------------------------- */
+/* The copy spans both rows on the right; the cake fills the free space under
+   the heading on the left, its plate level with the last line of copy.
+   Phones (stacked) have no such space. */
+#cherry .section-head { grid-row: 1; }
+#cherry .split__body { grid-row: 1 / span 2; }
+.turntable.cherry__model {
+  grid-column: 1 / span 6;
+  grid-row: 1 / span 2;                         /* same rows as the copy… */
+  align-self: end;                              /* …so its bottom is the copy's bottom */
+  width: min(100%, 20rem);
+  aspect-ratio: 16 / 10;                        /* cake.js sets the exact drawing proportions */
+  border-radius: 0;
+}
+@media (max-width: 960px) {
+  #cherry .section-head, #cherry .split__body { grid-row: auto; }
+  .turntable.cherry__model { display: none; }
+}
+
 /* ---- Refine: rough → cut diamond ----------------------------------- */
+.refine { overflow-x: clip; }                   /* the scaled cut stone may reach past a narrow window */
 .refine__title {
-  margin-bottom: var(--space-7);
+  position: relative;
+  width: fit-content;
+  margin-inline: auto;
+  margin-bottom: var(--space-4);
   text-align: center;
   font-size: var(--step-3);
   line-height: 1.06;
   letter-spacing: var(--tracking-tight);
 }
-/* the sign-off: quiet, like a shrug */
-.refine__coda {
-  margin-top: var(--space-7);
-  text-align: center;
-  font-size: var(--step-1);
-  color: var(--ink-soft);
+/* "It’s Simple": a thick accent brush stroke underneath, brushed in while the
+   title is well on screen and wiped out again when it leaves (main.js) */
+.refine__brush {
+  position: absolute;
+  left: -4%;
+  bottom: -0.1em;
+  width: 108%;
+  height: 0.3em;
+  overflow: visible;
+  pointer-events: none;
 }
+.refine__brush path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;                                   /* else the round tip leaves a dot at rest */
+  transition: stroke-dashoffset 450ms cubic-bezier(0.5, 0, 0.75, 0), opacity 0s 450ms;   /* wipe out */
+}
+.refine__brush path + path { stroke-width: 2.2; }
+.refine__title.is-brushed .refine__brush path,
+html:not(.js) .refine__brush path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 750ms cubic-bezier(0.25, 0.8, 0.3, 1) 150ms, opacity 0s 150ms;   /* brush in */
+}
+.refine__title.is-brushed .refine__brush path + path { opacity: 0.5; transition-delay: 300ms; }
+
+/* scare quotes around AI's "Finished" */
+.scare { font-family: var(--font-serif); font-style: italic; }
+
 .refine__stones {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(64px, 12vw, 180px) minmax(0, 1fr);
@@ -176,8 +414,19 @@
   column-gap: var(--col-gap);
   --caption: calc(var(--space-4) + 1.15 * var(--step-2)); /* caption block height */
 }
+/* the renders have empty sky above the stones: tuck them up under the title */
+@media (min-width: 801px) {
+  .refine__stones { margin-top: -5%; }
+}
 
 .stone { margin: 0; }
+/* Side by side, the cut stone is scaled up to the rough one's size so both
+   shadows sit at the same height (measured from the renders: shadow centres at
+   81% vs 61% of the frame; 120% about a point 38% above the frame lines them up,
+   and both stones then stand on the same ground). */
+@media (min-width: 801px) {
+  .stone:last-child [data-turntable] { scale: 1.2; transform-origin: 50% -38.3%; }
+}
 .stone .turntable { width: 100%; max-width: 420px; margin-inline: auto; }
 .stone figcaption { margin-top: var(--space-4); text-align: center; }
 .stone__title {
@@ -187,22 +436,49 @@
   line-height: 1.15;
 }
 
+/* The arrow: a straight accent arrow, drawn in (shaft, then head) while the
+   stones are on screen and wiped when they leave (main.js); once drawn it nudges
+   toward the cut stone now and then. */
 .refine__arrow {
   align-self: center;
   margin-bottom: var(--caption); /* level with the stones, not their captions */
 }
 .refine__arrow svg {
+  display: block;
   width: 100%;
-  height: 24px;
+  height: auto;
   overflow: visible;
   fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.refine__arrow svg * { vector-effect: non-scaling-stroke; }
+.refine__arrow path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;                                   /* else the round tip leaves a dot at rest */
+  transition: stroke-dashoffset 400ms cubic-bezier(0.5, 0, 0.75, 0), opacity 0s 400ms;
+}
+.refine__arrow.is-drawn path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 700ms cubic-bezier(0.3, 0.6, 0.3, 1) 200ms, opacity 0s 200ms;
+}
+.refine__arrow.is-drawn .refine__arrow-head { transition-duration: 280ms; transition-delay: 820ms; }
+.refine__arrow.is-drawn svg { animation: arrow-nudge 3.2s var(--ease-in-out) 1.6s infinite; }
+@keyframes arrow-nudge {
+  0%, 70%, 100% { translate: 0 0; }
+  82% { translate: 8px 0; }
+}
+html:not(.js) .refine__arrow path { stroke-dashoffset: 0; opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .refine__arrow path, .refine__arrow.is-drawn path { transition: none; }
+  .refine__arrow.is-drawn svg { animation: none; }
+}
 
 @media (max-width: 800px) {
+  .refine__title { margin-bottom: var(--space-6); }   /* phones: a caption comes next, give it air */
   .refine__stones { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-4); }
   .stone .turntable { max-width: 340px; }
   /* Phones: heading sits above its stone */
@@ -215,65 +491,122 @@
     height: 72px;
     margin: 0 auto;
   }
-  .refine__arrow svg { width: 72px; transform: rotate(90deg); }
+  .refine__arrow svg { width: 72px; transform: rotate(90deg); stroke-width: 6; }   /* same line weight at this size */
+  @keyframes arrow-nudge {                      /* rotated: the nudge points down */
+    0%, 70%, 100% { translate: 0 0; }
+    82% { translate: 0 8px; }
+  }
 }
 
-/* ---- Problem: the generic look, crossed out ------------------------- */
-.samey {
+/* ---- Problem: Exhibit A — clean AI site, then the red pen ----------- */
+/* Switch on top, then the picture at the full width of the text, caption.
+   The pen marks are a transparent layer over the clean screenshot; the
+   sweep is a left-to-right clip, like a pen moving across the page. */
+.exhibit {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--col-gap);
-  margin-top: var(--space-4);
-}
-.samey__item {
-  position: relative;
-  display: grid;
-  grid-template-rows: 1fr auto;
+  justify-items: center;
   gap: var(--space-4);
-  min-height: clamp(8.5rem, 6rem + 6vw, 11.5rem);
-  padding: var(--space-5);
+  margin: var(--space-5) 0 0;
+}
+
+/* Switch: two options, a solid block slides under the chosen one */
+/* A pill switch; the pill-shaped block slides between the two options. */
+.exhibit__toggle {
+  position: relative;
+  display: none;                                /* needs JS; without it the pen is simply on */
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+}
+.js .exhibit__toggle { display: grid; }
+.exhibit__toggle::before {                      /* the sliding block */
+  content: "";
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: var(--ink);
+  transition: translate var(--dur-slow) var(--ease-out), background var(--dur-slow) var(--ease-out);
+}
+.exhibit.is-marked .exhibit__toggle::before { translate: 100% 0; background: var(--accent); }
+.exhibit__toggle button {
+  position: relative;                           /* above the block */
+  display: grid;
+  place-items: center;
+  min-width: 9.5rem;
+  min-height: 3.25rem;
+  padding: 0 var(--space-5);
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ink);
+  transition: color var(--dur-slow) var(--ease-out);
+}
+.exhibit__toggle [aria-pressed="true"] { color: var(--paper); }
+.exhibit__toggle [data-show="pen"][aria-pressed="true"] { color: var(--accent-ink); }   /* white on red, in both themes */
+.exhibit__toggle button:not([aria-pressed="true"]):hover { color: var(--accent); }
+.exhibit__pen-label {
+  font-family: var(--font-hand);
+  font-size: 1.3em;                             /* the hand runs small */
+  font-weight: 600;
+  letter-spacing: 0;
+  rotate: -3deg;
+}
+/* a scribbled aside hanging off the switch; wide screens only */
+.exhibit__nudge {
+  position: absolute;
+  left: calc(100% + var(--space-4));
+  top: 50%;
+  translate: 0 -50%;
+  rotate: -6deg;
+  font-family: var(--font-hand);
+  font-size: var(--step-1);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--accent);
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+.exhibit.was-toggled .exhibit__nudge { opacity: 0; }     /* they got it */
+@media (max-width: 800px) { .exhibit__nudge { display: none; } }
+@media (max-width: 640px) {
+  .exhibit__toggle button { min-width: 7.5rem; min-height: 2.75rem; padding: 0 var(--space-4); font-size: var(--step-0); }
+}
+
+.exhibit__frame {
+  position: relative;
+  width: 100%;
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   overflow: hidden;
+  background: var(--paper-deep);
 }
-/* one hairline stroke in the accent, corner to corner */
-.samey__item::after {
-  content: "";
+.js .exhibit__frame { cursor: pointer; }
+.exhibit__img { display: block; width: 100%; height: auto; }
+/* the AI site in the page's theme (same layout, so one pen layer fits both);
+   the hidden one is display:none, so its lazy image isn't even loaded */
+:root:not([data-theme="dark"]) .exhibit__clean--dark,
+:root[data-theme="dark"] .exhibit__clean--light { display: none; }
+.exhibit__pen {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top right,
-    transparent calc(50% - 0.75px), var(--accent) 50%, transparent calc(50% + 0.75px));
-  pointer-events: none;
+  transition: clip-path var(--dur-draw) cubic-bezier(0.45, 0, 0.2, 1);
 }
-.samey__font {
-  align-self: center;
-  font-family: system-ui, sans-serif;           /* the default everyone ships */
-  font-size: var(--step-4);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--ink-soft);
-}
-.samey__gradient {
-  align-self: center;
-  height: clamp(2.5rem, 2rem + 2vw, 3.5rem);
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--cliche-from), var(--cliche-to));
-  opacity: 0.55;
-}
-.samey__headline {
-  align-self: center;
-  font-family: system-ui, sans-serif;
-  font-size: var(--step-1);
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--ink-soft);
-}
+.js .exhibit:not(.is-marked) .exhibit__pen { clip-path: inset(0 100% 0 0); }
+.js .exhibit.is-marked .exhibit__pen { clip-path: inset(0 0 0 0); }
 
-@media (max-width: 640px) {
-  .samey { grid-template-columns: minmax(0, 1fr); }
-  .samey__item { min-height: 0; grid-template-columns: 1fr auto; grid-template-rows: auto; align-items: center; }
-  .samey__font { font-size: var(--step-2); }
-  .samey__gradient { height: 1.75rem; }
+.exhibit__caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--step--1);
+  text-align: center;
 }
 
 /* ---- Why me: 2×2 on desktop, stacked on phones, hairlines not boxes -- */
@@ -284,16 +617,18 @@
 }
 .why__item {
   display: grid;
-  grid-template-columns: 3.25rem minmax(0, 1fr);
+  grid-template-columns: 4rem minmax(0, 1fr);
   column-gap: var(--space-4);
   padding-block: var(--space-5) var(--space-6);
   border-top: 1px solid var(--rule);
 }
 .why__num {
   grid-row: span 2;
-  padding-top: 0.45em;
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
+  font-size: var(--step-2);                     /* same size as the item titles, level with them */
+  line-height: 1.15;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
   color: var(--accent);
 }
 .why__title {
@@ -307,7 +642,7 @@
 
 @media (max-width: 800px) {
   .why { grid-template-columns: minmax(0, 1fr); }
-  .why__item { grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .why__item { grid-template-columns: 3rem minmax(0, 1fr); }
 }
 
 /* ---- Pricing: three flat panels divided by hairlines ------------------ */
@@ -340,6 +675,43 @@
   line-height: 1.05;
   white-space: nowrap;
 }
+/* Hovering a price: the amount turns accent and a marker underline draws in (the hero's stroke) */
+.plan__amount {
+  position: relative;
+  display: inline-block;
+  transition: color 300ms var(--ease-out);
+}
+.plan__price:hover .plan__amount { color: var(--accent); }
+.plan__underline {
+  position: absolute;
+  left: -3%;
+  bottom: -0.1em;
+  width: 106%;
+  height: 0.2em;
+  overflow: visible;
+  pointer-events: none;
+}
+.plan__underline path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;                                   /* else the round tip leaves a dot at rest */
+  transition: stroke-dashoffset 380ms cubic-bezier(0.5, 0, 0.75, 0), opacity 0s 380ms;
+}
+.plan__underline path + path { stroke-width: 1.8; }
+.plan__price:hover .plan__underline path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 620ms cubic-bezier(0.25, 0.8, 0.3, 1), opacity 0s;
+}
+.plan__price:hover .plan__underline path + path { opacity: 0.55; transition-delay: 140ms; }
+@media (prefers-reduced-motion: reduce) {
+  .plan__underline path, .plan__price:hover .plan__underline path { transition: none; }
+}
 .plan__from {
   font-size: var(--step-0);
   font-weight: 400;
@@ -351,8 +723,22 @@
   flex: 1;                                    /* keeps "For" lines aligned across panels */
 }
 .plan__features li {
+  position: relative;
   padding-block: var(--space-2);
+  padding-left: 1.6em;                        /* the tick hangs in here; wrapped lines stay aligned */
   border-top: 1px solid var(--rule);
+}
+/* An accent tick, drawn by hand like the marker strokes (a mask, so it takes --accent in both themes) */
+.plan__features li::before {
+  content: "";
+  position: absolute;
+  left: 0.1em;
+  top: calc(var(--space-2) + 0.36em);
+  width: 0.95em;
+  height: 0.8em;
+  background: var(--accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 20'%3E%3Cpath d='M2.6 11.2 C 4.6 12.4 6.6 14.6 8.4 17.1 C 11.4 11.1 15.6 5.9 21.6 2.4' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 20'%3E%3Cpath d='M2.6 11.2 C 4.6 12.4 6.6 14.6 8.4 17.1 C 11.4 11.1 15.6 5.9 21.6 2.4' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 .plan__features li:last-child { border-bottom: 1px solid var(--rule); }
 .plan__for {
@@ -360,6 +746,7 @@
   line-height: 1.45;
 }
 .plan__for .label { display: block; margin-bottom: var(--space-1); }
+.plan__for .aside { display: inline; white-space: nowrap; }   /* same line as the sentence it comments on */
 
 .plans__note { margin-top: var(--space-5); font-size: var(--step-1); }
 
@@ -386,6 +773,29 @@
 
 @media (max-width: 560px) {
   .form { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---- Eye: a wireframe eyeball that watches the cursor, the last word under it */
+.eye { text-align: center; }
+.turntable.eye__stage {
+  width: min(100%, 24rem, 40svh);               /* eye and line fit on one screen */
+  margin-inline: auto;
+  cursor: auto;                                 /* it follows the pointer; nothing to drag */
+  border-radius: 0;
+}
+.eye__title {
+  width: fit-content;
+  margin: var(--space-5) auto 0;
+  font-size: var(--step-3);
+  line-height: 1.06;
+  letter-spacing: var(--tracking-tight);
+}
+
+.eye__sub {
+  margin: var(--space-4) auto 0;
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  text-wrap: balance;
 }
 
 /* ---- Footer ---------------------------------------------------------- */

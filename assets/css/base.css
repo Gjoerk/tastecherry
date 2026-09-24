@@ -19,7 +19,6 @@ body {
   font-family: var(--font-sans);
   font-size: var(--step-0);
   line-height: var(--leading-body);
-  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -76,3 +75,8 @@ p { text-wrap: pretty; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Light / dark switch (theme.js): the new theme grows out of the button as a
+   circle over a still snapshot of the old one */
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }

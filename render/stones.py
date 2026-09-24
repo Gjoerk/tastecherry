@@ -1,6 +1,6 @@
 """Diamond turntables: a rough milky crystal and a round brilliant.
 
-blender -b -P render/stones.py -- kind=rough|cut out=render/out/rough frames=72 res=800 samples=256
+blender -b -P render/stones.py -- kind=rough|cut out=render/out/rough frames=360 res=760 samples=256
 """
 
 import math
@@ -16,7 +16,7 @@ import common as C  # noqa: E402
 A = C.args()
 KIND = A.get("kind", "cut")
 OUT = os.path.join(C.ROOT, A.get("out", f"render/out/{KIND}"))
-FRAMES = int(A.get("frames", 60))
+FRAMES = int(A.get("frames", 360))   # 1° per frame, as on the site (rough + cut ≈ 2.5 h on an RTX 3060)
 RES = int(A.get("res", 760))
 SAMPLES = int(A.get("samples", 160))
 
