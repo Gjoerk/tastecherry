@@ -63,6 +63,11 @@ const simple = document.querySelector(".refine__title");
 if (simple) new IntersectionObserver(([e]) => simple.classList.toggle("is-brushed", e.isIntersecting),
   { rootMargin: "-8% 0px -45% 0px" }).observe(simple);   // only while in the upper part of the screen
 
+// The arrow between the stones draws itself in while they're on screen
+const arrow = document.querySelector(".refine__arrow");
+if (arrow) new IntersectionObserver(([e]) => arrow.classList.toggle("is-drawn", e.isIntersecting),
+  { rootMargin: "-15% 0px -25% 0px" }).observe(arrow);
+
 // Cherry on top: centre the cake under the heading's text (narrower than its column)
 const cake = document.querySelector(".cherry__model");
 const cakeTitle = document.querySelector("#cherry h2");

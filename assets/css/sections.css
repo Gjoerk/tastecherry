@@ -300,7 +300,7 @@ main { position: relative; }
   position: relative;
   width: fit-content;
   margin-inline: auto;
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--space-4);
   text-align: center;
   font-size: var(--step-3);
   line-height: 1.06;
@@ -346,6 +346,10 @@ html:not(.js) .refine__brush path {
   column-gap: var(--col-gap);
   --caption: calc(var(--space-4) + 1.15 * var(--step-2)); /* caption block height */
 }
+/* the renders have empty sky above the stones: tuck them up under the title */
+@media (min-width: 801px) {
+  .refine__stones { margin-top: -5%; }
+}
 
 .stone { margin: 0; }
 /* Side by side, the cut stone is scaled up to the rough one's size so both
@@ -364,22 +368,49 @@ html:not(.js) .refine__brush path {
   line-height: 1.15;
 }
 
+/* The arrow: a hand-drawn accent swoop, drawn in (shaft, then head) while the
+   stones are on screen and wiped when they leave (main.js); once drawn it nudges
+   toward the cut stone now and then. */
 .refine__arrow {
   align-self: center;
   margin-bottom: var(--caption); /* level with the stones, not their captions */
 }
 .refine__arrow svg {
+  display: block;
   width: 100%;
-  height: 24px;
+  height: auto;
   overflow: visible;
   fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.refine__arrow svg * { vector-effect: non-scaling-stroke; }
+.refine__arrow path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;                                   /* else the round tip leaves a dot at rest */
+  transition: stroke-dashoffset 400ms cubic-bezier(0.5, 0, 0.75, 0), opacity 0s 400ms;
+}
+.refine__arrow.is-drawn path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 700ms cubic-bezier(0.3, 0.6, 0.3, 1) 200ms, opacity 0s 200ms;
+}
+.refine__arrow.is-drawn .refine__arrow-head { transition-duration: 280ms; transition-delay: 820ms; }
+.refine__arrow.is-drawn svg { animation: arrow-nudge 3.2s var(--ease-in-out) 1.6s infinite; }
+@keyframes arrow-nudge {
+  0%, 70%, 100% { translate: 0 0; }
+  82% { translate: 8px 0; }
+}
+html:not(.js) .refine__arrow path { stroke-dashoffset: 0; opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .refine__arrow path, .refine__arrow.is-drawn path { transition: none; }
+  .refine__arrow.is-drawn svg { animation: none; }
+}
 
 @media (max-width: 800px) {
+  .refine__title { margin-bottom: var(--space-6); }   /* phones: a caption comes next, give it air */
   .refine__stones { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-4); }
   .stone .turntable { max-width: 340px; }
   /* Phones: heading sits above its stone */
@@ -392,7 +423,11 @@ html:not(.js) .refine__brush path {
     height: 72px;
     margin: 0 auto;
   }
-  .refine__arrow svg { width: 72px; transform: rotate(90deg); }
+  .refine__arrow svg { width: 72px; transform: rotate(90deg); stroke-width: 6; }   /* same line weight at this size */
+  @keyframes arrow-nudge {                      /* rotated: the nudge points down */
+    0%, 70%, 100% { translate: 0 0; }
+    82% { translate: 0 8px; }
+  }
 }
 
 /* ---- Problem: Exhibit A — clean AI site, then the red pen ----------- */

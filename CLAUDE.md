@@ -94,6 +94,9 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    the last line of copy and centred under the heading's text (main.js) (hidden when stacked, ≤960px).
 4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
    stone → arrow → cut brilliant ("AI's “Finished” Product", serif italic quotes / "My Finished Product" as h3s).
+   The stones are tucked up under the title (the renders have empty sky). The arrow is a hand-drawn accent swoop
+   that draws itself in (shaft, then head) while it is on screen, wipes when it leaves, and nudges toward the cut
+   stone every few seconds (points down on phones; no motion with reduced motion).
    Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
