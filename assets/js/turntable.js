@@ -29,7 +29,7 @@ export function turntable(el) {
   const url = (k) => per === 1 ? `${base}/${pad(k)}.webp` : `${base}/sheet-${String(k).padStart(2, "0")}.webp`;
 
   const frames = new Array(count);  // { sheet, sx, sy, sw, sh } once its file is in
-  const blobs = new Array(images);   // compressed files, kept
+  const blobs = new Array(images);   // compressed files (or <img> fallbacks), kept
   const bitmaps = new Map();         // sheet → decoded ImageBitmap (or its promise), only near the current angle
   let size = null;                   // one frame's width/height in its file
   let spinReady = false;  // everything is in: idle spin may start
@@ -45,9 +45,16 @@ export function turntable(el) {
   // ---- Loading: when near the screen; the file with frame 0 first. Files are
   // fetched compressed; decoding happens off the main thread (createImageBitmap),
   // so crossing into the next sheet never freezes the page.
-  const load = (k) => fetch(url(k)).then((r) => (r.ok ? r.blob() : null)).then(async (blob) => {
+  // (if fetch isn't allowed, e.g. in a sandboxed preview, fall back to a plain image)
+  const viaImage = (src) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+  const load = (k) => fetch(url(k)).then((r) => (r.ok ? r.blob() : null)).catch(() => viaImage(url(k))).then(async (blob) => {
     if (!blob) return;
-    blobs[k] = blob;
+    blobs[k] = blob;                                 // a Blob, or an <img> after the fallback
     if (!size) {
       const bm = await createImageBitmap(blob);
       size = { w: bm.width / cols, h: bm.height / rows };
