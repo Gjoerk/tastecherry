@@ -66,7 +66,7 @@ Header: light/dark switch in the middle (`theme.js`; pill, half-filled circle + 
 Next to it an EN / DE switch (`i18n.js`). The page is written in English; each translatable bit carries
 `data-i18n="key"` (its HTML is swapped) or `data-i18n-attr="alt:key,…"`, and the German lives in the `DE` table in
 `i18n.js` (du-form; AI → KI; buzzwords and plan names stay English: Sauce, Spice, One Page, Business, Care; Taste →
-Geschmack). English originals are read from the page, so edit English in index.html and German in `DE` (new copy
+Geschmack; the eye headline "What you see is what you get." stays English in both). English originals are read from the page, so edit English in index.html and German in `DE` (new copy
 needs a key in both). Choice saved in localStorage; first visit follows the browser language; the inline head script
 sets `lang` and hides the page (`i18n-pending`, max 1.5 s) until German is swapped in. Scripts that write text use
 `t(key)`; scripts that measure text listen for `langchange` (hero slot, section mark, theme label). German prices:
