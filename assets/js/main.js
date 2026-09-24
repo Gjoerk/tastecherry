@@ -2,9 +2,9 @@
 // WebGL or JavaScript.
 //
 // Two ways to show a rotatable object:
-//   data-scene="fruit|cake"                real-time Three.js model
+//   data-scene="fruit|cake|eye"            real-time Three.js model
 //   data-turntable="assets/img/…"        pre-rendered Blender frames (the diamonds)
-//   data-gaze="assets/img/eye"           pre-rendered gaze grid: the eye that follows the cursor
+//   data-gaze="assets/img/eye"           pre-rendered gaze grid (Cycles eye; parked, not in the page)
 
 import { turntable } from "./turntable.js";
 import { gaze } from "./gaze.js";
@@ -37,6 +37,11 @@ if (webgl) {
     import("./three/cake.js")
       .then(({ initCake }) => initCake(scene("cake")))
       .catch((err) => console.error("Cake scene failed", err));
+  }
+  if (scene("eye")) {
+    import("./three/eye.js")
+      .then(({ initEye }) => initEye(scene("eye")))
+      .catch((err) => console.error("Eye scene failed", err));
   }
   if (scene("rough") && scene("cut")) {
     import("./three/diamonds.js")

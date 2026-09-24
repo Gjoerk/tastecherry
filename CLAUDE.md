@@ -7,7 +7,7 @@ The site itself is the proof, so it must never look "vibe coded".
 
 Plain HTML/CSS/JS, no build step for the site. Preview: `python3 -m http.server 4321` (or the `site` config in `.claude/launch.json`).
 
-3D: the hero models and the glasses run **real-time in Three.js** (CDN import map) and rotate by drag. The two
+3D: the hero models, the cake and the eye run **real-time in Three.js** (CDN import map) and rotate by drag. The two
 diamonds in `#approach` are **Cycles turntables** (pre-rendered frames, `turntable.js`), also draggable.
 The hero title is plain black HTML text. A ceramic Blender render of it (`assets/img/hero/title*.webp`) is kept but unused.
 
@@ -33,12 +33,13 @@ assets/js/section-mark.js   accent asterisk after the current section's label; f
                             strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (the diamonds)
-assets/js/gaze.js           the eye in #eye: blends the pre-rendered gaze frames nearest the cursor
+assets/js/three/eye.js      wireframe eyeball in #eye that looks at the cursor
+assets/js/gaze.js           viewer for the Cycles eye's gaze grid (parked; not in the page)
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
 assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
 assets/img/turntable/<name>/000–059.webp   rough, cut
-assets/img/eye/000–116.webp + grid.json   the eye's gaze grid (render/eye.py)
+assets/img/eye/000–116.webp + grid.json   Cycles eye gaze grid (not rendered yet; render/eye.py)
 
 render/                     Blender pipeline (not needed at runtime; exclude from deploys)
   build.sh                  render + convert: `render/build.sh [title cut strawberry rough]`
@@ -101,12 +102,13 @@ Section mark: an accent asterisk (`#asterisk`) sits just after the current secti
 h2 where there's no label); when the active section changes (its top passes 40% of the screen) it flies there with
 one turn (`section-mark.js`). Its home is the hero footnote's asterisk: it flies out of it into the first section and
 back into it (fading) at the top. Reduced motion jumps.
-8. `#eye` — the last word: a realistic eyeball (Cycles, `render/eye.py`) that looks at the cursor, and under it the
-   h2 "What you *see* is what you get." Not a turntable but a **gaze grid**: 13×9 frames, ±36° left/right, ±24°
-   up/down (frame = row·13 + col, row 0 looks up, col 0 to the viewer's left; `grid.json` carries the numbers, so a
-   different grid needs no markup change). `gaze.js` blends the four frames around the wanted direction and eases
-   toward it (≈90 ms); no mouse or a quiet one → it glances around by itself (not with reduced motion). No JS → the
-   straight-ahead frame. Render: `render/build.sh eye` (writes `assets/img/eye/`).
+8. `#eye` — the last word: a wireframe eyeball (`three/eye.js`, accent lines like the hero models: rings round the gaze
+   axis, cornea bulge, iris fibres round the pupil, optic nerve at the back) that turns to look at the cursor (eased,
+   ≤38°), and under it the h2 "What you *see* is what you get." No mouse, or a quiet one → it glances around by itself
+   (not with reduced motion). Stage capped at 42svh so eye and line fit on one screen.
+   A photoreal Cycles version is parked: `render/eye.py` renders a 13×9 **gaze grid** (±36° × ±24°, frame = row·13 + col,
+   `grid.json` alongside) via `render/build.sh eye` into `assets/img/eye/`, and `gaze.js` (`data-gaze`) blends the
+   four frames nearest the cursor. To use it: swap the stage for `<div class="eye__stage" data-gaze="assets/img/eye">` (its CSS is in commit 2f37716).
 Footer: Built with taste. · Impressum · Datenschutz · © 2026 tastecherry · Back to top.
 
 Copy voice: short, plain, confident; jokes live in parenthetical asides, styled `.aside` (ink-soft): each sits on its own

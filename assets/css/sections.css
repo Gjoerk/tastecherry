@@ -620,29 +620,17 @@ html:not(.js) .refine__brush path {
   .form { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* ---- Eye: an eyeball that watches the cursor, the last word under it -- */
-/* The frames have room for the floor shadow; the stage is capped by the
-   viewport height so eye and line fit on one screen. */
+/* ---- Eye: a wireframe eyeball that watches the cursor, the last word under it */
 .eye { text-align: center; }
-.eye__stage {
-  position: relative;
-  width: min(100%, 30rem, 62svh);
-  aspect-ratio: 1 / 1;
-  margin: calc(var(--space-6) * -1) auto 0;     /* the frame's empty top */
+.turntable.eye__stage {
+  width: min(100%, 24rem, 42svh);               /* eye and line fit on one screen */
+  margin-inline: auto;
+  cursor: auto;                                 /* it follows the pointer; nothing to drag */
+  border-radius: 0;
 }
-.eye__stage canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.9s var(--ease-out);
-}
-.eye__stage.is-ready canvas { opacity: 1; }
-html:not(.js) .eye__stage { background: url("../img/eye/058.webp") center / contain no-repeat; }  /* straight ahead */
 .eye__title {
   width: fit-content;
-  margin: calc(var(--space-6) * -1) auto 0;     /* up into the frame's empty bottom */
+  margin: var(--space-5) auto 0;
   font-size: var(--step-3);
   line-height: 1.06;
   letter-spacing: var(--tracking-tight);

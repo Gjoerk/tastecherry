@@ -38,7 +38,12 @@ export function sectionMark(main, sections, home) {
       lines.push(...[...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0));
     }
     const box = el.getBoundingClientRect();
-    const last = lines.reduce((a, r) => (r.top > a.top + 2 || (Math.abs(r.top - a.top) <= 2 && r.right > a.right) ? r : a), lines[0] ?? box);
+    // the last line: rects whose middle is below every other rect's middle band
+    // (an italic <em> sits a few px lower than the grotesk, but on the same line)
+    const mid = (r) => (r.top + r.bottom) / 2;
+    const lowest = lines.reduce((a, r) => (mid(r) > mid(a) ? r : a), lines[0] ?? box);
+    const onLast = lines.filter((r) => mid(r) > lowest.top && mid(r) < lowest.bottom);
+    const last = onLast.reduce((a, r) => (r.right > a.right ? r : a), onLast[0] ?? box);
     const size = parseFloat(getComputedStyle(el).fontSize) * 0.85;
     const at = pageOf(el), origin = pageOf(main);
     return {
