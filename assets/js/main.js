@@ -4,8 +4,10 @@
 // Two ways to show a rotatable object:
 //   data-scene="fruit|cake"                real-time Three.js model
 //   data-turntable="assets/img/…"        pre-rendered Blender frames (the diamonds)
+//   data-gaze="assets/img/eye"           pre-rendered gaze grid: the eye that follows the cursor
 
 import { turntable } from "./turntable.js";
+import { gaze } from "./gaze.js";
 import { exhibit } from "./exhibit.js";
 import { heroWords } from "./hero.js";
 import { sectionMark } from "./section-mark.js";
@@ -13,6 +15,7 @@ import { themeToggle } from "./theme.js";
 
 document.querySelectorAll("[data-turntable]").forEach(turntable);
 document.querySelectorAll("[data-exhibit]").forEach(exhibit);
+document.querySelectorAll("[data-gaze]").forEach((el) => gaze(el).catch((err) => console.warn("gaze:", err.message)));
 
 const webgl = (() => {
   try {

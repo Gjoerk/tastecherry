@@ -5,10 +5,12 @@
 
 python3 render/finalize.py title
 python3 render/finalize.py seq strawberry|rough|cut
+python3 render/finalize.py gaze eye   (gaze grid + grid.json → assets/img/eye/)
 python3 render/finalize.py compare   (screenshots from render/compare/shoot.js)
 """
 
 import os
+import shutil
 import sys
 
 import numpy as np
@@ -51,6 +53,17 @@ def seq(name, shadow=0.6):
     print(name, len(files), "frames")
 
 
+def gaze(name, shadow=0.6):
+    """A gaze grid (render/eye.py): frames + grid.json into assets/img/<name>/."""
+    src, dst = os.path.join(RAW, name), os.path.join(DST, name)
+    files = sorted(f for f in os.listdir(src) if f.endswith(".png"))
+    for f in files:
+        im = fade_shadow(Image.open(os.path.join(src, f)).convert("RGBA"), shadow)
+        save_webp(im, os.path.join(dst, f.replace(".png", ".webp")), 85)
+    shutil.copy(os.path.join(src, "grid.json"), os.path.join(dst, "grid.json"))
+    print(name, len(files), "frames")
+
+
 def compare():
     """#problem: the clean AI screenshots, light and dark (opaque) + the red-pen layer (alpha)."""
     src = os.path.join(RAW, "compare")
@@ -68,6 +81,8 @@ def compare():
 if __name__ == "__main__":
     if sys.argv[1] == "title":
         title()
+    elif sys.argv[1] == "gaze":
+        gaze(sys.argv[2])
     elif sys.argv[1] == "compare":
         compare()
     else:
