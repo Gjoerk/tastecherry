@@ -97,6 +97,8 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
+   One Page from €790 · Business from €1,990 (both with 3 feedback rounds) · Care €39 / month (hosting, updates,
+   backups, up to 30 min of changes per month).
 7. `#contact` — 05 Contact, h2 "Let’s create *meaningful* websites.": split — pitch + mailto left, form right (Name, Email, Message; labels + required).
 Section mark: an accent asterisk (`#asterisk`) sits just after the current section's label ("02 Cherry on top"; the
 h2 where there's no label); when the active section changes (its top passes 40% of the screen) it flies there with
@@ -175,7 +177,6 @@ Don't:
 
 ## Placeholders to replace (TODO)
 
-- Prices: One Page, Business, Care (`€ TODO` in `#pricing`).
 - Contact form handler: the form posts to `#` (no backend yet).
 - Impressum and Datenschutz links (`href="#"` in the footer).
 - Confirm hello@tastecherry.com is a live mailbox.
