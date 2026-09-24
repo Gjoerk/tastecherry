@@ -572,6 +572,43 @@ html:not(.js) .refine__brush path {
   line-height: 1.05;
   white-space: nowrap;
 }
+/* Hovering a price: the amount turns accent and a marker underline draws in (the hero's stroke) */
+.plan__amount {
+  position: relative;
+  display: inline-block;
+  transition: color 300ms var(--ease-out);
+}
+.plan__price:hover .plan__amount { color: var(--accent); }
+.plan__underline {
+  position: absolute;
+  left: -3%;
+  bottom: -0.1em;
+  width: 106%;
+  height: 0.2em;
+  overflow: visible;
+  pointer-events: none;
+}
+.plan__underline path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;                                   /* else the round tip leaves a dot at rest */
+  transition: stroke-dashoffset 380ms cubic-bezier(0.5, 0, 0.75, 0), opacity 0s 380ms;
+}
+.plan__underline path + path { stroke-width: 1.8; }
+.plan__price:hover .plan__underline path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 620ms cubic-bezier(0.25, 0.8, 0.3, 1), opacity 0s;
+}
+.plan__price:hover .plan__underline path + path { opacity: 0.55; transition-delay: 140ms; }
+@media (prefers-reduced-motion: reduce) {
+  .plan__underline path, .plan__price:hover .plan__underline path { transition: none; }
+}
 .plan__from {
   font-size: var(--step-0);
   font-weight: 400;
@@ -592,6 +629,7 @@ html:not(.js) .refine__brush path {
   line-height: 1.45;
 }
 .plan__for .label { display: block; margin-bottom: var(--space-1); }
+.plan__for .aside { display: inline; white-space: nowrap; }   /* same line as the sentence it comments on */
 
 .plans__note { margin-top: var(--space-5); font-size: var(--step-1); }
 
