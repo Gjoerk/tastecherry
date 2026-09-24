@@ -397,7 +397,7 @@ html:not(.js) .refine__brush path {
    81% vs 61% of the frame; 120% about a point 38% above the frame lines them up,
    and both stones then stand on the same ground). */
 @media (min-width: 801px) {
-  .stone:last-child .turntable { scale: 1.2; transform-origin: 50% -38.3%; }
+  .stone:last-child [data-turntable] { scale: 1.2; transform-origin: 50% -38.3%; }
 }
 .stone .turntable { width: 100%; max-width: 420px; margin-inline: auto; }
 .stone figcaption { margin-top: var(--space-4); text-align: center; }

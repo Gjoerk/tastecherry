@@ -2,8 +2,8 @@
 // WebGL or JavaScript.
 //
 // Two ways to show a rotatable object:
-//   data-scene="fruit|cake|eye"            real-time Three.js model
-//   data-turntable="assets/img/…"        pre-rendered Blender frames (the diamonds)
+//   data-scene="fruit|cake|eye|rough|cut"  real-time Three.js model
+//   data-turntable="assets/img/…"        pre-rendered Blender frames (unused now)
 //   data-gaze="assets/img/eye"           pre-rendered gaze grid (Cycles eye; parked, not in the page)
 
 import { initLang } from "./i18n.js";

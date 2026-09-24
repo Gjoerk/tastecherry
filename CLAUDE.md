@@ -7,8 +7,9 @@ The site itself is the proof, so it must never look "vibe coded".
 
 Plain HTML/CSS/JS, no build step for the site. Preview: `python3 -m http.server 4321` (or the `site` config in `.claude/launch.json`).
 
-3D: the hero models, the cake and the eye run **real-time in Three.js** (CDN import map) and rotate by drag. The two
-diamonds in `#approach` are **Cycles turntables** (pre-rendered frames, `turntable.js`), also draggable.
+3D: everything on the page runs **real-time in Three.js** (CDN import map): hero models, cake, eye and the two
+diamonds in `#approach` (drag to rotate). The diamonds were Cycles turntables for a while (`turntable.js`, frames in
+`assets/img/turntable/`, kept but unused): even at 360 frames in sprite sheets, dragging felt laggy, so they went live.
 The hero title is plain black HTML text. A ceramic Blender render of it (`assets/img/hero/title*.webp`) is kept but unused.
 
 The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (360 WebP frames each by default, 1° apart;
@@ -32,8 +33,8 @@ assets/js/theme.js          light/dark switch in the header
 assets/js/i18n.js           English / German switch: German copy (DE table), swaps keyed text, remembers the choice
 assets/js/section-mark.js   accent asterisk after the current section's label; flies (with a turn) to the next one
                             strawberry.js = unused alt (solid + wireframe)
-assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
-assets/js/turntable.js      viewer for pre-rendered frames (the diamonds)
+assets/js/three/diamonds.js live rough + cut stones in #approach;  gem.js = ray-traced gem shader (both stones)
+assets/js/turntable.js      viewer for pre-rendered frames / sprite sheets (unused now; the Cycles diamonds)
 assets/js/three/eye.js      realistic real-time eyeball in #eye that looks at the cursor
 assets/js/gaze.js           viewer for the Cycles eye's gaze grid (parked; not in the page)
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
@@ -108,10 +109,14 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    The stones are tucked up under the title (the renders have empty sky). The arrow is a straight accent arrow
    that draws itself in (shaft, then head) while it is on screen, wipes when it leaves, and nudges toward the cut
    stone every few seconds (points down on phones; no motion with reduced motion).
-   Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (360 frames each, 1° apart, `turntable.js`), packed 9 frames
-   per 3×3 sprite sheet (40 files per stone). Files load only once the stones near the screen (spread round the
-   circle first), are fetched compressed and decoded off the main thread (`createImageBitmap`) for the sheets
-   around the current angle only (±2): no decode stalls while spinning (locked 60 fps) and bounded memory.
+   No other copy. Both stones are live (`diamonds.js`, transparent stages, ACES tone mapping, drag to turn, slow idle
+   spin), both with the ray-traced gem shader (`gem.js`: refraction through the stone's planes, total internal
+   reflection, per-channel dispersion). Cut: 57-facet brilliant, 8 bounces, dispersion 0.02, contrasty studio of soft
+   boxes and black flags. Rough: dense rounded octahedron (lumps, etching, trigon pits); rays enter through the bumpy
+   surface and exit through 96 bounding planes (`supportPlanes`), with `milk` (scatter to white) and `frost` (env blur).
+   Soft contact shadows offset to the right, like the old renders. (If the Cycles turntables come back: markup
+   `data-turntable="assets/img/turntable/<name>" data-frames="360" data-sheet="3x3"`; the cut stone then needs the
+   120% scale in sections.css, which only applies to `[data-turntable]`.)
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
    One Page from €490 · Business from €1,190 (everything in One Page plus 5 pages, editable content, basic SEO; both

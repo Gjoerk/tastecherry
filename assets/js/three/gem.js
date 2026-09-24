@@ -58,10 +58,36 @@ export function cubeEnvironment(renderer, scene, size = 256) {
   return target.texture;
 }
 
-export function createGemMaterial(geometry, envMap, { ior = 2.42, dispersion = 0.035, tint = "#ffffff", bounces = 5 } = {}) {
+// Bounding planes for a stone that is only roughly convex (the rough crystal):
+// `count` directions spread over the sphere, each plane just touching the
+// mesh's outermost vertex that way. The ray exits through these.
+export function supportPlanes(geometry, count = MAX_PLANES) {
+  const pos = geometry.attributes.position, v = new THREE.Vector3();
+  const planes = [];
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < count; i++) {
+    const y = 1 - (i + 0.5) * (2 / count), r = Math.sqrt(1 - y * y), a = i * golden;
+    const n = new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r);
+    let d = -Infinity;
+    for (let j = 0; j < pos.count; j++) d = Math.max(d, n.dot(v.fromBufferAttribute(pos, j)));
+    planes.push(new THREE.Vector4(n.x, n.y, n.z, d));
+  }
+  while (planes.length < MAX_PLANES) planes.push(new THREE.Vector4(0, 0, 0, 0));
+  return planes;
+}
+
+// milk: how much the light inside is scattered to a soft white (0 = water clear)
+// frost: blur of what the surface reflects and refracts (env mip bias)
+export function createGemMaterial(geometry, envMap, {
+  ior = 2.42, dispersion = 0.035, tint = "#ffffff", bounces = 5,
+  planes = null, milk = 0, milkColor = "#ECEEEF", frost = 0,
+} = {}) {
   const uniforms = {
     envMap: { value: envMap },
-    planes: { value: facetPlanes(geometry) },
+    planes: { value: planes ?? facetPlanes(geometry) },
+    milk: { value: milk },
+    milkColor: { value: new THREE.Color(milkColor) },
+    frost: { value: frost },
     ior: { value: ior },
     dispersion: { value: dispersion },
     tint: { value: new THREE.Color(tint) },
@@ -87,13 +113,16 @@ export function createGemMaterial(geometry, envMap, { ior = 2.42, dispersion = 0
       uniform float ior;
       uniform float dispersion;
       uniform vec3 tint;
+      uniform float milk;
+      uniform vec3 milkColor;
+      uniform float frost;
       uniform vec3 camObj;
       uniform mat3 objToWorld;
       varying vec3 vPos;
       varying vec3 vNormal;
 
       vec3 env(vec3 dirObj) {
-        return textureCube(envMap, normalize(objToWorld * dirObj)).rgb;
+        return textureCube(envMap, normalize(objToWorld * dirObj), frost).rgb;
       }
 
       // Nearest facet the ray leaves through (from inside the convex stone)
@@ -142,6 +171,8 @@ export function createGemMaterial(geometry, envMap, { ior = 2.42, dispersion = 0
           if (b == BOUNCES - 1) refracted = env(d) * carry * 0.6;
         }
 
+        // milky: part of the light is scattered inside (brighter the more it bounced around)
+        refracted = mix(refracted, milkColor * (0.75 + 0.25 * carry), milk);
         vec3 color = mix(refracted * tint, reflected, fresnel);
         gl_FragColor = vec4(color, 1.0);
         #include <tonemapping_fragment>
