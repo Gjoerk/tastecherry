@@ -108,7 +108,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    cut out showing sponge / cream / cherry jam / sponge (canvas crumb texture + bump), 12 star-tip rosettes, a glossy
    cherry on a tapered stem in the middle, crumbs on a white ceramic plate; the slice starts three-quarters toward you;
    canvas takes the drawing's proportions, framed so the plate stays in view even at the drag's full tilt, ±0.4 rad) shares those rows, bottom-aligned so the plate is level with
-   the last line of copy and centred under the heading's text (main.js) (hidden when stacked, ≤960px).
+   the last line of copy and centred under the heading's text (main.js) (stacked, ≤960px: after the copy, centred).
 4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
    stone → arrow → cut brilliant ("AI's “Finished” Website", serif italic quotes / "My Finished Website" as h3s).
    The stones are tucked up under the title (the renders have empty sky). The arrow is a straight accent arrow

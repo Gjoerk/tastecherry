@@ -346,7 +346,7 @@ html[lang="de"] .hero { --title-size: clamp(2.6rem, min(1.2rem + 8vw, 13svh), 10
 /* ---- Cherry on top: a cake under the heading ---------------------------- */
 /* The copy spans both rows on the right; the cake fills the free space under
    the heading on the left, its plate level with the last line of copy.
-   Phones (stacked) have no such space. */
+   Stacked (phones, tablets): the cake comes after the copy, centred. */
 #cherry .section-head { grid-row: 1; }
 #cherry .split__body { grid-row: 1 / span 2; }
 .turntable.cherry__model {
@@ -359,7 +359,14 @@ html[lang="de"] .hero { --title-size: clamp(2.6rem, min(1.2rem + 8vw, 13svh), 10
 }
 @media (max-width: 960px) {
   #cherry .section-head, #cherry .split__body { grid-row: auto; }
-  .turntable.cherry__model { display: none; }
+  .turntable.cherry__model {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    order: 1;                                   /* after the copy: the section ends on the cherry */
+    align-self: auto;
+    justify-self: center;
+    margin: var(--space-6) auto 0;
+  }
 }
 
 /* ---- Refine: rough → cut diamond ----------------------------------- */

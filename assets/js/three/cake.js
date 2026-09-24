@@ -275,7 +275,8 @@ export function initCake(container) {
   const key = new THREE.DirectionalLight(new THREE.Color(1, 0.96, 0.9), 2.4);
   key.position.set(-3, 6, 4);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  const small = matchMedia("(max-width: 960px)").matches;     // phones: a lighter shadow map
+  key.shadow.mapSize.set(small ? 1024 : 2048, small ? 1024 : 2048);
   key.shadow.camera.left = key.shadow.camera.bottom = -2;
   key.shadow.camera.right = key.shadow.camera.top = 2;
   key.shadow.bias = -0.0004;
