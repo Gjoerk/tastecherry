@@ -163,3 +163,12 @@ Don't:
 - Contact form handler: the form posts to `#` (no backend yet).
 - Impressum and Datenschutz links (`href="#"` in the footer).
 - Confirm hello@tastecherry.com is a live mailbox.
+
+## Next up (queued by Gabriel)
+
+- Gems at **240 frames** (1.5° apart): set the `FRAMES` default in `render/stones.py` to 240, re-render `cut rough` on the
+  desktop GPU (000–239.webp in each folder), then `data-frames="240"` on both stones in index.html. Watch download size
+  (~35 KB/frame); re-check that the two shadows still line up.
+- New **last section** after `#contact`: a realistic 3D eyeball (real-time Three.js, transparent stage) that always
+  looks at the mouse cursor (eased, clamped; idle glances on touch; reduced motion = no wander), with
+  "What you see is what you get." underneath. Update the section mark check, page list above and file list.
