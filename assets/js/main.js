@@ -72,17 +72,21 @@ const arrow = document.querySelector(".refine__arrow");
 if (arrow) new IntersectionObserver(([e]) => arrow.classList.toggle("is-drawn", e.isIntersecting),
   { rootMargin: "-15% 0px -25% 0px" }).observe(arrow);
 
-// Cherry on top: centre the cake under the heading's text (narrower than its column)
+// Cherry on top: centre the cake under the heading's text (narrower than its column).
+// Only side by side; stacked, the CSS centres it on the page.
 const cake = document.querySelector(".cherry__model");
 const cakeTitle = document.querySelector("#cherry h2");
 if (cake && cakeTitle) {
+  const sideBySide = matchMedia("(min-width: 961px)");
   const centre = () => {
+    if (!sideBySide.matches) { cake.style.marginLeft = ""; return; }
     const range = document.createRange();
     range.selectNodeContents(cakeTitle);
     const widest = Math.max(...[...range.getClientRects()].map((r) => r.width));
     cake.style.marginLeft = `${Math.max(0, (widest - cake.offsetWidth) / 2)}px`;
   };
   new ResizeObserver(centre).observe(cakeTitle);
+  sideBySide.addEventListener("change", centre);
   document.fonts?.ready.then(centre);
 }
 
