@@ -44,7 +44,7 @@ const DE = {
 
   "cherry.label": "<span class=\"index\">02</span> Die Kirsche auf der Torte",
   "cherry.title": "Da komme ich&nbsp;ins Spiel.",
-  "cherry.model": "Eine Strichzeichnung einer runden Schichttorte mit einer Kirsche obendrauf.",
+  "cherry.model": "Eine runde Schichttorte, ein Stück herausgeschnitten, mit einer Kirsche obendrauf.",
   "cherry.lead": "Die KI macht die Schwerarbeit.<br> Ich&nbsp;mache den Teil, den sie nicht kann: Charakter.",
   "cherry.p1": "Ich&nbsp;steuere die KI, überarbeite das Design und treffe die Entscheidungen, die deiner Seite Persönlichkeit geben. Ich&nbsp;weiß, was deine Kunden sehen wollen, und wann sie den Tab schließen.",
   "cherry.p2": "Jedes Detail zählt. Schriften, Abstände, Farben, dieser eine Button, der zwei Pixel daneben liegt. Nichts geht unbearbeitet raus. <span class=\"aside\">(Mich&nbsp;stört das mehr als dich.)</span>",

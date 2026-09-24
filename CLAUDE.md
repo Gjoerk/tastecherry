@@ -28,7 +28,7 @@ assets/js/three/stage.js    renderer/scene/camera, on-screen-only loop, studio l
 assets/js/hero.js           hero word cycle (Taste/Sauce/Spice), drives the model swap
 assets/js/three/fruit.js    hero scene: framing + fade between models;  cherry.js = wireframe cherries
 assets/js/three/hero-models.js  ketchup squeeze bottle, chili;  wire.js = shared wireframe builder + setFade
-assets/js/three/cake.js     layer cake + cherry wireframe under the #cherry heading (transparent stage)
+assets/js/three/cake.js     live, lit layer cake with a slice cut out + cherry, under the #cherry heading
 assets/js/theme.js          light/dark switch in the header
 assets/js/i18n.js           English / German switch: German copy (DE table), swaps keyed text, remembers the choice
 assets/js/section-mark.js   accent asterisk after the current section's label; flies (with a turn) to the next one
@@ -101,8 +101,11 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    `ai.html` also has a dark variant (`<html class="dark">`, the usual dark AI theme); dark mode shows
    `ai-clean-*-dark.webp` under the same pen layer (identical layout).
    If the phone image's size changes, update its width/height in index.html.
-3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows and a wireframe layer cake with a cherry on top
-   (`cake.js`, canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
+3. `#cherry` — 02 Cherry on top: split layout; the copy spans two rows and a real-looking layer cake with a cherry on top
+   (`cake.js`: physically based, ACES, soft key-light shadows; warm buttercream with palette-knife ridges, a 40° slice
+   cut out showing sponge / cream / cherry jam / sponge (canvas crumb texture + bump), 12 star-tip rosettes, a glossy
+   cherry on a tapered stem in the middle, crumbs on a white ceramic plate; the slice starts three-quarters toward you;
+   canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
    the last line of copy and centred under the heading's text (main.js) (hidden when stacked, ≤960px).
 4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
    stone → arrow → cut brilliant ("AI's “Finished” Website", serif italic quotes / "My Finished Website" as h3s).
