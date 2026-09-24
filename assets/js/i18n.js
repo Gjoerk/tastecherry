@@ -162,10 +162,42 @@ export function setLang(next) {
   dispatchEvent(new Event("langchange"));
 }
 
+// The switch as one motion, like the light / dark one: a circle grows out of
+// the button until it covers the page, greeting you in the new language
+// ("Hallo." / "Hello."); behind it the text is swapped (and everything that
+// measures text re-lays out, unseen); then the cover fades away.
+// Reduced motion: instant.
+const GREETING = { de: ["Hallo.", "Deutsch"], en: ["Hello.", "English"] };
+let switching = false;
+
+async function switchLang(next, button) {
+  if (next === lang || switching) return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !Element.prototype.animate) { setLang(next); return; }
+  switching = true;
+  const r = button.getBoundingClientRect();
+  const x = r.left + r.width / 2, y = r.top + r.height / 2;
+  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  const [word, name] = GREETING[next];
+  const cover = document.createElement("div");
+  cover.className = "lang-wipe";
+  cover.setAttribute("aria-hidden", "true");
+  cover.innerHTML = `<p class="lang-wipe__word" lang="${next}">${word}</p><p class="lang-wipe__name">${name}</p>`;
+  document.body.append(cover);
+  const ease = "cubic-bezier(0.45, 0, 0.25, 1)";           // --ease-in-out
+  await cover.animate(
+    { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+    { duration: 650, easing: ease, fill: "forwards" }).finished;
+  setLang(next);                                             // swapped under the cover
+  await new Promise((done) => setTimeout(done, 450));        // let the greeting land
+  await cover.animate({ opacity: [1, 0] }, { duration: 450, easing: ease, fill: "forwards" }).finished;
+  cover.remove();
+  switching = false;
+}
+
 // Called first thing from main.js: German (if chosen) is in before anything measures text
 export function initLang() {
   remember();
   apply();
   root.classList.remove("i18n-pending");
-  for (const b of document.querySelectorAll("[data-lang]")) b.addEventListener("click", () => setLang(b.dataset.lang));
+  for (const b of document.querySelectorAll("[data-lang]")) b.addEventListener("click", () => switchLang(b.dataset.lang, b));
 }

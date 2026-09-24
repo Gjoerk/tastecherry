@@ -111,6 +111,34 @@
 .lang-switch button:hover { color: var(--ink); }
 .lang-switch button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
 html:not(.js) .lang-switch { display: none; }   /* German needs JS */
+/* Language switch: a cover grows out of the button with a greeting in the new
+   language while the text is swapped behind it (i18n.js) */
+.lang-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  background: var(--ink);
+  color: var(--paper);
+  clip-path: circle(0 at 50% 0);
+}
+.lang-wipe__word {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-5);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.lang-wipe__name {
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+}
 /* German on first paint: hidden until i18n.js has swapped the text in */
 html.i18n-pending body { visibility: hidden; }
 @media (max-width: 699px) {

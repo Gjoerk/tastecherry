@@ -65,7 +65,9 @@ One-frame test: `FRAMES=0 blender -b --factory-startup -P render/stones.py -- ki
 ## Current page (built step by step)
 
 Header: light/dark switch in the middle (`theme.js`; pill, half-filled circle + "Dark"/"Light", icon only on phones).
-Next to it an EN / DE switch (`i18n.js`). The page is written in English; each translatable bit carries
+Next to it an EN / DE switch (`i18n.js`); switching is one motion like the theme switch: an ink cover grows out of
+the button with a greeting in the new language ("Hallo." / "Hello.", serif italic, name in accent below), the text is
+swapped under it, then it fades (≈1.5 s; instant with reduced motion). The page is written in English; each translatable bit carries
 `data-i18n="key"` (its HTML is swapped) or `data-i18n-attr="alt:key,…"`, and the German lives in the `DE` table in
 `i18n.js` (du-form; AI → KI; buzzwords and plan names stay English: Sauce, Spice, One Page, Business, Care; Taste →
 Geschmack; the eye headline "What you see is what you get." stays English in both). English originals are read from the page, so edit English in index.html and German in `DE` (new copy
@@ -105,7 +107,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    (`cake.js`: physically based, ACES, soft key-light shadows; warm buttercream with palette-knife ridges, a 40° slice
    cut out showing sponge / cream / cherry jam / sponge (canvas crumb texture + bump), 12 star-tip rosettes, a glossy
    cherry on a tapered stem in the middle, crumbs on a white ceramic plate; the slice starts three-quarters toward you;
-   canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
+   canvas takes the drawing's proportions, framed so the plate stays in view even at the drag's full tilt, ±0.4 rad) shares those rows, bottom-aligned so the plate is level with
    the last line of copy and centred under the heading's text (main.js) (hidden when stacked, ≤960px).
 4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
    stone → arrow → cut brilliant ("AI's “Finished” Website", serif italic quotes / "My Finished Website" as h3s).

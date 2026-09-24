@@ -293,15 +293,20 @@ export function initCake(container) {
   shadow.position.y = -0.075;
   scene.add(shadow);
 
-  // Fit by measuring, not guessing: the outline of everything the spin can
-  // show (circles at the plate's radius, top and bottom) is projected through
-  // the camera, and distance and aim are adjusted until it just fits.
+  // Fit by measuring, not guessing: the outline of everything the spin and
+  // the drag tilt can show (circles at the plate's radius, top and bottom, at
+  // rest and tilted as far as dragging allows) is projected through the camera,
+  // and distance and aim are adjusted until it just fits.
+  const MAX_TILT = 0.4;
   const box = new THREE.Box3().setFromObject(cake);
   const yMin = box.min.y, yMax = box.max.y, rMax = 1.4;
   const outline = [];
-  for (let k = 0; k < 32; k++) {
-    const a = (k / 32) * Math.PI * 2;
-    for (const y of [yMin, yMax]) outline.push(new THREE.Vector3(rMax * Math.cos(a), y, rMax * Math.sin(a)));
+  for (const tilt of [-MAX_TILT, 0, MAX_TILT]) {
+    const rx = new THREE.Matrix4().makeRotationX(tilt);
+    for (let k = 0; k < 32; k++) {
+      const a = (k / 32) * Math.PI * 2;
+      for (const y of [yMin, yMax]) outline.push(new THREE.Vector3(rMax * Math.cos(a), y, rMax * Math.sin(a)).applyMatrix4(rx));
+    }
   }
   const dir = new THREE.Vector3(0, 0.42, 1).normalize();      // a little from above: the top reads
   const target = new THREE.Vector3(0, (yMin + yMax) / 2, 0);
@@ -334,7 +339,7 @@ export function initCake(container) {
   container.style.aspectRatio = fit(1).toFixed(3);
   stage.onResize = (wpx, hpx) => fit(wpx / hpx);
 
-  const spin = dragRotate(container, pivot, { idleSpeed: 0.3 });
+  const spin = dragRotate(container, pivot, { idleSpeed: 0.3, maxPitch: MAX_TILT });
   stage.onFrame = (t, dt) => spin(dt);
   stage.resize();
   container.classList.add("is-ready");
