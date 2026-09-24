@@ -97,8 +97,8 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
-   One Page from €790 · Business from €1,990 (everything in One Page plus 5 pages, editable content, basic SEO; both
-   with 3 feedback rounds) · Care €39 / month (hosting, updates, backups, up to 30 min of changes per month).
+   One Page from €490 · Business from €1,190 (everything in One Page plus 5 pages, editable content, basic SEO; both
+   with 3 feedback rounds) · Care €29 / month (hosting, updates, backups, up to 30 min of changes per month).
    Each feature has a hand-drawn accent tick (CSS mask, not an icon font). Hovering a price turns the amount accent and draws the hero's marker underline under it. The "For" aside stays
    on the sentence's line (the one exception to asides on their own line).
 7. `#contact` — 05 Contact, h2 "Let’s create *meaningful* websites.": split — pitch + mailto left, form right (Name, Email, Message; labels + required).
