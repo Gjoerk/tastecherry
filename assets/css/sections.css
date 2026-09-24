@@ -368,7 +368,7 @@ html:not(.js) .refine__brush path {
   line-height: 1.15;
 }
 
-/* The arrow: a hand-drawn accent swoop, drawn in (shaft, then head) while the
+/* The arrow: a straight accent arrow, drawn in (shaft, then head) while the
    stones are on screen and wiped when they leave (main.js); once drawn it nudges
    toward the cut stone now and then. */
 .refine__arrow {
@@ -710,7 +710,7 @@ html:not(.js) .refine__arrow path { stroke-dashoffset: 0; opacity: 1; }
 /* ---- Eye: a wireframe eyeball that watches the cursor, the last word under it */
 .eye { text-align: center; }
 .turntable.eye__stage {
-  width: min(100%, 24rem, 42svh);               /* eye and line fit on one screen */
+  width: min(100%, 24rem, 40svh);               /* eye and line fit on one screen */
   margin-inline: auto;
   cursor: auto;                                 /* it follows the pointer; nothing to drag */
   border-radius: 0;
@@ -721,6 +721,13 @@ html:not(.js) .refine__arrow path { stroke-dashoffset: 0; opacity: 1; }
   font-size: var(--step-3);
   line-height: 1.06;
   letter-spacing: var(--tracking-tight);
+}
+
+.eye__sub {
+  margin: var(--space-4) auto 0;
+  font-size: var(--step-1);
+  color: var(--ink-soft);
+  text-wrap: balance;
 }
 
 /* ---- Footer ---------------------------------------------------------- */

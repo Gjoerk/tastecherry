@@ -21,7 +21,11 @@ export function createCake(style) {
   w.lathe([V2(0.96, -0.73), V2(1.0, -0.68), V2(1.0, -0.2), V2(1.0, 0.26), V2(0.97, 0.33), V2(0.88, 0.36)],
     { ringsAt: [0.08, 0.3, 0.52, 0.54, 0.76], meridians: 24, solid: false });
   w.lathe([V2(0, -0.73), V2(0.96, -0.73), V2(1.0, -0.68), V2(1.0, 0.26), V2(0.97, 0.33), V2(0.88, 0.36), V2(0, 0.36)],
-    { ringsAt: [0.9], meridians: 0 });
+    { ringsAt: [0.9], meridians: 0, solid: false });
+  // Hidden-line body: exact cylinders just inside the lines (a spline body bulges past
+  // them at the silhouette and cuts white gaps into the side lines)
+  w.occlude(new THREE.CylinderGeometry(0.985, 0.985, 0.99, 96).translate(0, -0.225, 0));
+  w.occlude(new THREE.CylinderGeometry(0.86, 0.955, 0.08, 96).translate(0, 0.305, 0));
 
   // Piped rosettes round the top edge: little swirled peaks
   const n = 12;
