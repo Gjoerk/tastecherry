@@ -1,10 +1,15 @@
 // Drag-to-rotate viewer for pre-rendered 360° image sequences.
 // Blends neighbouring frames so rotation stays smooth between render steps.
-// Frames load only once the turntable nears the screen, coarse to fine (every
-// 12th frame, then 6th, 3rd, all): it can spin almost at once and gets finer as
-// the rest arrive (blending across whatever gap is still open).
 //
-// <div data-turntable="assets/img/turntable/cut" data-frames="360"></div>
+// Frames come either one image per frame (000.webp, 001.webp …) or packed in
+// sprite sheets (data-sheet="3x3": sheet-00.webp holds frames 0–8 row by row,
+// sheet-01.webp 9–17 …; render/finalize.py sheets). Sheets mean a 360-frame
+// turntable is 40 requests, not 360. Loading starts only once the turntable
+// nears the screen (the frame-0 file first, then the rest). Files are decoded
+// off the main thread into bitmaps, only for the sheets around the current
+// angle, so spinning never stalls on a decode and memory stays bounded.
+//
+// <div data-turntable="assets/img/turntable/cut" data-frames="360" data-sheet="3x3"></div>
 
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -18,8 +23,16 @@ export function turntable(el) {
   const ctx = canvas.getContext("2d");
   el.append(canvas);
 
-  const frames = new Array(count);
-  let spinReady = false;  // the coarse pass is in: idle spin may start
+  const [cols, rows] = (el.dataset.sheet ?? "1x1").split("x").map(Number);
+  const per = cols * rows;                                   // frames per image
+  const images = Math.ceil(count / per);
+  const url = (k) => per === 1 ? `${base}/${pad(k)}.webp` : `${base}/sheet-${String(k).padStart(2, "0")}.webp`;
+
+  const frames = new Array(count);  // { sheet, sx, sy, sw, sh } once its file is in
+  const blobs = new Array(images);   // compressed files, kept
+  const bitmaps = new Map();         // sheet → decoded ImageBitmap (or its promise), only near the current angle
+  let size = null;                   // one frame's width/height in its file
+  let spinReady = false;  // everything is in: idle spin may start
   let angle = 0;          // degrees, frame 0 = 0°
   let velocity = 0;       // degrees per second (inertia)
   let dragging = false;
@@ -29,27 +42,30 @@ export function turntable(el) {
   let onScreen = false;
   let raf = 0;
 
-  // ---- Loading: when near the screen; frame 0, then coarse to fine
-  const load = (i) => new Promise((resolve) => {
-    const img = new Image();
-    img.decoding = "async";
-    img.onload = () => { frames[i] = img; resolve(); };
-    img.onerror = resolve;
-    img.src = `${base}/${pad(i)}.webp`;
-  });
-  const pass = (step) => Promise.all(
-    Array.from({ length: Math.ceil(count / step) }, (_, k) => k * step).filter((i) => !frames[i]).map(load));
+  // ---- Loading: when near the screen; the file with frame 0 first. Files are
+  // fetched compressed; decoding happens off the main thread (createImageBitmap),
+  // so crossing into the next sheet never freezes the page.
+  const load = (k) => fetch(url(k)).then((r) => (r.ok ? r.blob() : null)).then(async (blob) => {
+    if (!blob) return;
+    blobs[k] = blob;
+    if (!size) {
+      const bm = await createImageBitmap(blob);
+      size = { w: bm.width / cols, h: bm.height / rows };
+      bitmaps.set(k, bm);
+    }
+    for (let c = 0; c < per && k * per + c < count; c++) {
+      frames[k * per + c] = { sheet: k, sx: (c % cols) * size.w, sy: Math.floor(c / cols) * size.h, sw: size.w, sh: size.h };
+    }
+  }).catch(() => {});
   const loadAll = async () => {
     await load(0);
     if (!frames[0]) { console.warn(`turntable: no frames at ${base}`); return; }
     el.classList.add("is-ready");
     draw();
-    const steps = [12, 6, 3, 1].filter((st) => st < count);
-    for (const [k, st] of steps.entries()) {
-      await pass(st);
-      if (k === 0) spinReady = true;
-      draw();
-    }
+    // the rest spread round the circle first (every 8th file, then 4th, 2nd, all)
+    const order = [];
+    for (const step of [8, 4, 2, 1]) for (let k = 0; k < images; k += step) if (!order.includes(k) && k) order.push(k);
+    await Promise.all(order.map((k) => load(k).then(draw)));
     spinReady = true;
     el.classList.add("is-loaded");
   };
@@ -59,6 +75,26 @@ export function turntable(el) {
     loadAll();
   }, { rootMargin: "100% 0px" });
   near.observe(el);
+
+  // Decoded sheets: the one on screen and two either side; the rest are let go
+  const WINDOW = 2;
+  const bitmap = (k) => {
+    const got = bitmaps.get(k);
+    if (got instanceof ImageBitmap) return got;
+    if (!got && blobs[k]) {
+      bitmaps.set(k, createImageBitmap(blobs[k]).then((bm) => {
+        if (bitmaps.get(k) instanceof Promise) { bitmaps.set(k, bm); draw(); } else bm.close();
+      }, () => bitmaps.delete(k)));
+    }
+    return null;
+  };
+  const keepAround = (k) => {
+    for (let d = -WINDOW; d <= WINDOW; d++) bitmap((k + d + images) % images);
+    for (const [j, bm] of bitmaps) {
+      const dist = Math.min(Math.abs(j - k), images - Math.abs(j - k));
+      if (dist > WINDOW + 1) { if (bm instanceof ImageBitmap) bm.close(); bitmaps.delete(j); }
+    }
+  };
 
   // ---- Drawing
   const resize = () => {
@@ -85,18 +121,24 @@ export function turntable(el) {
     const pos = (((angle % 360) + 360) % 360) / 360 * count;
     const pair = around(pos);
     if (!pair) return;
-    const { a, b, f } = pair;
+    const { a, f } = pair;
+    keepAround(a.sheet);
+    const imgA = bitmap(a.sheet);
+    if (!imgA) return;                               // decoding off-thread: keep the last frame a moment
+    const imgB = pair.b ? bitmap(pair.b.sheet) : null;
+    const b = imgB ? pair.b : null;
     const { width: w, height: h } = canvas;
-    const s = Math.min(w / a.width, h / a.height);
-    const dw = a.width * s, dh = a.height * s, dx = (w - dw) / 2, dy = (h - dh) / 2;
+    const s = Math.min(w / a.sw, h / a.sh);
+    const dw = a.sw * s, dh = a.sh * s, dx = (w - dw) / 2, dy = (h - dh) / 2;
+    const put = (fr, img) => ctx.drawImage(img, fr.sx, fr.sy, fr.sw, fr.sh, dx, dy, dw, dh);
     ctx.clearRect(0, 0, w, h);
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = b ? 1 - f : 1;
-    ctx.drawImage(a, dx, dy, dw, dh);
+    put(a, imgA);
     if (b && f > 0.001) {
       ctx.globalCompositeOperation = "lighter"; // (1-f)·A + f·B, premultiplied
       ctx.globalAlpha = f;
-      ctx.drawImage(b, dx, dy, dw, dh);
+      put(b, imgB);
     }
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = "source-over";

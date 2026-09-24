@@ -24,7 +24,7 @@ for t in ${targets[@]}; do
     title)      run render/title.py -- out=render/out/title.png && "$PY" render/finalize.py title ;;
     strawberry) run render/strawberry.py -- out=render/out/strawberry && "$PY" render/finalize.py seq strawberry ;;
     eye)        run render/eye.py -- out=render/out/eye && "$PY" render/finalize.py gaze eye ;;
-    rough|cut)  run render/stones.py -- kind="$t" out="render/out/$t" && "$PY" render/finalize.py seq "$t" ;;
+    rough|cut)  run render/stones.py -- kind="$t" out="render/out/$t" && "$PY" render/finalize.py sheets "$t" ;;
   esac
 done
 echo "== done ($(date +%H:%M))"

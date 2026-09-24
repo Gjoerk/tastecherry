@@ -13,8 +13,8 @@ The hero title is plain black HTML text. A ceramic Blender render of it (`assets
 
 The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (360 WebP frames each by default, 1° apart;
 fewer looks choppy). Rough and cut are rendered (on the desktop GPU) and live in `assets/img/turntable/`. To switch another object over, render it,
-then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="360"`
-(`data-frames` must match the number of frames on disk).
+then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="360" data-sheet="3x3"`
+(`data-frames` must match the number of frames; the frames are packed 9 per image by `finalize.py sheets`).
 
 ```
 index.html                  all content, sections in page order
@@ -39,7 +39,7 @@ assets/js/gaze.js           viewer for the Cycles eye's gaze grid (parked; not i
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
 assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
-assets/img/turntable/<name>/000–359.webp   rough, cut (≈13 MB each)
+assets/img/turntable/<name>/sheet-00–39.webp   rough, cut: 360 frames in 3×3 sprite sheets (≈12 MB each)
 assets/img/eye/000–116.webp + grid.json   Cycles eye gaze grid (not rendered yet; render/eye.py)
 
 render/                     Blender pipeline (not needed at runtime; exclude from deploys)
@@ -49,7 +49,8 @@ render/                     Blender pipeline (not needed at runtime; exclude fro
   strawberry.py             procedural fruit: Poisson-disk seeds, dimples, calyx, baked boolean bite, flesh shader
   eye.py                    eyeball gaze grid: sclera (veins, tear-film coat), iris fibres, glass cornea; 13×9 frames
   stones.py                 kind=rough (frosted skin + milky volume) | kind=cut (57-facet brilliant, dispersion)
-  finalize.py               softens shadow-catcher shadows, writes WebP into assets/img (+ `compare` screenshots)
+  finalize.py               softens shadow-catcher shadows, writes WebP into assets/img; `sheets` packs turntables
+                            into 3×3 sprite sheets (+ `compare` screenshots)
   compare/                  "Exhibit A" in #problem: ai.html, annotate.js (red-pen markup), shoot.js
   inspect_render.py         composites a render over --paper and reports the dominant face colour
   fonts/                    TTFs for the title (Blender can't read WOFF)
@@ -107,8 +108,10 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    The stones are tucked up under the title (the renders have empty sky). The arrow is a straight accent arrow
    that draws itself in (shaft, then head) while it is on screen, wipes when it leaves, and nudges toward the cut
    stone every few seconds (points down on phones; no motion with reduced motion).
-   Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (360 frames each, 1° apart, `turntable.js`). Frames only load
-   once the stones near the screen, coarse to fine (every 12th, 6th, 3rd, then all), blending across the gaps meanwhile.
+   Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (360 frames each, 1° apart, `turntable.js`), packed 9 frames
+   per 3×3 sprite sheet (40 files per stone). Files load only once the stones near the screen (spread round the
+   circle first), are fetched compressed and decoded off the main thread (`createImageBitmap`) for the sheets
+   around the current angle only (±2): no decode stalls while spinning (locked 60 fps) and bounded memory.
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
    One Page from €490 · Business from €1,190 (everything in One Page plus 5 pages, editable content, basic SEO; both

@@ -4,7 +4,8 @@
 - Writes WebP with alpha into assets/img/.
 
 python3 render/finalize.py title
-python3 render/finalize.py seq strawberry|rough|cut
+python3 render/finalize.py seq strawberry          (one WebP per frame)
+python3 render/finalize.py sheets rough|cut       (3x3 sprite sheets, what the site loads)
 python3 render/finalize.py gaze eye   (gaze grid + grid.json → assets/img/eye/)
 python3 render/finalize.py compare   (screenshots from render/compare/shoot.js)
 """
@@ -53,6 +54,33 @@ def seq(name, shadow=0.6):
     print(name, len(files), "frames")
 
 
+def sheets(name, shadow=0.6, cols=3, rows=3):
+    """A turntable as sprite sheets: frames 0,1,2… fill each sheet row by row
+    (cols×rows consecutive frames per sheet) → assets/img/turntable/<name>/sheet-NN.webp.
+    Far fewer files and requests than one image per frame. Reads the raw PNGs from
+    render/out/<name> if they are there, else the single-frame WebPs (which it then removes)."""
+    raw = os.path.join(RAW, name)
+    dst = os.path.join(DST, "turntable", name)
+    if os.path.isdir(raw) and any(f.endswith(".png") for f in os.listdir(raw)):
+        files = [os.path.join(raw, f) for f in sorted(os.listdir(raw)) if f.endswith(".png")]
+        frame = lambda f: fade_shadow(Image.open(f).convert("RGBA"), shadow)  # noqa: E731
+    else:
+        files = [os.path.join(dst, f) for f in sorted(os.listdir(dst)) if f[:3].isdigit() and f.endswith(".webp")]
+        frame = lambda f: Image.open(f).convert("RGBA")  # noqa: E731
+    per = cols * rows
+    assert files and len(files) % per == 0, f"{len(files)} frames don't fill {cols}x{rows} sheets"
+    w, h = Image.open(files[0]).size
+    for k in range(len(files) // per):
+        sheet = Image.new("RGBA", (w * cols, h * rows), (0, 0, 0, 0))
+        for c in range(per):
+            sheet.paste(frame(files[k * per + c]), ((c % cols) * w, (c // cols) * h))
+        save_webp(sheet, os.path.join(dst, f"sheet-{k:02d}.webp"), 86)
+    for f in os.listdir(dst):                                  # single frames are superseded
+        if f[:3].isdigit() and f.endswith(".webp"):
+            os.remove(os.path.join(dst, f))
+    print(name, len(files), "frames in", len(files) // per, f"{cols}x{rows} sheets of {w}x{h}")
+
+
 def gaze(name, shadow=0.6):
     """A gaze grid (render/eye.py): frames + grid.json into assets/img/<name>/."""
     src, dst = os.path.join(RAW, name), os.path.join(DST, name)
@@ -81,6 +109,8 @@ def compare():
 if __name__ == "__main__":
     if sys.argv[1] == "title":
         title()
+    elif sys.argv[1] == "sheets":
+        sheets(sys.argv[2])
     elif sys.argv[1] == "gaze":
         gaze(sys.argv[2])
     elif sys.argv[1] == "compare":
