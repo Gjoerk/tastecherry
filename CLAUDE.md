@@ -33,7 +33,7 @@ assets/js/section-mark.js   accent asterisk after the current section's label; f
                             strawberry.js = unused alt (solid + wireframe)
 assets/js/three/diamonds.js real-time rough + cut stones (unused since the renders);  gem.js = ray-traced gem shader
 assets/js/turntable.js      viewer for pre-rendered frames (the diamonds)
-assets/js/three/eye.js      wireframe eyeball in #eye that looks at the cursor
+assets/js/three/eye.js      realistic real-time eyeball in #eye that looks at the cursor
 assets/js/gaze.js           viewer for the Cycles eye's gaze grid (parked; not in the page)
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
 assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
@@ -102,10 +102,15 @@ Section mark: an accent asterisk (`#asterisk`) sits just after the current secti
 h2 where there's no label); when the active section changes (its top passes 40% of the screen) it flies there with
 one turn (`section-mark.js`). Its home is the hero footnote's asterisk: it flies out of it into the first section and
 back into it (fading) at the top. Reduced motion jumps.
-8. `#eye` — the last word: a wireframe eyeball (`three/eye.js`, accent lines like the hero models: rings round the gaze
-   axis, cornea bulge, iris fibres round the pupil, optic nerve at the back) that turns to look at the cursor (eased,
-   ≤38°), and under it the h2 "What you *see* is what you get." No mouse, or a quiet one → it glances around by itself
-   (not with reduced motion). Stage capped at 42svh so eye and line fit on one screen.
+8. `#eye` — the last word: a realistic eyeball, rendered live (`three/eye.js`, physically based, ACES tone mapping,
+   studio environment for the catchlights) that turns to look at the cursor (eased, ≤36°, with tiny fixation
+   tremors), and under it the h2 "What you *see* is what you get." Sclera: sphere open at the front, canvas-painted
+   map (warm white, vessels running from the back toward the iris, branching and tapering; grey limbal shadow),
+   clear coat for the tear film. Iris: slightly domed disc sunk behind a dark limbal wall; colour + bump maps baked
+   once on the GPU from simplex noise (hazel: amber collarette, green-grey fibres, crypts, furrows, dark limbal ring).
+   Cornea: reflections only, additive (a transmission pass blurred the iris), faded at its rim. A soft contact
+   shadow grounds it. No mouse, or a quiet one → it glances around by itself (not with reduced motion).
+   Stage capped at 42svh so eye and line fit on one screen.
    A photoreal Cycles version is parked: `render/eye.py` renders a 13×9 **gaze grid** (±36° × ±24°, frame = row·13 + col,
    `grid.json` alongside) via `render/build.sh eye` into `assets/img/eye/`, and `gaze.js` (`data-gaze`) blends the
    four frames nearest the cursor. To use it: swap the stage for `<div class="eye__stage" data-gaze="assets/img/eye">` (its CSS is in commit 2f37716).
