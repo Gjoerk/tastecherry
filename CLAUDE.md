@@ -205,6 +205,15 @@ Don't:
 - Inter or Geist as the default font; Tailwind default colours
 - Filler copy like "Unlock", "Elevate", "Seamless", "Supercharge"
 
+## Deploy
+
+Live on GitHub Pages: https://gjoerk.github.io/tastecherry/ (repo public; Settings → Pages → Source: GitHub Actions).
+`.github/workflows/pages.yml` publishes on every push to `main` (or run it by hand): it copies only `index.html` +
+`assets/` into `_site/`, minus `assets/img/turntable/` and `assets/img/hero/` (unused renders); `render/` and the rest
+of the repo are never published (≈0.7 MB live). All paths are relative, so the `/tastecherry/` subpath just works;
+keep it that way (no leading `/`). If the Cycles turntables come back, drop the `turntable` line from the workflow.
+Custom domain later: add a `CNAME` file to `_site` in the workflow + DNS at the registrar.
+
 ## Placeholders to replace (TODO)
 
 - Contact form handler: the form posts to `#` (no backend yet).
