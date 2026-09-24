@@ -103,7 +103,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    (`cake.js`, canvas takes the drawing's proportions) shares those rows, bottom-aligned so the plate is level with
    the last line of copy and centred under the heading's text (main.js) (hidden when stacked, ≤960px).
 4. `#approach` — centred h2 "It’s Simple" with an accent brush stroke under it (brushed in on reveal), then rough
-   stone → arrow → cut brilliant ("AI's “Finished” Product", serif italic quotes / "My Finished Product" as h3s).
+   stone → arrow → cut brilliant ("AI's “Finished” Website", serif italic quotes / "My Finished Website" as h3s).
    The stones are tucked up under the title (the renders have empty sky). The arrow is a straight accent arrow
    that draws itself in (shaft, then head) while it is on screen, wipes when it leaves, and nudges toward the cut
    stone every few seconds (points down on phones; no motion with reduced motion).
