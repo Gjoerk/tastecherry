@@ -1,7 +1,10 @@
 // Drag-to-rotate viewer for pre-rendered 360° image sequences.
 // Blends neighbouring frames so rotation stays smooth between render steps.
+// Frames load only once the turntable nears the screen, coarse to fine (every
+// 12th frame, then 6th, 3rd, all): it can spin almost at once and gets finer as
+// the rest arrive (blending across whatever gap is still open).
 //
-// <div data-turntable="assets/img/turntable/cut" data-frames="60"></div>
+// <div data-turntable="assets/img/turntable/cut" data-frames="360"></div>
 
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -16,7 +19,7 @@ export function turntable(el) {
   el.append(canvas);
 
   const frames = new Array(count);
-  let loaded = 0;
+  let spinReady = false;  // the coarse pass is in: idle spin may start
   let angle = 0;          // degrees, frame 0 = 0°
   let velocity = 0;       // degrees per second (inertia)
   let dragging = false;
@@ -26,20 +29,36 @@ export function turntable(el) {
   let onScreen = false;
   let raf = 0;
 
-  // ---- Loading: frame 0 first, then the rest in rotation order
+  // ---- Loading: when near the screen; frame 0, then coarse to fine
   const load = (i) => new Promise((resolve) => {
     const img = new Image();
     img.decoding = "async";
-    img.onload = () => { frames[i] = img; loaded++; resolve(); };
+    img.onload = () => { frames[i] = img; resolve(); };
     img.onerror = resolve;
     img.src = `${base}/${pad(i)}.webp`;
   });
-  load(0).then(() => {
-    if (!frames[0]) throw new Error(`turntable: no frames at ${base}`);
+  const pass = (step) => Promise.all(
+    Array.from({ length: Math.ceil(count / step) }, (_, k) => k * step).filter((i) => !frames[i]).map(load));
+  const loadAll = async () => {
+    await load(0);
+    if (!frames[0]) { console.warn(`turntable: no frames at ${base}`); return; }
     el.classList.add("is-ready");
     draw();
-    return Promise.all(Array.from({ length: count - 1 }, (_, i) => load(i + 1)));
-  }).then(() => el.classList.add("is-loaded"), (err) => console.warn(err.message));
+    const steps = [12, 6, 3, 1].filter((st) => st < count);
+    for (const [k, st] of steps.entries()) {
+      await pass(st);
+      if (k === 0) spinReady = true;
+      draw();
+    }
+    spinReady = true;
+    el.classList.add("is-loaded");
+  };
+  const near = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    near.disconnect();
+    loadAll();
+  }, { rootMargin: "100% 0px" });
+  near.observe(el);
 
   // ---- Drawing
   const resize = () => {
@@ -50,21 +69,23 @@ export function turntable(el) {
   };
   new ResizeObserver(resize).observe(el);
 
-  function nearestLoaded(i) {
-    for (let d = 0; d < count; d++) {
-      if (frames[(i + d) % count]) return frames[(i + d) % count];
-      if (frames[(i - d + count) % count]) return frames[(i - d + count) % count];
-    }
-    return null;
+  // the loaded frames either side of `pos` (in frames), and how far it is between them
+  function around(pos) {
+    const i = Math.floor(pos) % count;
+    let lo = null, hi = null;
+    for (let d = 0; d < count; d++) if (frames[(i - d + count) % count]) { lo = i - d; break; }
+    if (lo === null) return null;                                  // nothing loaded yet
+    for (let d = 1; d <= count; d++) if (frames[(i + d) % count]) { hi = i + d; break; }
+    const a = frames[(lo + count) % count], b = frames[hi % count];
+    const span = hi - lo;
+    return { a, b: b !== a ? b : null, f: span > 0 ? (pos - lo) / span : 0 };
   }
 
   function draw() {
     const pos = (((angle % 360) + 360) % 360) / 360 * count;
-    const i = Math.floor(pos) % count;
-    const f = pos - Math.floor(pos);
-    const a = nearestLoaded(i);
-    const b = frames[(i + 1) % count];
-    if (!a) return;
+    const pair = around(pos);
+    if (!pair) return;
+    const { a, b, f } = pair;
     const { width: w, height: h } = canvas;
     const s = Math.min(w / a.width, h / a.height);
     const dw = a.width * s, dh = a.height * s, dx = (w - dw) / 2, dy = (h - dh) / 2;
@@ -91,7 +112,7 @@ export function turntable(el) {
       if (Math.abs(velocity) > 0.5) {
         angle += velocity * dt;
         velocity *= Math.exp(-dt * 2.2);           // friction
-      } else if (!reducedMotion && t > idleAfter && loaded === count) {
+      } else if (!reducedMotion && t > idleAfter && spinReady) {
         velocity = 0;
         angle += idleSpeed * dt;
       } else {

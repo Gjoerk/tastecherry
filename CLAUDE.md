@@ -11,9 +11,9 @@ Plain HTML/CSS/JS, no build step for the site. Preview: `python3 -m http.server 
 diamonds in `#approach` are **Cycles turntables** (pre-rendered frames, `turntable.js`), also draggable.
 The hero title is plain black HTML text. A ceramic Blender render of it (`assets/img/hero/title*.webp`) is kept but unused.
 
-The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (120 WebP frames each by default, 3° apart;
+The **Blender Cycles pipeline** in `render/` makes photoreal 360° turntables (360 WebP frames each by default, 1° apart;
 fewer looks choppy). Rough and cut are rendered (on the desktop GPU) and live in `assets/img/turntable/`. To switch another object over, render it,
-then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="120"`
+then change its markup from `data-scene="…"` to `data-turntable="assets/img/turntable/<name>" data-frames="360"`
 (`data-frames` must match the number of frames on disk).
 
 ```
@@ -39,7 +39,7 @@ assets/js/gaze.js           viewer for the Cycles eye's gaze grid (parked; not i
 assets/js/exhibit.js        Exhibit A in #problem: clean → red-pen sweep, toggle
 assets/img/compare/         clean AI screenshot + red-pen layer for #problem (built from render/compare/)
 assets/img/hero/            rendered ceramic title (title.webp 2400w, title-1200.webp)
-assets/img/turntable/<name>/000–059.webp   rough, cut
+assets/img/turntable/<name>/000–359.webp   rough, cut (≈13 MB each)
 assets/img/eye/000–116.webp + grid.json   Cycles eye gaze grid (not rendered yet; render/eye.py)
 
 render/                     Blender pipeline (not needed at runtime; exclude from deploys)
@@ -107,7 +107,8 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
    The stones are tucked up under the title (the renders have empty sky). The arrow is a straight accent arrow
    that draws itself in (shaft, then head) while it is on screen, wipes when it leaves, and nudges toward the cut
    stone every few seconds (points down on phones; no motion with reduced motion).
-   Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (60 frames each, `turntable.js`).
+   Side by side, the cut stone is scaled to 120% (about a point above its frame) so both shadows sit at the same height. No other copy. Both stones are Cycles turntables (360 frames each, 1° apart, `turntable.js`). Frames only load
+   once the stones near the screen, coarse to fine (every 12th, 6th, 3rd, then all), blending across the gaps meanwhile.
 5. `#why` — 03 Why me: four numbered items (big accent 01–04 at the item-title size, tabular figures, plain zero), 2×2 on desktop, stacked on phones, hairlines, no icons.
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
    One Page from €490 · Business from €1,190 (everything in One Page plus 5 pages, editable content, basic SEO; both
