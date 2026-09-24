@@ -99,7 +99,7 @@ Nav: six-petal asterisk mark + "tastecherry" wordmark + handwritten "by gabriel"
 6. `#pricing` — 04 Pricing: three flat panels divided by hairlines (not shadowed cards) + "Just ask" link.
    One Page from €790 · Business from €1,990 (everything in One Page plus 5 pages, editable content, basic SEO; both
    with 3 feedback rounds) · Care €39 / month (hosting, updates, backups, up to 30 min of changes per month).
-   Hovering a price turns the amount accent and draws the hero's marker underline under it. The "For" aside stays
+   Each feature has a hand-drawn accent tick (CSS mask, not an icon font). Hovering a price turns the amount accent and draws the hero's marker underline under it. The "For" aside stays
    on the sentence's line (the one exception to asides on their own line).
 7. `#contact` — 05 Contact, h2 "Let’s create *meaningful* websites.": split — pitch + mailto left, form right (Name, Email, Message; labels + required).
 Section mark: an accent asterisk (`#asterisk`) sits just after the current section's label ("02 Cherry on top"; the
