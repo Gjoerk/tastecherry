@@ -186,6 +186,23 @@ motion). 3D stages are transparent, so they always change with the page.
 - Caveat (`--font-hand`) only for the red-pen bits of Exhibit A and the "by gabriel" signature, loaded as a subset of
   just those letters, English and German (extend the `&text=` in index.html if you add words).
 
+## Design language: Hand-Finished Editorial
+
+*Swiss grid, warm paper, one red pen.* An editorial layout that a person visibly finishes by hand — the brand promise
+("AI-built, finished with taste") turned into a look. Four ingredients:
+- **Editorial base:** 12-column grid with asymmetry, hairline rules instead of boxes, warm paper and near-black ink,
+  a grotesk with character, serif italic only for the one emphasised word in a headline, numbered section labels,
+  short confident copy with the jokes in quiet asides.
+- **One red pen:** a single rubine accent, used rarely, and the hand marks it makes: marker underlines drawn in on
+  hover or reveal, the brush stroke, hand-drawn ticks, Exhibit A's red-pen notes, the signature, the travelling
+  asterisk. Always slightly wobbly strokes, never icon-library shapes.
+- **Objects as exhibits:** one real-time 3D object per idea on a transparent stage, like a museum piece (wireframe
+  hero models, the lit cake, the ray-traced diamonds, the eye): physically lit or accent wireframe, draggable, on a
+  soft contact shadow. Never decorative blobs.
+- **Motion as one gesture:** each interaction is a single motion (circle wipe for theme and language, pen sweep,
+  draw-in); otherwise only fades and 16px rises; reduced motion always respected.
+Test for anything new: would it look at home in a well-made printed magazine that someone marked up by hand?
+
 ## Design rules (anti-vibe-coded checklist)
 
 Do:
